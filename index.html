@@ -224,14 +224,12 @@
 				}
 				else {
 					var nodes = [];
-					/* for (var i in TS.CONCEPTS) {
+					for (var i in TS.CONCEPTS) {
 						for (var j in TS.CONCEPTS[i].a) {
 							// if (i.includes("Person")) ...
-							nodes.push({id: j, label:  TS.CONCEPTS[i].a[j]});
+							console.log("concept: " + i);
+							nodes.push({id: TS.CONCEPTS[i].a[j], label: TS.INDIVIDUALS[TS.CONCEPTS[i].a[j]]});
 						}
-					} */
-					for (var i in TS.INDIVIDUALS) {
-						nodes.push({id: i, label: TS.INDIVIDUALS[i]});
 					}
 					GRAPH.nodes = new vis.DataSet(nodes);
 					GRAPH.edges = new vis.DataSet(edges);
