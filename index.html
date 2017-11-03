@@ -1,0 +1,551 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>mainzed - Organigramm</title>
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.0/vis.min.js"></script>
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.0/vis.min.css" rel="stylesheet" type="text/css" />
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			
+			body {
+				height: 100%;
+				width: 100%;
+				position: absolute;
+				overflow: hidden;
+			}
+		
+			#graph {
+				width: 100%;
+				height: 100%;
+				position: absolute;
+			}
+			
+			.edit {
+				position: fixed;
+				width: 300px;
+				border: 2px solid black;
+				margin-left: 20px;
+				margin-top: 150px;
+				padding-bottom: 50px;
+			}
+			.edit.start {
+				border: none;
+				margin-left: 22px;
+				margin-top: 52px;
+			}
+			.edit.close {
+				height: 98px;
+				margin-top: 50px;
+				padding-bottom: 0px;
+			}
+			input, select, table {
+				width: 250px;
+				height: 30px;
+				margin-left: 20px;
+				margin-top: 30px;
+			}
+			td {
+				width: 125px;
+				margin-top: 30px;
+			}
+			td input {
+				width: 100px;
+				margin-top: 0px;
+			}
+			
+			.hidden {
+				display:none;
+			}
+		</style>
+		<script>
+			
+			var REASONING = true;
+			
+			// Triple Store
+			var TS = {};
+			TS.URL = "http://higeomes.i3mainz.hs-mainz.de/openrdf-sesame/repositories/mainzed";
+			TS.PREFIX = "PREFIX amt: <http://www.academic-meta-tool.org/>";
+			TS.query = function(query,callback) {
+				$.ajax({
+					url: TS.URL,
+					dataType: 'jsonp',
+					type: 'GET',
+					data: {
+						queryLn: 'SPARQL',
+						query: TS.PREFIX + query,
+						Accept: 'application/json'
+					},
+					success: function(data) {
+						var bindings = data.results.bindings;
+						for (var i in bindings) {
+							for (var j in bindings[i]) {
+								if (bindings[i][j].value)
+									bindings[i][j] = bindings[i][j].value;
+							}
+						}
+						callback(bindings);
+					},
+					error: function(data) {
+						$("#graph").html("Es ist ein Fehler aufgetreten: "+data);
+					}
+				});
+			};
+			TS.update = function(query,callback) {
+				$.ajax({
+					url: TS.URL+"/statements",
+					type: 'POST',
+					data: {
+						update: TS.PREFIX + query
+					},
+					success: callback,
+					error: callback
+				});
+			};
+			TS.quad = function(s,p,o,w) {
+				s = " ?stmt rdf:subject "+s+" . ";
+				p = " ?stmt rdf:predicate "+p+" . ";
+				o = " ?stmt rdf:object "+o+" . ";
+				w = " ?stmt amt:weight "+w+" . ";
+				return s+p+o+w;
+			};
+			TS.insertQuad = function(id,s,p,o,w) {
+				s = " _:"+id+" rdf:subject "+s+" . ";
+				p = " _:"+id+" rdf:predicate "+p+" . ";
+				o = " _:"+id+" rdf:object "+o+" . ";
+				w = " _:"+id+" amt:weight "+w+" . ";
+				return s+p+o+w;
+			};
+			
+			// Loading content from Triple Store wrt AMT-Ontology
+			TS.INDIVIDUALS = false;
+			TS.CONCEPTS = false;
+			TS.ROLES = false;
+			TS.AXIOMS = false;
+			TS.loadIndividuals = function() {
+				var q = "SELECT ?individual ?label WHERE { ?individual amt:instanceOf ?concept . ?concept rdf:type amt:Concept . ?individual rdfs:label ?label . }";
+				TS.query(q,function(data) {
+					TS.INDIVIDUALS = [];
+					for (var i in data) {
+						TS.INDIVIDUALS[data[i].individual] = data[i].label;
+					}
+					TS.loadConcepts();
+				});
+			}
+			TS.loadConcepts = function() {
+				var q1 = "SELECT ?concept ?label ?placeholder WHERE { ?concept rdf:type amt:Concept . ?concept rdfs:label ?label . ?concept amt:placeholder ?placeholder . }";
+				TS.query(q1,function(data) {
+					TS.CONCEPTS = [];
+					for (var i in data) {
+						TS.CONCEPTS[data[i].concept] = {label: data[i].label, placeholder: data[i].placeholder, a: []};
+					}
+					var q2 = "SELECT ?concept ?individual WHERE { ?concept rdf:type amt:Concept . ?individual amt:instanceOf ?concept . }";
+					TS.query(q2,function(data) {
+						for (var i in data) {
+							TS.CONCEPTS[data[i].concept].a.push(data[i].individual);
+						}
+						TS.loadRoles();
+					});
+				});
+			};
+			TS.loadRoles = function() {
+				var q1 = "SELECT ?role ?label ?domain ?range WHERE { ?role rdf:type amt:Role . ?role rdfs:label ?label . ?role rdfs:domain ?domain . ?role rdfs:range ?range . }";
+				TS.query(q1,function(data) {
+					TS.ROLES = [];
+					for (var i in data) {
+						TS.ROLES[data[i].role] = {label: data[i].label, domain: data[i].domain, range: data[i].range, setting: [], a: []}
+					}
+					var q2 = "SELECT ?role ?setting WHERE { ?role rdf:type amt:Role . ?role amt:setting ?setting . }";
+					TS.query(q2,function(data) {
+						for (var i in data) {
+							TS.ROLES[data[i].role].setting.push(data[i].setting);
+						}
+						var q3 = "SELECT ?role ?i1 ?i2 ?w WHERE { ?role rdf:type amt:Role . "+TS.quad("?i1","?role","?i2","?w")+" }";
+						TS.query(q3,function(data) {
+							for (var i in data) {
+								TS.ROLES[data[i].role].a.push({i1: data[i].i1, i2: data[i].i2, w: data[i].w});
+							}
+							TS.loadAxioms();
+						});
+					});
+				});
+			};
+			TS.loadAxioms = function() {
+				TS.AXIOMS = [];
+				TS.loadRoleChainAxioms();
+				TS.loadInverseAxioms();
+				init();
+			}
+			TS.loadRoleChainAxioms = function() {
+				var q = "SELECT ?antecedent1 ?antecedent2 ?consequent ?logic WHERE { ?axiom rdf:type amt:RoleChainAxiom . ?axiom amt:antecedent1 ?antecedent1 . ?axiom amt:antecedent2 ?antecedent2 . ?axiom amt:consequent ?consequent . ?axiom amt:logic ?logic . } ";
+				TS.query(q,function(data) {
+					for (var i in data) {
+						TS.AXIOMS.push({type: "RoleChainAxiom", antecedent1: data[i].antecedent1, antecedent2: data[i].antecedent2, consequent: data[i].consequent, logic: data[i].logic});
+					}
+					init_graph();
+				});
+			}
+			TS.loadInverseAxioms = function() {
+				var q = "SELECT ?antecedent ?inverse WHERE { ?axiom rdf:type amt:InverseAxiom . ?axiom amt:antecedent ?antecedent . ?axiom amt:inverse ?inverse . }"
+				TS.query(q,function(data) {
+					for (var i in data) {
+						TS.AXIOMS.push({type: "InverseAxiom", antecedent: data[i].antecedent, inverse: data[i].inverse});
+					}
+					init_graph();
+				});
+			}
+			
+			// Graph Visualization and Reasoning
+			var GRAPH = {};
+			function init_graph() {
+				var tmpEdges = generateEdges(REASONING ? TS.AXIOMS : []);
+				var edges = [];
+				for (var i in tmpEdges) {
+					// URI der Role ist tmpEdges[i].role
+					// if (tmpEdges[i].role.includes("connectedWith"))
+					tmpEdges[i].width = 3*tmpEdges[i].width*tmpEdges[i].width;
+					var setting = TS.ROLES[tmpEdges[i].role].setting;
+					for (var j in setting) { // obsolet
+						if (setting[j].includes("Red"))
+							tmpEdges[i].color = "red";
+							// set to undirected or directed
+						if (setting[j].includes("Black"))
+							tmpEdges[i].color = "black";
+						if (setting[j].includes("Green"))
+							tmpEdges[i].color = "green";
+						if (REASONING) {
+							if (setting[j].includes("Undirected") && (tmpEdges[i].from.localeCompare(tmpEdges[i].to) > 0) && tmpEdges[i].width > 0.05) {
+								edges.push(tmpEdges[i]);
+							}
+							if (setting[j].includes("Directed") && tmpEdges[i].width > 0.05) {
+								tmpEdges[i].arrows = "to";
+								edges.push(tmpEdges[i]);
+							}
+						}
+						else {
+							tmpEdges[i].arrows = "to";
+							edges.push(tmpEdges[i]);
+						}
+					}
+				}
+				if (GRAPH.edges) {
+					GRAPH.edges.clear();
+					GRAPH.edges.update(edges);
+				}
+				else {
+					var nodes = [];
+					/* for (var i in TS.CONCEPTS) {
+						for (var j in TS.CONCEPTS[i].a) {
+							// if (i.includes("Person")) ...
+							nodes.push({id: j, label:  TS.CONCEPTS[i].a[j]});
+						}
+					} */
+					for (var i in TS.INDIVIDUALS) {
+						nodes.push({id: i, label: TS.INDIVIDUALS[i]});
+					}
+					GRAPH.nodes = new vis.DataSet(nodes);
+					GRAPH.edges = new vis.DataSet(edges);
+					GRAPH.network = new vis.Network(document.getElementById("graph"),{nodes: GRAPH.nodes, edges: GRAPH.edges},{});
+				}
+			}
+			function conjunction(x,y,logic) {
+				if (logic.includes("LukasiewiczLogic")) {
+					return Math.max(x+y-1,0);
+				}
+				if (logic.includes("ProductLogic")) {
+					return x*y;
+				}
+				if (logic.includes("GoedelLogic")) {
+					return Math.min(x,y);
+				}
+				return 0;
+			}
+			function generateEdges(axioms) {
+				var edges = [];
+				for (var r in TS.ROLES) {
+					for (var i in TS.ROLES[r].a) {
+						edges.push({role: r, from: TS.ROLES[r].a[i].i1, to: TS.ROLES[r].a[i].i2, width: Number(TS.ROLES[r].a[i].w)/100});
+					}
+				}
+				var change = true;
+				while (change) {
+					change = false;
+					for (var k in axioms) {
+						if (axioms[k].type == "RoleChainAxiom") {
+							var e1 = [];
+							var e2 = [];
+							for (var i in edges) {
+								if (edges[i].role == axioms[k].antecedent1) {
+									e1.push(edges[i]);
+								}
+								if (edges[i].role == axioms[k].antecedent2) {
+									e2.push(edges[i]);
+								}
+							}
+							var e = [];
+							for (var i in e1) {
+								for (var j in e2) {
+									if (e1[i].to == e2[j].from) {
+										var w = conjunction(e1[i].width,e2[j].width,axioms[k].logic);
+										if (w > 0)
+											e.push({role: axioms[k].consequent, from: e1[i].from, to: e2[j].to, width: w});
+									}
+								}
+							}
+							for (var j in e) {
+								var found = false;
+								for (var i in edges) {
+									if (e[j].role == edges[i].role && e[j].from == edges[i].from && e[j].to == edges[i].to) {
+										found = true;
+										if (e[j].width > edges[i].width) {
+											edges[i].width = e[j].width;
+											change = true;
+										}
+									}
+								}
+								if (!found) {
+									edges.push(e[j]);
+									change = true;
+								}
+							}
+						}
+						if (axioms[k].type == "InverseAxiom") {
+							for (var i in edges) {
+								if (edges[i].role == axioms[k].antecedent) {
+									var found = false;
+									for (var j in edges) {
+										if (edges[j].role == axioms[k].inverse && edges[j].to == edges[i].from && edges[j].from == edges[i].to) {
+											found = true;
+											if (edges[j].width < edges[i].width) {
+												edges[j].width = edges[i].width;
+												change = true;
+											}
+										}
+									}
+									if (!found) {
+										edges.push({role: axioms[k].inverse, from: edges[i].to, to: edges[i].from, width: edges[i].width});
+										change = true;
+									}
+								}
+							}
+						}
+						if (axioms[k].type == "SelfDisjointAxiom") {
+							for (var i in edges) {
+								if (edges[i].role == axioms[k].role && edges[i].from == edges[i].to) {
+									// INKONSISTENZ
+									return [];
+								}
+							}
+						}
+					}
+				}
+				return edges;
+			}
+			
+			
+			function init() {
+				init_insert();
+				init_update();
+				init_delete();
+			}
+			function edit_start() {
+				$(".edit.start").addClass("hidden");
+				$(".edit.close").removeClass("hidden");
+				$(".edit.select").removeClass("hidden");
+			}
+			function edit_close() {
+				$(".edit").addClass("hidden");
+				$(".edit.start").removeClass("hidden");
+			}
+			
+			function edit_insert() {
+				$(".edit.select").addClass("hidden");
+				$("option").prop("selected",false);
+				$("#insert_concept_default").prop("selected",true);
+				$(".edit.insert").removeClass("hidden");
+			}
+			function init_insert() {
+				for (var i in TS.CONCEPTS) {
+					$("#insert_concept").append("<option value='"+i+"'>"+TS.CONCEPTS[i].label+"</option>");
+				}
+				$("#insert_concept").on("change",function() {
+					$("#insert_label").prop("placeholder",TS.CONCEPTS[this.value].placeholder);
+				});
+			}
+			function edit_insert_submit() {
+				var id = Math.floor(Math.random()*1000000); // TODO: Besseres Verfahren
+				var q = "INSERT { amt:"+id+" amt:instanceOf <"+$("#insert_concept").val()+"> . amt:"+id+" rdfs:label \""+$("#insert_label").val()+"\" . } WHERE {}";
+				TS.update(q,function() {
+					location.reload();
+				});
+			}
+			
+			function edit_update() {
+				$(".edit.select").addClass("hidden");
+				$("option").prop("selected",false);
+				$("option.update.default").prop("selected",true);
+				$("#update2").addClass("hidden");
+				$(".edit.update").removeClass("hidden");
+				$("#update1").removeClass("hidden");
+			}
+			function init_update() {
+				for (var i in TS.CONCEPTS) {
+					var select = $("<select></select>");
+					select.append("<option class='update default' value='' disabled>"+TS.CONCEPTS[i].label+" wählen ...</option>")
+					for (var j in TS.CONCEPTS[i].a) {
+						var individual = TS.CONCEPTS[i].a[j];
+						select.append("<option value='"+individual+"'>"+TS.INDIVIDUALS[individual]+"</option>");
+					}
+					select.on("change",function() {
+						$("#update1").addClass("hidden");
+						$("#update_individual").val(this.value);
+						$("#update_individual_label").val(TS.INDIVIDUALS[this.value]);
+						$("option").prop("selected",false);
+						$("#update_role").empty();
+						$("#update_role").append("<option value='' disabled selected>Rolle wählen ...</option>");
+						var c = [];
+						for (var i in TS.CONCEPTS) {
+							if (TS.CONCEPTS[i].a.includes(this.value))
+								c.push(i);
+						}
+						for (var i in TS.ROLES) {
+							if (c.includes(TS.ROLES[i].domain))
+								$("#update_role").append("<option value='"+i+"'>"+TS.ROLES[i].label+"</option>");
+						}
+						$("#update2").removeClass("hidden");
+					});
+					$("#update1").append(select);
+				}
+				$("#update_role").on("change",function() {
+					$("#update_table").empty();
+					var c = TS.ROLES[this.value].range;
+					for (var i in TS.CONCEPTS[c].a) {
+						var individual = TS.CONCEPTS[c].a[i];
+						var w = 0;
+						for (var j in TS.ROLES[this.value].a) {
+							if (TS.ROLES[this.value].a[j].i1 == $("#update_individual").val() && TS.ROLES[this.value].a[j].i2 == individual)
+								w = TS.ROLES[this.value].a[j].w;
+						}
+						var tr = $("<tr></tr>");
+						tr.append("<td>"+TS.INDIVIDUALS[individual]+"</td>");
+						tr.append("<td><input type='text' class='weight' name='"+individual+"' value='"+w+"' /></td>");
+						$("#update_table").append(tr);
+					}
+				});
+			}
+			function edit_update_submit() {
+				var q1 = "DELETE { "+TS.quad("<"+$("#update_individual").val()+">","<"+$("#update_role").val()+">","?individual","?w")+" } WHERE { ?individual amt:instanceOf ?concept . ?concept rdf:type amt:Concept . "+TS.quad("<"+$("#update_individual").val()+">","<"+$("#update_role").val()+">","?individual","?w")+" }";
+				TS.update(q1,function() {
+					var stmts = "";
+					$("#update_table tr td input").each(function(i) {
+						var w = Math.floor(Number($(this).val()));
+						if (w > 0 && w <= 100)
+							stmts += TS.insertQuad(i,"<"+$("#update_individual").val()+">","<"+$("#update_role").val()+">","<"+$(this).attr("name")+">",w);
+					});
+					var q2 = "INSERT { "+stmts+" } WHERE {}";
+					TS.update(q2,function() {
+						location.reload();
+					});
+				});
+			}
+			
+			function edit_delete() {
+				$(".edit.select").addClass("hidden");
+				$("option").prop("selected",false);
+				$("option.delete.default").prop("selected",true);
+				$("#delete2").addClass("hidden");
+				$(".edit.delete").removeClass("hidden");
+				$("#delete1").removeClass("hidden");
+			}
+			function init_delete() {
+				for (var i in TS.CONCEPTS) {
+					var select = $("<select></select>");
+					select.append("<option class='update default' value='' disabled>"+TS.CONCEPTS[i].label+" wählen ...</option>")
+					for (var j in TS.CONCEPTS[i].a) {
+						var individual = TS.CONCEPTS[i].a[j];
+						select.append("<option value='"+individual+"'>"+TS.INDIVIDUALS[individual]+"</option>");
+					}
+					select.on("change",function() {
+						$("#delete1").addClass("hidden");
+						$("#delete_individual").val(this.value);
+						$("#delete_individual_label").val(TS.INDIVIDUALS[this.value]);
+						$("#delete2").removeClass("hidden");
+					});
+					$("#delete1").append(select);
+				}
+			}
+			function edit_delete_submit() {
+				var q1 = " DELETE { "+TS.quad("<"+$("#delete_individual").val()+">","?role","?individual","?w")+" } WHERE { ?individual amt:instanceOf ?concept . ?concept rdf:type amt:Concept . ?role rdf:type amt:Role . "+TS.quad("<"+$("#delete_individual").val()+">","?role","?individual","?w")+" } ";
+				var q2 = " DELETE { "+TS.quad("?individual","?role","<"+$("#delete_individual").val()+">","?w")+" } WHERE { ?individual amt:instanceOf ?concept . ?concept rdf:type amt:Concept . ?role rdf:type amt:Role . "+TS.quad("?individual","?role","<"+$("#delete_individual").val()+">","?w")+" } ";
+				var q3 = " DELETE { <"+$("#delete_individual").val()+"> amt:instanceOf ?concept . <"+$("#delete_individual").val()+"> rdfs:label ?label . } WHERE { <"+$("#delete_individual").val()+"> amt:instanceOf ?concept . ?concept rdf:type amt:Concept . <"+$("#delete_individual").val()+"> rdfs:label ?label . } ";
+				TS.update(q1+"; "+q2+"; "+q3,function() {
+					location.reload();
+				});
+			}
+			
+			function edit_reasoning() {
+				REASONING = !REASONING;
+				$("#reasoning-button").val(REASONING ? "Reasoning ausschalten" : "Reasoning einschalten");
+				init_graph();
+			}
+			
+			$(function() {
+				TS.loadIndividuals();
+			});
+			
+		</script>
+	</head>
+	<body>
+		<div id="graph">
+		</div>
+		<div class="edit start">
+			<input type="button" class="button" value="Editieren" onclick="edit_start()" />
+		</div>
+		<div class="edit close hidden">
+			<input type="button" class="button" value="Schließen" onclick="edit_close()" />
+			<div id="edit_message">
+			</div>
+		</div>
+		<div class="edit select hidden">
+			<input type="button" class="button" value="Objekt hinzufügen" onclick="edit_insert()" />
+			<input type="button" class="button" value="Objekt bearbeiten" onclick="edit_update()" />
+			<input type="button" class="button" value="Objekt entfernen" onclick="edit_delete()" />
+			<input id="reasoning-button" type="button" class="button" value="Reasoning ausschalten" onclick="edit_reasoning()" />
+		</div>
+		<div class="edit insert hidden">
+			<select id="insert_concept">
+				<option id="insert_concept_default" value="" disabled>Konzept wählen ...</option>
+			</select>
+			<input id="insert_label" type="text" class="text" value="" />
+			<input type="button" class="button" value="Objekt hinzufügen" onclick="edit_insert_submit()" />
+		</div>
+		<div class="edit update hidden">
+			<div id="update1"></div>
+			<div id="update2">
+				<input id="update_individual" type="text" class="hidden" value="" />
+				<input id="update_individual_label" type="text" class="text" value="" readonly />
+				<select id="update_role">
+				</select>
+				<table id="update_table">
+				</table>
+				<!--<input type="button" class="button" value="testen" onclick="edit_update_test()" />-->
+				<input type="button" class="button" value="speichern" onclick="edit_update_submit()" />
+			</div>
+		</div>
+		<div class="edit delete hidden">
+			<div id="delete1"></div>
+			<div id="delete2">
+				<input id="delete_individual" type="text" class="hidden" value="" />
+				<input id="delete_individual_label" type="text" class="text" value="" readonly />
+				<input type="button" class="button" value="Objekt löschen" onclick="edit_delete_submit()" />
+			</div>
+		</div>
+		<div class="edit settings hidden">
+		</div>
+	</body>
+</html>

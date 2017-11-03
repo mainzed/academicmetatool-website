@@ -1,0 +1,39 @@
+@prefix amt: <http://www.academic-meta-tool.org/> .
+
+amt:Concept rdfs:subClassOf rdfs:Class .
+# rdfs:label -> rdfs:Literal .
+# amt:placeholder -> rdfs:Literal .
+
+amt:Role rdfs:subClassOf rdf:Property .
+# rdfs:label -> rdfs:Literal
+# rdfs:domain -> amt:Concept
+# rdfs:range -> amt:Concept
+
+amt:Axiom rdfs:subclassOf rdfs:Class .
+amt:InferenceAxiom rdfs:subClassOf amt:Axiom .
+amt:IntegrityAxiom rdfs:subClassOf amt:Axiom .
+# all not instance-able
+
+amt:RoleChainAxiom rdfs:subClassOf amt:InferenceAxiom .
+# amt:antecedent1 -> amt:Role
+# amt:antecedent2 -> amt:Role
+# amt:consequent -> amt:Role
+# amt:logic -> amt:Logic
+
+amt:InverseAxiom rdfs:subClassOf amt:InferenceAxiom .
+# amt:antecedent -> amt:Role
+# amt:inverse -> amt:Role
+
+amt:DisjointAxiom rdfs:subClassOf amt:IntegrityAxiom .
+# amt:role1 -> amt:Role
+# amt:role2 -> amt:Role
+
+amt:SelfDisjointAxiom rdfs:subClassOf amt:IntegrityAxiom .
+# amt:role -> amt:Role
+
+amt:Logic rdfs:subClassOf rdfs:Class .
+# not instance-able by custom logics
+amt:LukasiewiczLogic rdf:type amt:Logic .
+amt:ProductLogic rdf:type amt:Logic .
+amt:GoedelLogic rdf:type amt:Logic .
+
