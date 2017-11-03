@@ -177,27 +177,15 @@
 			};
 			TS.loadAxioms = function() {
 				TS.AXIOMS = [];
-				TS.loadRoleChainAxioms();
-				TS.loadInverseAxioms();
+				var q = "SELECT * WHERE { ?axiom rdf:type ?type . ?type rdfs:subClassOf ?grp . ?grp rdfs:subClassOf amt:Axiom . { ?axiom amt:antecedent1 ?antecedent1 . ?axiom amt:antecedent2 ?antecedent2 . ?axiom amt:consequent ?consequent . ?axiom amt:logic ?logic . } UNION { ?axiom amt:antecedent ?antecedent . ?axiom amt:inverse ?inverse . } UNION { ?axiom amt:role ?role . } } ";
+				TS.query(q,function(data) {
+					for (var i in data) {
+						console.log(data[i]);
+						TS.AXIOMS.push(data[i]);
+					}
+					init_graph();
+				});
 				init();
-			}
-			TS.loadRoleChainAxioms = function() {
-				var q = "SELECT ?antecedent1 ?antecedent2 ?consequent ?logic WHERE { ?axiom rdf:type amt:RoleChainAxiom . ?axiom amt:antecedent1 ?antecedent1 . ?axiom amt:antecedent2 ?antecedent2 . ?axiom amt:consequent ?consequent . ?axiom amt:logic ?logic . } ";
-				TS.query(q,function(data) {
-					for (var i in data) {
-						TS.AXIOMS.push({type: "RoleChainAxiom", antecedent1: data[i].antecedent1, antecedent2: data[i].antecedent2, consequent: data[i].consequent, logic: data[i].logic});
-					}
-					init_graph();
-				});
-			}
-			TS.loadInverseAxioms = function() {
-				var q = "SELECT ?antecedent ?inverse WHERE { ?axiom rdf:type amt:InverseAxiom . ?axiom amt:antecedent ?antecedent . ?axiom amt:inverse ?inverse . }"
-				TS.query(q,function(data) {
-					for (var i in data) {
-						TS.AXIOMS.push({type: "InverseAxiom", antecedent: data[i].antecedent, inverse: data[i].inverse});
-					}
-					init_graph();
-				});
 			}
 			
 			// Graph Visualization and Reasoning
@@ -276,7 +264,7 @@
 				while (change) {
 					change = false;
 					for (var k in axioms) {
-						if (axioms[k].type == "RoleChainAxiom") {
+						if (axioms[k].type.includes("RoleChainAxiom")) {
 							var e1 = [];
 							var e2 = [];
 							for (var i in edges) {
@@ -314,7 +302,7 @@
 								}
 							}
 						}
-						if (axioms[k].type == "InverseAxiom") {
+						if (axioms[k].type.includes("InverseAxiom")) {
 							for (var i in edges) {
 								if (edges[i].role == axioms[k].antecedent) {
 									var found = false;
@@ -334,7 +322,7 @@
 								}
 							}
 						}
-						if (axioms[k].type == "SelfDisjointAxiom") {
+						if (axioms[k].type.includes("SelfDisjointAxiom")) {
 							for (var i in edges) {
 								if (edges[i].role == axioms[k].role && edges[i].from == edges[i].to) {
 									// INKONSISTENZ
@@ -396,7 +384,7 @@
 			function init_update() {
 				for (var i in TS.CONCEPTS) {
 					var select = $("<select></select>");
-					select.append("<option class='update default' value='' disabled>"+TS.CONCEPTS[i].label+" wählen ...</option>")
+					select.append("<option class='update default' value='' disabled selected>"+TS.CONCEPTS[i].label+" wählen ...</option>");
 					for (var j in TS.CONCEPTS[i].a) {
 						var individual = TS.CONCEPTS[i].a[j];
 						select.append("<option value='"+individual+"'>"+TS.INDIVIDUALS[individual]+"</option>");
@@ -465,7 +453,7 @@
 			function init_delete() {
 				for (var i in TS.CONCEPTS) {
 					var select = $("<select></select>");
-					select.append("<option class='update default' value='' disabled>"+TS.CONCEPTS[i].label+" wählen ...</option>")
+					select.append("<option class='delete default' value='' disabled selected>"+TS.CONCEPTS[i].label+" wählen ...</option>");
 					for (var j in TS.CONCEPTS[i].a) {
 						var individual = TS.CONCEPTS[i].a[j];
 						select.append("<option value='"+individual+"'>"+TS.INDIVIDUALS[individual]+"</option>");
