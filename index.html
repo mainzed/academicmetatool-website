@@ -12,20 +12,20 @@
 				margin: 0;
 				padding: 0;
 			}
-			
+
 			body {
 				height: 100%;
 				width: 100%;
 				position: absolute;
 				overflow: hidden;
 			}
-		
+
 			#graph {
 				width: 100%;
 				height: 100%;
 				position: absolute;
 			}
-			
+
 			.edit {
 				position: fixed;
 				width: 300px;
@@ -58,15 +58,15 @@
 				width: 100px;
 				margin-top: 0px;
 			}
-			
+
 			.hidden {
 				display:none;
 			}
 		</style>
 		<script>
-			
+
 			var REASONING = true;
-			
+
 			// Triple Store
 			var TS = {};
 			TS.URL = "http://higeomes.i3mainz.hs-mainz.de/openrdf-sesame/repositories/mainzed";
@@ -121,7 +121,7 @@
 				w = " _:"+id+" amt:weight "+w+" . ";
 				return s+p+o+w;
 			};
-			
+
 			// Loading content from Triple Store wrt AMT-Ontology
 			TS.INDIVIDUALS = false;
 			TS.CONCEPTS = false;
@@ -187,38 +187,35 @@
 				});
 				init();
 			}
-			
+
 			// Graph Visualization and Reasoning
 			var GRAPH = {};
 			function init_graph() {
 				var tmpEdges = generateEdges(REASONING ? TS.AXIOMS : []);
 				var edges = [];
 				for (var i in tmpEdges) {
-					// URI der Role ist tmpEdges[i].role
-					// if (tmpEdges[i].role.includes("connectedWith"))
 					tmpEdges[i].width = 3*tmpEdges[i].width*tmpEdges[i].width;
-					var setting = TS.ROLES[tmpEdges[i].role].setting;
-					for (var j in setting) { // obsolet
-						if (setting[j].includes("Red"))
-							tmpEdges[i].color = "red";
-							// set to undirected or directed
-						if (setting[j].includes("Black"))
-							tmpEdges[i].color = "black";
-						if (setting[j].includes("Green"))
-							tmpEdges[i].color = "green";
-						if (REASONING) {
-							if (setting[j].includes("Undirected") && (tmpEdges[i].from.localeCompare(tmpEdges[i].to) > 0) && tmpEdges[i].width > 0.05) {
-								edges.push(tmpEdges[i]);
-							}
-							if (setting[j].includes("Directed") && tmpEdges[i].width > 0.05) {
-								tmpEdges[i].arrows = "to";
-								edges.push(tmpEdges[i]);
-							}
-						}
-						else {
+					// set color
+					if (tmpEdges[i].role.includes("connectedWith") || tmpEdges[i].role.includes("matchWith")) {
+						tmpEdges[i].color = "blue";
+					} else {
+						tmpEdges[i].color = "red";
+					}
+					// directed?
+					var directed = false; // undirected = connectedWith && matchWith
+					if (tmpEdges[i].role.includes("interestedIn") || tmpEdges[i].role.includes("narrowerThan") || tmpEdges[i].role.includes("broaderThan")) {
+						directed = true;
+					}
+					if (REASONING) {
+						if (tmpEdges[i].role.includes("connectedWith") && (tmpEdges[i].from.localeCompare(tmpEdges[i].to) > 0) && tmpEdges[i].width > 0.05) {
+							edges.push(tmpEdges[i]);
+						} else if (directed && tmpEdges[i].width > 0.05) {
 							tmpEdges[i].arrows = "to";
 							edges.push(tmpEdges[i]);
 						}
+					} else {
+						tmpEdges[i].arrows = "to";
+						edges.push(tmpEdges[i]);
 					}
 				}
 				if (GRAPH.edges) {
@@ -334,8 +331,8 @@
 				}
 				return edges;
 			}
-			
-			
+
+
 			function init() {
 				init_insert();
 				init_update();
@@ -350,7 +347,7 @@
 				$(".edit").addClass("hidden");
 				$(".edit.start").removeClass("hidden");
 			}
-			
+
 			function edit_insert() {
 				$(".edit.select").addClass("hidden");
 				$("option").prop("selected",false);
@@ -372,7 +369,7 @@
 					location.reload();
 				});
 			}
-			
+
 			function edit_update() {
 				$(".edit.select").addClass("hidden");
 				$("option").prop("selected",false);
@@ -441,7 +438,7 @@
 					});
 				});
 			}
-			
+
 			function edit_delete() {
 				$(".edit.select").addClass("hidden");
 				$("option").prop("selected",false);
@@ -475,17 +472,17 @@
 					location.reload();
 				});
 			}
-			
+
 			function edit_reasoning() {
 				REASONING = !REASONING;
 				$("#reasoning-button").val(REASONING ? "Reasoning ausschalten" : "Reasoning einschalten");
 				init_graph();
 			}
-			
+
 			$(function() {
 				TS.loadIndividuals();
 			});
-			
+
 		</script>
 	</head>
 	<body>
