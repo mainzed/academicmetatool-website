@@ -198,8 +198,12 @@
 					// set color
 					if (tmpEdges[i].role.includes("connectedWith") || tmpEdges[i].role.includes("matchWith")) {
 						tmpEdges[i].color = "blue";
-					} else {
+					} else if (tmpEdges[i].role.includes("narrowerThan") || tmpEdges[i].role.includes("broaderThan")) {
 						tmpEdges[i].color = "red";
+					} else if (tmpEdges[i].role.includes("interestedIn")) {
+						tmpEdges[i].color = "green";
+					} else {
+						tmpEdges[i].color = "black";
 					}
 					// directed?
 					var directed = false; // undirected = connectedWith && matchWith
@@ -221,14 +225,21 @@
 				if (GRAPH.edges) {
 					GRAPH.edges.clear();
 					GRAPH.edges.update(edges);
-				}
-				else {
+				} else {
 					var nodes = [];
 					for (var i in TS.CONCEPTS) {
 						for (var j in TS.CONCEPTS[i].a) {
-							// if (i.includes("Person")) ...
-							console.log("concept: " + i);
-							nodes.push({id: TS.CONCEPTS[i].a[j], label: TS.INDIVIDUALS[TS.CONCEPTS[i].a[j]]});
+							var node = {};
+							node.id = TS.CONCEPTS[i].a[j];
+							node.label = TS.INDIVIDUALS[TS.CONCEPTS[i].a[j]];
+							if (i.includes("Person")) {
+								node.color = {background:'lightblue', border:'blue'};
+								node.shape = "box";
+							} else if (i.includes("Interest")) {
+								node.color = {background:'pink', border:'red'};
+								node.shape = "ellipse";
+							}
+							nodes.push(node);
 						}
 					}
 					GRAPH.nodes = new vis.DataSet(nodes);
