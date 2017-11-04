@@ -233,10 +233,10 @@
 							node.id = TS.CONCEPTS[i].a[j];
 							node.label = TS.INDIVIDUALS[TS.CONCEPTS[i].a[j]];
 							if (i.includes("Person")) {
-								node.color = {background:'lightblue', border:'blue'};
+								node.color = {background:'lightblue', border:'blue', highlight:{background:'white',border:'black'}};
 								node.shape = "box";
 							} else if (i.includes("Interest")) {
-								node.color = {background:'pink', border:'red'};
+								node.color = {background:'pink', border:'red', highlight:{background:'white',border:'black'}};
 								node.shape = "ellipse";
 							}
 							nodes.push(node);
@@ -245,6 +245,10 @@
 					GRAPH.nodes = new vis.DataSet(nodes);
 					GRAPH.edges = new vis.DataSet(edges);
 					GRAPH.network = new vis.Network(document.getElementById("graph"),{nodes: GRAPH.nodes, edges: GRAPH.edges},{});
+					// on select node
+					GRAPH.network.on("selectNode", function (params) {
+			        console.log('selectNode', params.nodes[0], TS.INDIVIDUALS[params.nodes[0]]);
+			    });
 				}
 			}
 			function conjunction(x,y,logic) {
