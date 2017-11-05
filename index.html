@@ -1,66 +1,39 @@
 ﻿<!DOCTYPE html>
 <html>
 	<head>
-		<title>mainzed - Organigramm</title>
+		<title>AMT | mainzed-Organigramm</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.0/vis.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.0/vis.min.css" rel="stylesheet" type="text/css" />
 		<style>
 			* {
 				margin: 0;
 				padding: 0;
 			}
-
 			body {
 				height: 100%;
 				width: 100%;
 				position: absolute;
 				overflow: hidden;
+				display: flex;
+		    min-height: 100vh;
+		    flex-direction: column;
 			}
-
 			#graph {
-				width: 100%;
-				height: 100%;
-				position: absolute;
+				height: 90%;
 			}
-
-			.edit {
-				position: fixed;
-				width: 300px;
-				border: 2px solid black;
-				margin-left: 20px;
-				margin-top: 150px;
-				padding-bottom: 50px;
-			}
-			.edit.start {
-				border: none;
-				margin-left: 22px;
-				margin-top: 52px;
-			}
-			.edit.close {
-				height: 98px;
-				margin-top: 50px;
-				padding-bottom: 0px;
-			}
-			input, select, table {
-				width: 250px;
-				height: 30px;
-				margin-left: 20px;
-				margin-top: 30px;
-			}
-			td {
-				width: 125px;
-				margin-top: 30px;
-			}
-			td input {
-				width: 100px;
-				margin-top: 0px;
-			}
-
-			.hidden {
-				display:none;
+			main {
+		    flex: 1 0 auto;
+		  }
+			.modal {
+				width: 60% !important;
+				height: 80% !important;
 			}
 		</style>
 		<script>
@@ -180,12 +153,10 @@
 				var q = "SELECT * WHERE { ?axiom rdf:type ?type . ?type rdfs:subClassOf ?grp . ?grp rdfs:subClassOf amt:Axiom . { ?axiom amt:antecedent1 ?antecedent1 . ?axiom amt:antecedent2 ?antecedent2 . ?axiom amt:consequent ?consequent . ?axiom amt:logic ?logic . } UNION { ?axiom amt:antecedent ?antecedent . ?axiom amt:inverse ?inverse . } UNION { ?axiom amt:role ?role . } } ";
 				TS.query(q,function(data) {
 					for (var i in data) {
-						console.log(data[i]);
 						TS.AXIOMS.push(data[i]);
 					}
 					init_graph();
 				});
-				init();
 			}
 
 			// Graph Visualization and Reasoning
@@ -197,13 +168,13 @@
 					tmpEdges[i].width = 3*tmpEdges[i].width*tmpEdges[i].width;
 					// set color
 					if (tmpEdges[i].role.includes("connectedWith") || tmpEdges[i].role.includes("matchWith")) {
-						tmpEdges[i].color = "blue";
+						tmpEdges[i].color = {color:"blue", highlight:"black"};
 					} else if (tmpEdges[i].role.includes("narrowerThan") || tmpEdges[i].role.includes("broaderThan")) {
-						tmpEdges[i].color = "red";
+						tmpEdges[i].color = {color:"red", highlight:"black"};
 					} else if (tmpEdges[i].role.includes("interestedIn")) {
-						tmpEdges[i].color = "green";
+						tmpEdges[i].color = {color:"green", highlight:"black"};
 					} else {
-						tmpEdges[i].color = "black";
+						tmpEdges[i].color = {color:"black", highlight:"black"};
 					}
 					// directed?
 					var directed = false; // undirected = connectedWith && matchWith
@@ -245,10 +216,11 @@
 					GRAPH.nodes = new vis.DataSet(nodes);
 					GRAPH.edges = new vis.DataSet(edges);
 					GRAPH.network = new vis.Network(document.getElementById("graph"),{nodes: GRAPH.nodes, edges: GRAPH.edges},{});
-					// on select node
 					GRAPH.network.on("selectNode", function (params) {
-			        console.log('selectNode', params.nodes[0], TS.INDIVIDUALS[params.nodes[0]]);
-			    });
+							if (!REASONING) {
+								openeditmodal(params);
+							}
+					});
 				}
 			}
 			function conjunction(x,y,logic) {
@@ -345,205 +317,245 @@
 				return edges;
 			}
 
-
-			function init() {
-				init_insert();
-				init_update();
-				init_delete();
-			}
-			function edit_start() {
-				$(".edit.start").addClass("hidden");
-				$(".edit.close").removeClass("hidden");
-				$(".edit.select").removeClass("hidden");
-			}
-			function edit_close() {
-				$(".edit").addClass("hidden");
-				$(".edit.start").removeClass("hidden");
-			}
-
-			function edit_insert() {
-				$(".edit.select").addClass("hidden");
-				$("option").prop("selected",false);
-				$("#insert_concept_default").prop("selected",true);
-				$(".edit.insert").removeClass("hidden");
-			}
-			function init_insert() {
-				for (var i in TS.CONCEPTS) {
-					$("#insert_concept").append("<option value='"+i+"'>"+TS.CONCEPTS[i].label+"</option>");
-				}
-				$("#insert_concept").on("change",function() {
-					$("#insert_label").prop("placeholder",TS.CONCEPTS[this.value].placeholder);
-				});
-			}
-			function edit_insert_submit() {
-				var id = Math.floor(Math.random()*1000000); // TODO: Besseres Verfahren
-				var q = "INSERT { amt:"+id+" amt:instanceOf <"+$("#insert_concept").val()+"> . amt:"+id+" rdfs:label \""+$("#insert_label").val()+"\" . } WHERE {}";
-				TS.update(q,function() {
-					location.reload();
-				});
-			}
-
-			function edit_update() {
-				$(".edit.select").addClass("hidden");
-				$("option").prop("selected",false);
-				$("option.update.default").prop("selected",true);
-				$("#update2").addClass("hidden");
-				$(".edit.update").removeClass("hidden");
-				$("#update1").removeClass("hidden");
-			}
-			function init_update() {
-				for (var i in TS.CONCEPTS) {
-					var select = $("<select></select>");
-					select.append("<option class='update default' value='' disabled selected>"+TS.CONCEPTS[i].label+" wählen ...</option>");
-					for (var j in TS.CONCEPTS[i].a) {
-						var individual = TS.CONCEPTS[i].a[j];
-						select.append("<option value='"+individual+"'>"+TS.INDIVIDUALS[individual]+"</option>");
-					}
-					select.on("change",function() {
-						$("#update1").addClass("hidden");
-						$("#update_individual").val(this.value);
-						$("#update_individual_label").val(TS.INDIVIDUALS[this.value]);
-						$("option").prop("selected",false);
-						$("#update_role").empty();
-						$("#update_role").append("<option value='' disabled selected>Rolle wählen ...</option>");
-						var c = [];
-						for (var i in TS.CONCEPTS) {
-							if (TS.CONCEPTS[i].a.includes(this.value))
-								c.push(i);
-						}
-						for (var i in TS.ROLES) {
-							if (c.includes(TS.ROLES[i].domain))
-								$("#update_role").append("<option value='"+i+"'>"+TS.ROLES[i].label+"</option>");
-						}
-						$("#update2").removeClass("hidden");
-					});
-					$("#update1").append(select);
-				}
-				$("#update_role").on("change",function() {
-					$("#update_table").empty();
-					var c = TS.ROLES[this.value].range;
-					for (var i in TS.CONCEPTS[c].a) {
-						var individual = TS.CONCEPTS[c].a[i];
-						var w = 0;
-						for (var j in TS.ROLES[this.value].a) {
-							if (TS.ROLES[this.value].a[j].i1 == $("#update_individual").val() && TS.ROLES[this.value].a[j].i2 == individual)
-								w = TS.ROLES[this.value].a[j].w;
-						}
-						var tr = $("<tr></tr>");
-						tr.append("<td>"+TS.INDIVIDUALS[individual]+"</td>");
-						tr.append("<td><input type='text' class='weight' name='"+individual+"' value='"+w+"' /></td>");
-						$("#update_table").append(tr);
-					}
-				});
-			}
-			function edit_update_submit() {
-				var q1 = "DELETE { "+TS.quad("<"+$("#update_individual").val()+">","<"+$("#update_role").val()+">","?individual","?w")+" } WHERE { ?individual amt:instanceOf ?concept . ?concept rdf:type amt:Concept . "+TS.quad("<"+$("#update_individual").val()+">","<"+$("#update_role").val()+">","?individual","?w")+" }";
-				TS.update(q1,function() {
-					var stmts = "";
-					$("#update_table tr td input").each(function(i) {
-						var w = Math.floor(Number($(this).val()));
-						if (w > 0 && w <= 100)
-							stmts += TS.insertQuad(i,"<"+$("#update_individual").val()+">","<"+$("#update_role").val()+">","<"+$(this).attr("name")+">",w);
-					});
-					var q2 = "INSERT { "+stmts+" } WHERE {}";
-					TS.update(q2,function() {
-						location.reload();
-					});
-				});
-			}
-
-			function edit_delete() {
-				$(".edit.select").addClass("hidden");
-				$("option").prop("selected",false);
-				$("option.delete.default").prop("selected",true);
-				$("#delete2").addClass("hidden");
-				$(".edit.delete").removeClass("hidden");
-				$("#delete1").removeClass("hidden");
-			}
-			function init_delete() {
-				for (var i in TS.CONCEPTS) {
-					var select = $("<select></select>");
-					select.append("<option class='delete default' value='' disabled selected>"+TS.CONCEPTS[i].label+" wählen ...</option>");
-					for (var j in TS.CONCEPTS[i].a) {
-						var individual = TS.CONCEPTS[i].a[j];
-						select.append("<option value='"+individual+"'>"+TS.INDIVIDUALS[individual]+"</option>");
-					}
-					select.on("change",function() {
-						$("#delete1").addClass("hidden");
-						$("#delete_individual").val(this.value);
-						$("#delete_individual_label").val(TS.INDIVIDUALS[this.value]);
-						$("#delete2").removeClass("hidden");
-					});
-					$("#delete1").append(select);
-				}
-			}
-			function edit_delete_submit() {
-				var q1 = " DELETE { "+TS.quad("<"+$("#delete_individual").val()+">","?role","?individual","?w")+" } WHERE { ?individual amt:instanceOf ?concept . ?concept rdf:type amt:Concept . ?role rdf:type amt:Role . "+TS.quad("<"+$("#delete_individual").val()+">","?role","?individual","?w")+" } ";
-				var q2 = " DELETE { "+TS.quad("?individual","?role","<"+$("#delete_individual").val()+">","?w")+" } WHERE { ?individual amt:instanceOf ?concept . ?concept rdf:type amt:Concept . ?role rdf:type amt:Role . "+TS.quad("?individual","?role","<"+$("#delete_individual").val()+">","?w")+" } ";
-				var q3 = " DELETE { <"+$("#delete_individual").val()+"> amt:instanceOf ?concept . <"+$("#delete_individual").val()+"> rdfs:label ?label . } WHERE { <"+$("#delete_individual").val()+"> amt:instanceOf ?concept . ?concept rdf:type amt:Concept . <"+$("#delete_individual").val()+"> rdfs:label ?label . } ";
-				TS.update(q1+"; "+q2+"; "+q3,function() {
-					location.reload();
-				});
-			}
-
-			function edit_reasoning() {
-				REASONING = !REASONING;
-				$("#reasoning-button").val(REASONING ? "Reasoning ausschalten" : "Reasoning einschalten");
-				init_graph();
-			}
-
-			$(function() {
-				TS.loadIndividuals();
-			});
-
 		</script>
 	</head>
+
 	<body>
-		<div id="graph">
+	<div id="graph" class="col s12"></div>
+	<footer class="page-footer grey">
+    <div class="container">
+			<div class="row">
+				<div class="col s6 left-align">
+					<a id="reasoning-button2" data-target="about-modal" class="btn-floating btn-large waves-effect waves-light blue modal-trigger"><i class="material-icons">info</i></a>
+					<span style="margin-left: 25px;"><b>This is AMT, the Academic Meta Tool.</b></span>
+				</div>
+				<div class="col s6 right-align">
+						<a id="reasoning-button3" data-target="legend-modal" class="btn-floating btn-large waves-effect waves-light blue modal-trigger"><i class="material-icons">insert_comment</i></a>
+						<a id="reasoning-button" class="btn-floating btn-large waves-effect waves-light green" onclick="edit_reasoning()"><i class="material-icons">edit</i></a>
+						<span id="div-edit-button" style="margin-left: 25px;">
+							<a id="add-concept-button" class="btn-floating btn-large waves-effect waves-light green" onclick="add_concept()"><i class="material-icons">add</i></a>
+						</span>
+					</div>
+				</div>
+    	</div>
 		</div>
-		<div class="edit start">
-			<input type="button" class="button" value="Editieren" onclick="edit_start()" />
-		</div>
-		<div class="edit close hidden">
-			<input type="button" class="button" value="Schließen" onclick="edit_close()" />
-			<div id="edit_message">
+  </footer>
+	<div id="edit-modal" class="modal">
+    <div class="modal-content">
+			<input id="edit_uri" type="text" hidden />
+			<input id="edit_label" type="text" hidden />
+			<div class="row">
+				<div class="col s6">
+					<h5 id="edit_header"></h5>
+				</div>
+				<div class="col s2">
+					<a class="btn-floating btn-large waves-effect waves-light orange" onClick="loadroles()"><i class="material-icons">edit</i></a>
+				</div>
+				<div class="col s2">
+					<a class="btn-floating btn-large waves-effect waves-light red" onClick="delete_node_submit()"><i class="material-icons">delete</i></a>
+				</div>
+				<div class="col s2">
+					<a class="btn-floating btn-large waves-effect waves-light red" onClick="closeModal('edit-modal')"><i class="material-icons">cancel</i></a>
+				</div>
 			</div>
-		</div>
-		<div class="edit select hidden">
-			<input type="button" class="button" value="Objekt hinzufügen" onclick="edit_insert()" />
-			<input type="button" class="button" value="Objekt bearbeiten" onclick="edit_update()" />
-			<input type="button" class="button" value="Objekt entfernen" onclick="edit_delete()" />
-			<input id="reasoning-button" type="button" class="button" value="Reasoning ausschalten" onclick="edit_reasoning()" />
-		</div>
-		<div class="edit insert hidden">
-			<select id="insert_concept">
-				<option id="insert_concept_default" value="" disabled>Konzept wählen ...</option>
-			</select>
-			<input id="insert_label" type="text" class="text" value="" />
-			<input type="button" class="button" value="Objekt hinzufügen" onclick="edit_insert_submit()" />
-		</div>
-		<div class="edit update hidden">
-			<div id="update1"></div>
-			<div id="update2">
-				<input id="update_individual" type="text" class="hidden" value="" />
-				<input id="update_individual_label" type="text" class="text" value="" readonly />
-				<select id="update_role">
-				</select>
-				<table id="update_table">
-				</table>
-				<!--<input type="button" class="button" value="testen" onclick="edit_update_test()" />-->
-				<input type="button" class="button" value="speichern" onclick="edit_update_submit()" />
+			<br>
+			<div id="editdiv" hidden>
+				<div class="input-field col s12">
+					<select id="roles"></select>
+					<label>Rolle</label>
+	  		</div>
+				<div class="row">
+					<table id="update_table" class="bordered col s12" hidden>
+						<thead>
+		          <tr>
+		              <th>Individuum</th>
+		              <th>Gewicht</th>
+		          </tr>
+		        </thead>
+		        <tbody id="update_tbody"></tbody>
+					</table>
+				</div>
+				<br>
+				<div class="col s12" id="editconcept-button-div" hidden>
+					<a id="editconcept-button" class="btn-floating btn-large waves-effect waves-light green" onclick="edit_concept_submit()"><i class="material-icons">save</i></a>
+				</div>
 			</div>
-		</div>
-		<div class="edit delete hidden">
-			<div id="delete1"></div>
-			<div id="delete2">
-				<input id="delete_individual" type="text" class="hidden" value="" />
-				<input id="delete_individual_label" type="text" class="text" value="" readonly />
-				<input type="button" class="button" value="Objekt löschen" onclick="edit_delete_submit()" />
-			</div>
-		</div>
-		<div class="edit settings hidden">
-		</div>
+    </div>
+  </div>
+  <div id="new-modal" class="modal">
+    <div class="modal-content">
+      <h4>Neuen Knoten anlegen</h4>
+			<br>
+			<div class="input-field col s12">
+				<select id="newconcept"></select>
+				<label>Konzept</label>
+  		</div>
+			<div id="newconcept-label" class="input-field col s6" hidden>
+    		<input placeholder="Placeholder" id="newconcept-label-val" type="text" class="validate">
+      	<label for="newconcept-label-val">Label</label>
+    	</div>
+			<br>
+			<a id="newconcept-button" class="btn-floating btn-large waves-effect waves-light green" onclick="add_concept_submit()" hidden><i class="material-icons">save</i></a>
+    </div>
+  </div>
+	<div id="about-modal" class="modal">
+    <div class="modal-content">
+      <h4>About AMT</h4>
+			<h5><i>by Martin Unold, Florian Thiery, i3mainz</i></h5>
+			<br>
+			<p>Amt ist das Academic Meta Tool. Hier werden insbesondere Daten aus dem Kontext von mainzed dargestellt.</p>
+    </div>
+  </div>
+	<div id="legend-modal" class="modal">
+    <div class="modal-content">
+      <h4>Legende</h4>
+			<br>
+			<p>blau:</p>
+			<p>rot:</p>
+			<p>grün:</p>
+    </div>
+  </div>
+
+	<script>
+		// utils
+		function UUID(){
+		    var dt = new Date().getTime();
+		    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		        var r = (dt + Math.random()*16)%16 | 0;
+		        dt = Math.floor(dt/16);
+		        return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+		    });
+		    return uuid;
+		}
+		// init
+		TS.loadIndividuals();
+		$("#div-edit-button").hide();
+		$('select').material_select();
+		$('.modal').modal({
+      dismissible: true, // Modal can be dismissed by clicking outside of the modal
+      opacity: .5, // Opacity of modal background
+      inDuration: 300, // Transition in duration
+      outDuration: 200, // Transition out duration
+      startingTop: '4%', // Starting top style attribute
+      endingTop: '10%', // Ending top style attribute
+      ready: function() {}, // Callback for Modal open. Modal and trigger parameters available.
+      complete: function() { GRAPH.network.selectNodes([]); } // Callback for Modal close
+    });
+		// GUI functions
+		// modals
+		function closeModal(modal) {
+			$("#"+modal).modal('close');
+		}
+		// new concept
+		function add_concept() {
+			$('#new-modal').modal('open');
+			$("#newconcept-label").hide();
+			$("#newconcept-button").hide();
+			$("#newconcept").empty();
+			$("#newconcept").append("<option value='' disabled selected>Konzept auswählen...</option>");
+			for (var i in TS.CONCEPTS) {
+				$("#newconcept").append("<option value='"+i+"'>"+TS.CONCEPTS[i].label+"</option>");
+				$('#newconcept').material_select();
+			}
+			$("#newconcept").on("change",function() {
+				$("#newconcept-label-val").prop("placeholder",TS.CONCEPTS[this.value].placeholder);
+				$("#newconcept-label").show();
+				$("#newconcept-button").show();
+			});
+		}
+		function add_concept_submit() {
+			var id = UUID();
+			var q = "INSERT { amt:"+id+" amt:instanceOf <"+$("#newconcept").val()+"> . amt:"+id+" rdfs:label \""+$("#newconcept-label-val").val()+"\" . } WHERE {}";
+			TS.update(q,function() {
+				location.reload();
+			});
+		}
+		// delete node
+		function delete_node_submit() {
+			var delete_individual = $("#edit_uri").val();
+			var q1 = " DELETE { "+TS.quad("<"+delete_individual+">","?role","?individual","?w")+" } WHERE { ?individual amt:instanceOf ?concept . ?concept rdf:type amt:Concept . ?role rdf:type amt:Role . "+TS.quad("<"+delete_individual+">","?role","?individual","?w")+" } ";
+			var q2 = " DELETE { "+TS.quad("?individual","?role","<"+delete_individual+">","?w")+" } WHERE { ?individual amt:instanceOf ?concept . ?concept rdf:type amt:Concept . ?role rdf:type amt:Role . "+TS.quad("?individual","?role","<"+delete_individual+">","?w")+" } ";
+			var q3 = " DELETE { <"+delete_individual+"> amt:instanceOf ?concept . <"+delete_individual+"> rdfs:label ?label . } WHERE { <"+delete_individual+"> amt:instanceOf ?concept . ?concept rdf:type amt:Concept . <"+delete_individual+"> rdfs:label ?label . } ";
+			TS.update(q1+"; "+q2+"; "+q3,function() {
+				location.reload();
+			});
+		}
+		// reasoning
+		function edit_reasoning() {
+			REASONING = !REASONING;
+			if (REASONING) {
+				$("#reasoning-button").removeClass("red");
+				$("#reasoning-button").addClass("green");
+				$("#div-edit-button").hide();
+			} else {
+				$("#reasoning-button").removeClass("green");
+				$("#reasoning-button").addClass("red");
+				$("#div-edit-button").show();
+			}
+			init_graph();
+		}
+		// edit
+		function openeditmodal(params) {
+			$("#edit_uri").val(params.nodes[0]);
+			$("#edit_label").val(TS.INDIVIDUALS[params.nodes[0]]);
+			$("#edit_header").html("<i>" + $("#edit_label").val() + "</i> editieren");
+			$('#edit-modal').modal('open');
+			$("#editdiv").hide();
+			$("#editconcept-button-div").hide();
+			$("#update_table").hide();
+		}
+		function loadroles() {
+			$("#editdiv").show();
+			$("#roles").empty();
+			$("#roles").append("<option value='' disabled selected>Rolle wählen ...</option>");
+			var c = [];
+			for (var i in TS.CONCEPTS) {
+				if (TS.CONCEPTS[i].a.includes($("#edit_uri").val()))
+					c.push(i);
+			}
+			for (var i in TS.ROLES) {
+				if (c.includes(TS.ROLES[i].domain))
+					$("#roles").append("<option value='"+i+"'>"+TS.ROLES[i].label+"</option>");
+			}
+			$('#roles').material_select();
+		}
+		$("#roles").on("change",function() {
+			$("#update_tbody").empty();
+			var c = TS.ROLES[$("#roles").val()].range;
+			for (var i in TS.CONCEPTS[c].a) {
+				var individual = TS.CONCEPTS[c].a[i];
+				var w = 0;
+				for (var j in TS.ROLES[$("#roles").val()].a) {
+					if (TS.ROLES[$("#roles").val()].a[j].i1 == $("#edit_uri").val() && TS.ROLES[$("#roles").val()].a[j].i2 == individual)
+						w = TS.ROLES[$("#roles").val()].a[j].w;
+				}
+				var tr = $("<tr></tr>");
+				if (TS.INDIVIDUALS[individual] != $("#edit_label").val()) {
+					tr.append("<td>"+TS.INDIVIDUALS[individual]+"</td>");
+					//tr.append("<td><input type='text' class='weight' name='"+individual+"' value='"+w+"' /></td>");
+					tr.append("<td><p class='range-field'><input type='range' name='"+individual+"' id='w-"+individual+"' min='0' max='100' value='"+w+"'/></p></td>");
+					$("#update_tbody").append(tr);
+				}
+			}
+			$("#update_table").show();
+			$("#editconcept-button-div").show();
+		});
+		function edit_concept_submit() {
+			var q1 = "DELETE { "+TS.quad("<"+$("#edit_uri").val()+">","<"+$("#roles").val()+">","?individual","?w")+" } WHERE { ?individual amt:instanceOf ?concept . ?concept rdf:type amt:Concept . "+TS.quad("<"+$("#edit_uri").val()+">","<"+$("#roles").val()+">","?individual","?w")+" }";
+			TS.update(q1,function() {
+				var stmts = "";
+				$("#update_table tr td input").each(function(i) {
+					var w = Math.floor(Number($(this).val()));
+					if (w > 0 && w <= 100) {
+						stmts += TS.insertQuad(i,"<"+$("#edit_uri").val()+">","<"+$("#roles").val()+">","<"+$(this).attr("name")+">",w);
+					}
+				});
+				var q2 = "INSERT { "+stmts+" } WHERE {}";
+				TS.update(q2,function() {
+					location.reload();
+				});
+			});
+		}
+	</script>
 	</body>
 </html>
