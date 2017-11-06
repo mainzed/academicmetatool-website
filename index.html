@@ -22,15 +22,9 @@
 				position: absolute;
 				overflow: hidden;
 				display: flex;
-		    min-height: 100vh;
-		    flex-direction: column;
+		    	min-height: 100vh;
+		    	flex-direction: column;
 			}
-			#graph {
-				height: 90%;
-			}
-			main {
-		    flex: 1 0 auto;
-		  }
 			.modal {
 				width: 60% !important;
 				height: 80% !important;
@@ -321,25 +315,24 @@
 	</head>
 
 	<body>
-	<div id="graph" class="col s12"></div>
-	<footer class="page-footer grey">
-    <div class="container">
+	<div id="graph" class="col s12" style="height:90%;"></div>
+	<div id="footer" class="page-footer grey col s12" style="height:10%;">
+    	<div class="container">
 			<div class="row">
 				<div class="col s6 left-align">
 					<a id="reasoning-button2" data-target="about-modal" class="btn-floating btn-large waves-effect waves-light blue modal-trigger"><i class="material-icons">info</i></a>
 					<span style="margin-left: 25px;"><b>This is AMT, the Academic Meta Tool.</b></span>
 				</div>
 				<div class="col s6 right-align">
-						<a id="reasoning-button3" data-target="legend-modal" class="btn-floating btn-large waves-effect waves-light blue modal-trigger"><i class="material-icons">insert_comment</i></a>
-						<a id="reasoning-button" class="btn-floating btn-large waves-effect waves-light green" onclick="edit_reasoning()"><i class="material-icons">edit</i></a>
-						<span id="div-edit-button" style="margin-left: 25px;">
-							<a id="add-concept-button" class="btn-floating btn-large waves-effect waves-light green" onclick="add_concept()"><i class="material-icons">add</i></a>
-						</span>
-					</div>
+					<a id="reasoning-button3" data-target="legend-modal" class="btn-floating btn-large waves-effect waves-light blue modal-trigger"><i class="material-icons">insert_comment</i></a>
+					<a id="reasoning-button" class="btn-floating btn-large waves-effect waves-light green" onclick="edit_reasoning()"><i class="material-icons">edit</i></a>
+					<span id="div-edit-button" style="margin-left: 25px;">
+						<a id="add-concept-button" class="btn-floating btn-large waves-effect waves-light green" onclick="add_concept()"><i class="material-icons">add</i></a>
+					</span>
 				</div>
+			</div>
     	</div>
-		</div>
-  </footer>
+	</div>
 	<div id="edit-modal" class="modal">
     <div class="modal-content">
 			<input id="edit_uri" type="text" hidden />
