@@ -225,7 +225,12 @@
 							if (!REASONING) {
 								openeditmodal(params);
 							} else {
-								openinfomodal(params);
+								openinfomodal(params, "node");
+							}
+					});
+					GRAPH.network.on("selectEdge", function (params) {
+							if (REASONING) {
+								openinfomodal(params, "edge");
 							}
 					});
 				}
@@ -479,10 +484,16 @@
 			}
 		}
 		// info modal
-		function openinfomodal(params) {
-			$("#info_uri").val(params.nodes[0]);
-			$("#info_label").val(TS.INDIVIDUALS[params.nodes[0]]);
-			$("#info_header").html("<i>Info für: " + $("#info_label").val() + "</i>");
+		function openinfomodal(params, type) {
+			if(params.nodes.length > 0) {
+				$("#info_uri").val(params.nodes[0]);
+				$("#info_label").val(TS.INDIVIDUALS[params.nodes[0]]);
+				$("#info_header").html("<i>Info für: " + $("#info_label").val() + "</i>");
+			} else {
+				$("#info_uri").val(GRAPH.edges._data[params.edges[0]].role);
+				$("#info_label").val(TS.ROLES[GRAPH.edges._data[params.edges[0]].role].label);
+				$("#info_header").html("<i>Info für: " + TS.ROLES[GRAPH.edges._data[params.edges[0]].role].label + "</i>");
+			}
 			$('#info-modal').modal('open');
 		}
 		// new concept
