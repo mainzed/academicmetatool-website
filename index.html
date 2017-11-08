@@ -224,6 +224,8 @@
 					GRAPH.network.on("selectNode", function (params) {
 							if (!REASONING) {
 								openeditmodal(params);
+							} else {
+								openinfomodal(params);
 							}
 					});
 				}
@@ -387,6 +389,15 @@
 			</div>
     </div>
   </div>
+  <div id="info-modal" class="modal">
+	  <div class="modal-content">
+		  <div class="col s6">
+			  <h5 id="info_header"></h5>
+		  </div>
+		  <input id="info_uri" type="text" />
+		  <input id="info_label" type="text" />
+	  </div>
+</div>
   <div id="new-modal" class="modal">
     <div class="modal-content">
       <h4>Neuen Knoten anlegen</h4>
@@ -466,6 +477,13 @@
 				GRAPH = {};
 				init_graph();
 			}
+		}
+		// info modal
+		function openinfomodal(params) {
+			$("#info_uri").val(params.nodes[0]);
+			$("#info_label").val(TS.INDIVIDUALS[params.nodes[0]]);
+			$("#info_header").html("<i>Info für: " + $("#info_label").val() + "</i>");
+			$('#info-modal').modal('open');
 		}
 		// new concept
 		function add_concept() {
