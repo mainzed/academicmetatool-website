@@ -33,6 +33,7 @@
 		<script>
 
 			var REASONING = true;
+			var LABELS = true;
 
 			// Triple Store
 			var TS = {};
@@ -196,13 +197,23 @@
 						for (var j in TS.CONCEPTS[i].a) {
 							var node = {};
 							node.id = TS.CONCEPTS[i].a[j];
-							node.label = TS.INDIVIDUALS[TS.CONCEPTS[i].a[j]];
+							if (LABELS) {
+								node.label = TS.INDIVIDUALS[TS.CONCEPTS[i].a[j]];
+							}
 							if (i.includes("Person")) {
 								node.color = {background:'lightblue', border:'blue', highlight:{background:'white',border:'black'}};
-								node.shape = "box";
+								if (LABELS) {
+									node.shape = "box";
+								} else {
+									node.shape = "circle";
+								}
 							} else if (i.includes("Interest")) {
 								node.color = {background:'pink', border:'red', highlight:{background:'white',border:'black'}};
-								node.shape = "ellipse";
+								if (LABELS) {
+									node.shape = "ellipse";
+								} else {
+									node.shape = "circle";
+								}
 							}
 							nodes.push(node);
 						}
@@ -321,10 +332,11 @@
 			<div class="row">
 				<div class="col s6 left-align">
 					<a id="reasoning-button2" data-target="about-modal" class="btn-floating btn-large waves-effect waves-light blue modal-trigger"><i class="material-icons">info</i></a>
-					<span style="margin-left: 25px;"><b>This is AMT, the Academic Meta Tool.</b></span>
+					<span style="margin-left: 25px;"><b>AMT. Academic Meta Tool.</b></span>
 				</div>
 				<div class="col s6 right-align">
 					<a id="reasoning-button3" data-target="legend-modal" class="btn-floating btn-large waves-effect waves-light blue modal-trigger"><i class="material-icons">insert_comment</i></a>
+					<a id="label-button" class="btn-floating btn-large waves-effect waves-light red" onclick="nodeLabels()"><i class="material-icons">label</i></a>
 					<a id="reasoning-button" class="btn-floating btn-large waves-effect waves-light green" onclick="edit_reasoning()"><i class="material-icons">edit</i></a>
 					<span id="div-edit-button" style="margin-left: 25px;">
 						<a id="add-concept-button" class="btn-floating btn-large waves-effect waves-light green" onclick="add_concept()"><i class="material-icons">add</i></a>
@@ -438,6 +450,22 @@
 		// modals
 		function closeModal(modal) {
 			$("#"+modal).modal('close');
+		}
+		// node LABELS
+		function nodeLabels() {
+			if (LABELS) {
+				LABELS = false;
+				$("#label-button").removeClass("red");
+				$("#label-button").addClass("green");
+				GRAPH = {};
+				init_graph();
+			} else {
+				LABELS = true;
+				$("#label-button").removeClass("green");
+				$("#label-button").addClass("red");
+				GRAPH = {};
+				init_graph();
+			}
 		}
 		// new concept
 		function add_concept() {
