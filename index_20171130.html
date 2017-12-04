@@ -1,0 +1,678 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>AMT | mainzed-Organigramm</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.0/vis.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.0/vis.min.css" rel="stylesheet" type="text/css" />
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			body {
+				height: 100%;
+				width: 100%;
+				position: absolute;
+				overflow: hidden;
+				display: flex;
+		    	min-height: 100vh;
+		    	flex-direction: column;
+			}
+			.modal {
+				width: 60% !important;
+				height: 80% !important;
+			}
+		</style>
+		<script>
+
+			var REASONING = true;
+			var LABELS = true;
+
+			// Triple Store
+			var TS = {};
+			TS.URL = "http://higeomes.i3mainz.hs-mainz.de/openrdf-sesame/repositories/mainzed";
+			TS.PREFIX = "PREFIX amt: <http://www.academic-meta-tool.org/>";
+			TS.query = function(query,callback) {
+				$.ajax({
+					url: TS.URL,
+					dataType: 'jsonp',
+					type: 'GET',
+					data: {
+						queryLn: 'SPARQL',
+						query: TS.PREFIX + query,
+						Accept: 'application/json'
+					},
+					success: function(data) {
+						var bindings = data.results.bindings;
+						for (var i in bindings) {
+							for (var j in bindings[i]) {
+								if (bindings[i][j].value)
+									bindings[i][j] = bindings[i][j].value;
+							}
+						}
+						callback(bindings);
+					},
+					error: function(data) {
+						$("#graph").html("Es ist ein Fehler aufgetreten: "+data);
+					}
+				});
+			};
+			TS.update = function(query,callback) {
+				$.ajax({
+					url: TS.URL+"/statements",
+					type: 'POST',
+					data: {
+						update: TS.PREFIX + query
+					},
+					success: callback,
+					error: callback
+				});
+			};
+			TS.quad = function(s,p,o,w) {
+				s = " ?stmt rdf:subject "+s+" . ";
+				p = " ?stmt rdf:predicate "+p+" . ";
+				o = " ?stmt rdf:object "+o+" . ";
+				w = " ?stmt amt:weight "+w+" . ";
+				return s+p+o+w;
+			};
+			TS.insertQuad = function(id,s,p,o,w) {
+				s = " _:"+id+" rdf:subject "+s+" . ";
+				p = " _:"+id+" rdf:predicate "+p+" . ";
+				o = " _:"+id+" rdf:object "+o+" . ";
+				w = " _:"+id+" amt:weight "+w+" . ";
+				return s+p+o+w;
+			};
+
+			// Loading content from Triple Store wrt AMT-Ontology
+			TS.INDIVIDUALS = false;
+			TS.CONCEPTS = false;
+			TS.ROLES = false;
+			TS.AXIOMS = false;
+			TS.loadIndividuals = function() {
+				var q = "SELECT ?individual ?label WHERE { ?individual amt:instanceOf ?concept . ?concept rdf:type amt:Concept . ?individual rdfs:label ?label . }";
+				TS.query(q,function(data) {
+					TS.INDIVIDUALS = [];
+					for (var i in data) {
+						TS.INDIVIDUALS[data[i].individual] = data[i].label;
+					}
+					TS.loadConcepts();
+				});
+			}
+			TS.loadConcepts = function() {
+				var q1 = "SELECT ?concept ?label ?placeholder WHERE { ?concept rdf:type amt:Concept . ?concept rdfs:label ?label . ?concept amt:placeholder ?placeholder . }";
+				TS.query(q1,function(data) {
+					TS.CONCEPTS = [];
+					for (var i in data) {
+						TS.CONCEPTS[data[i].concept] = {label: data[i].label, placeholder: data[i].placeholder, a: []};
+					}
+					var q2 = "SELECT ?concept ?individual WHERE { ?concept rdf:type amt:Concept . ?individual amt:instanceOf ?concept . }";
+					TS.query(q2,function(data) {
+						for (var i in data) {
+							TS.CONCEPTS[data[i].concept].a.push(data[i].individual);
+						}
+						TS.loadRoles();
+					});
+				});
+			};
+			TS.loadRoles = function() {
+				var q1 = "SELECT ?role ?label ?domain ?range WHERE { ?role rdf:type amt:Role . ?role rdfs:label ?label . ?role rdfs:domain ?domain . ?role rdfs:range ?range . }";
+				TS.query(q1,function(data) {
+					TS.ROLES = [];
+					for (var i in data) {
+						TS.ROLES[data[i].role] = {label: data[i].label, domain: data[i].domain, range: data[i].range, setting: [], a: []}
+					}
+					var q2 = "SELECT ?role ?setting WHERE { ?role rdf:type amt:Role . ?role amt:setting ?setting . }";
+					TS.query(q2,function(data) {
+						for (var i in data) {
+							TS.ROLES[data[i].role].setting.push(data[i].setting);
+						}
+						var q3 = "SELECT ?role ?i1 ?i2 ?w WHERE { ?role rdf:type amt:Role . "+TS.quad("?i1","?role","?i2","?w")+" }";
+						TS.query(q3,function(data) {
+							for (var i in data) {
+								TS.ROLES[data[i].role].a.push({i1: data[i].i1, i2: data[i].i2, w: data[i].w});
+							}
+							TS.loadAxioms();
+						});
+					});
+				});
+			};
+			TS.loadAxioms = function() {
+				TS.AXIOMS = [];
+				var q = "SELECT * WHERE { ?axiom rdf:type ?type . ?type rdfs:subClassOf ?grp . ?grp rdfs:subClassOf amt:Axiom . { ?axiom amt:antecedent1 ?antecedent1 . ?axiom amt:antecedent2 ?antecedent2 . ?axiom amt:consequent ?consequent . ?axiom amt:logic ?logic . } UNION { ?axiom amt:antecedent ?antecedent . ?axiom amt:inverse ?inverse . } UNION { ?axiom amt:role ?role . } } ";
+				TS.query(q,function(data) {
+					for (var i in data) {
+						TS.AXIOMS.push(data[i]);
+					}
+					init_graph();
+				});
+			}
+
+			// Graph Visualization and Reasoning
+			var GRAPH = {};
+			function init_graph() {
+				var tmpEdges = generateEdges(REASONING ? TS.AXIOMS : []);
+				var edges = [];
+				for (var i in tmpEdges) {
+					tmpEdges[i].width = 3*tmpEdges[i].width*tmpEdges[i].width;
+					// set color
+					if (tmpEdges[i].role.includes("connectedWith") || tmpEdges[i].role.includes("matchWith")) {
+						tmpEdges[i].color = {color:"blue", highlight:"black"};
+					} else if (tmpEdges[i].role.includes("narrowerThan") || tmpEdges[i].role.includes("broaderThan")) {
+						tmpEdges[i].color = {color:"red", highlight:"black"};
+					} else if (tmpEdges[i].role.includes("interestedIn")) {
+						tmpEdges[i].color = {color:"green", highlight:"black"};
+					} else {
+						tmpEdges[i].color = {color:"black", highlight:"black"};
+					}
+					// directed?
+					var directed = false; // undirected = connectedWith && matchWith
+					if (tmpEdges[i].role.includes("interestedIn") || tmpEdges[i].role.includes("broaderThan")) {
+						directed = true;
+					}
+					if (REASONING) {
+						if ((tmpEdges[i].role.includes("connectedWith") || tmpEdges[i].role.includes("matchWith")) && (tmpEdges[i].from.localeCompare(tmpEdges[i].to) > 0) && tmpEdges[i].width > 0.05) {
+							edges.push(tmpEdges[i]);
+						} else if (directed && tmpEdges[i].width > 0.05) {
+							tmpEdges[i].arrows = "to";
+							edges.push(tmpEdges[i]);
+						}
+					} else {
+						tmpEdges[i].arrows = "to";
+						edges.push(tmpEdges[i]);
+					}
+				}
+				if (GRAPH.edges) {
+					GRAPH.edges.clear();
+					GRAPH.edges.update(edges);
+				} else {
+					var nodes = [];
+					for (var i in TS.CONCEPTS) {
+						for (var j in TS.CONCEPTS[i].a) {
+							var node = {};
+							node.id = TS.CONCEPTS[i].a[j];
+							if (LABELS) {
+								node.label = TS.INDIVIDUALS[TS.CONCEPTS[i].a[j]];
+							}
+							if (i.includes("Person")) {
+								node.color = {background:'lightblue', border:'blue', highlight:{background:'white',border:'black'}};
+								if (LABELS) {
+									node.shape = "box";
+								} else {
+									node.shape = "circle";
+								}
+							} else if (i.includes("Interest")) {
+								node.color = {background:'pink', border:'red', highlight:{background:'white',border:'black'}};
+								if (LABELS) {
+									node.shape = "ellipse";
+								} else {
+									node.shape = "circle";
+								}
+							}
+							nodes.push(node);
+						}
+					}
+					GRAPH.nodes = new vis.DataSet(nodes);
+					GRAPH.edges = new vis.DataSet(edges);
+					GRAPH.network = new vis.Network(document.getElementById("graph"),{nodes: GRAPH.nodes, edges: GRAPH.edges},{});
+					GRAPH.network.on("selectNode", function (params) {
+							if (!REASONING) {
+								openeditmodal(params);
+							} else {
+								OpenNodeInfoModal(params);
+							}
+					});
+					GRAPH.network.on("selectEdge", function (params) {
+							openInfoEdgeModal(params, "edge");
+					});
+				}
+			}
+			function conjunction(x,y,logic) {
+				if (logic.includes("LukasiewiczLogic")) {
+					return Math.max(x+y-1,0);
+				}
+				if (logic.includes("ProductLogic")) {
+					return x*y;
+				}
+				if (logic.includes("GoedelLogic")) {
+					return Math.min(x,y);
+				}
+				return 0;
+			}
+			function generateEdges(axioms) {
+				var edges = [];
+				for (var r in TS.ROLES) {
+					for (var i in TS.ROLES[r].a) {
+						edges.push({role: r, from: TS.ROLES[r].a[i].i1, to: TS.ROLES[r].a[i].i2, width: Number(TS.ROLES[r].a[i].w)/100});
+					}
+				}
+				var change = true;
+				while (change) {
+					change = false;
+					for (var k in axioms) {
+						if (axioms[k].type.includes("RoleChainAxiom")) {
+							var e1 = [];
+							var e2 = [];
+							for (var i in edges) {
+								if (edges[i].role == axioms[k].antecedent1) {
+									e1.push(edges[i]);
+								}
+								if (edges[i].role == axioms[k].antecedent2) {
+									e2.push(edges[i]);
+								}
+							}
+							var e = [];
+							for (var i in e1) {
+								for (var j in e2) {
+									if (e1[i].to == e2[j].from) {
+										var w = conjunction(e1[i].width,e2[j].width,axioms[k].logic);
+										if (w > 0)
+											e.push({role: axioms[k].consequent, from: e1[i].from, to: e2[j].to, width: w});
+									}
+								}
+							}
+							for (var j in e) {
+								var found = false;
+								for (var i in edges) {
+									if (e[j].role == edges[i].role && e[j].from == edges[i].from && e[j].to == edges[i].to) {
+										found = true;
+										if (e[j].width > edges[i].width) {
+											edges[i].width = e[j].width;
+											change = true;
+										}
+									}
+								}
+								if (!found) {
+									edges.push(e[j]);
+									change = true;
+								}
+							}
+						}
+						if (axioms[k].type.includes("InverseAxiom")) {
+							for (var i in edges) {
+								if (edges[i].role == axioms[k].antecedent) {
+									var found = false;
+									for (var j in edges) {
+										if (edges[j].role == axioms[k].inverse && edges[j].to == edges[i].from && edges[j].from == edges[i].to) {
+											found = true;
+											if (edges[j].width < edges[i].width) {
+												edges[j].width = edges[i].width;
+												change = true;
+											}
+										}
+									}
+									if (!found) {
+										edges.push({role: axioms[k].inverse, from: edges[i].to, to: edges[i].from, width: edges[i].width});
+										change = true;
+									}
+								}
+							}
+						}
+						if (axioms[k].type.includes("SelfDisjointAxiom")) {
+							for (var i in edges) {
+								if (edges[i].role == axioms[k].role && edges[i].from == edges[i].to) {
+									// INKONSISTENZ
+									return [];
+								}
+							}
+						}
+					}
+				}
+				return edges;
+			}
+
+		</script>
+	</head>
+
+	<body>
+	<div id="graph" class="col s12" style="height:90%;"></div>
+	<div id="footer" class="page-footer grey col s12" style="height:10%;">
+    	<div class="container">
+			<div class="row">
+				<div class="col s6 left-align">
+					<a id="reasoning-button2" data-target="about-modal" class="btn-floating btn-large waves-effect waves-light blue modal-trigger"><i class="material-icons">info</i></a>
+					<span style="margin-left: 25px;"><b>AMT. Academic Meta Tool.</b></span>
+				</div>
+				<div class="col s6 right-align">
+					<a id="reasoning-button3" data-target="legend-modal" class="btn-floating btn-large waves-effect waves-light blue modal-trigger"><i class="material-icons">insert_comment</i></a>
+					<a id="label-button" class="btn-floating btn-large waves-effect waves-light red" onclick="nodeLabels()"><i class="material-icons">label</i></a>
+					<a id="reasoning-button" class="btn-floating btn-large waves-effect waves-light green" onclick="edit_reasoning()"><i class="material-icons">edit</i></a>
+					<span id="div-edit-button" style="margin-left: 25px;">
+						<a id="add-concept-button" class="btn-floating btn-large waves-effect waves-light green" onclick="add_concept()"><i class="material-icons">add</i></a>
+					</span>
+				</div>
+			</div>
+    	</div>
+	</div>
+	<div id="edit-modal" class="modal">
+    <div class="modal-content">
+			<input id="edit_uri" type="text" hidden />
+			<input id="edit_label" type="text" hidden />
+			<div class="row">
+				<div class="col s6">
+					<h5 id="edit_header"></h5>
+				</div>
+				<div class="col s2">
+					<a class="btn-floating btn-large waves-effect waves-light orange" onClick="loadroles()"><i class="material-icons">edit</i></a>
+				</div>
+				<div class="col s2">
+					<a class="btn-floating btn-large waves-effect waves-light red" onClick="delete_node_submit()"><i class="material-icons">delete</i></a>
+				</div>
+				<div class="col s2">
+					<a class="btn-floating btn-large waves-effect waves-light red" onClick="closeModal('edit-modal')"><i class="material-icons">cancel</i></a>
+				</div>
+			</div>
+			<br>
+			<div id="editdiv" hidden>
+				<div class="input-field col s12">
+					<select id="roles"></select>
+					<label>Rolle</label>
+	  		</div>
+				<div class="row">
+					<table id="update_table" class="bordered col s12" hidden>
+						<thead>
+		          <tr>
+		              <th>Individuum</th>
+		              <th>Gewicht</th>
+		          </tr>
+		        </thead>
+		        <tbody id="update_tbody"></tbody>
+					</table>
+				</div>
+				<br>
+				<div class="col s12" id="editconcept-button-div" hidden>
+					<a id="editconcept-button" class="btn-floating btn-large waves-effect waves-light green" onclick="edit_concept_submit()"><i class="material-icons">save</i></a>
+				</div>
+			</div>
+    </div>
+  </div>
+	<div id="info-node-modal" class="modal">
+    <div class="modal-content">
+			<input id="info_node_uri" type="text" hidden />
+			<input id="info_node_label" type="text" hidden />
+			<div class="row">
+				<div class="col s6">
+					<h5 id="info_node_header"></h5>
+				</div>
+			</div>
+			<br>
+			<div id="info_node_div" hidden>
+				<div class="input-field col s12">
+					<select id="roles2"></select>
+					<label>Rolle</label>
+	  		</div>
+				<div class="row">
+					<table id="info_node_table" class="bordered col s12" hidden>
+						<thead>
+		          <tr>
+		              <th>Individuum</th>
+		              <th>Gewicht</th>
+		          </tr>
+		        </thead>
+		        <tbody id="info_node_tbody"></tbody>
+					</table>
+				</div>
+			</div>
+    </div>
+  </div>
+  <div id="info-edge-modal" class="modal">
+	  <div class="modal-content">
+		  <div class="col s6">
+			  <h5 id="info_edge_header"></h5>
+		  </div>
+		  <input id="info_edge_uri" type="text" />
+		  <input id="info_edge_label" type="text" />
+	  </div>
+</div>
+  <div id="new-modal" class="modal">
+    <div class="modal-content">
+      <h4>Neuen Knoten anlegen</h4>
+			<br>
+			<div class="input-field col s12">
+				<select id="newconcept"></select>
+				<label>Konzept</label>
+  		</div>
+			<div id="newconcept-label" class="input-field col s6" hidden>
+    		<input placeholder="Placeholder" id="newconcept-label-val" type="text" class="validate">
+      	<label for="newconcept-label-val">Label</label>
+    	</div>
+			<br>
+			<a id="newconcept-button" class="btn-floating btn-large waves-effect waves-light green" onclick="add_concept_submit()" hidden><i class="material-icons">save</i></a>
+    </div>
+  </div>
+	<div id="about-modal" class="modal">
+    <div class="modal-content">
+      <h4>About AMT</h4>
+			<h5><i>by Martin Unold, Florian Thiery, i3mainz</i></h5>
+			<br>
+			<p>Amt ist das Academic Meta Tool. Hier werden insbesondere Daten aus dem Kontext von mainzed dargestellt.</p>
+    </div>
+  </div>
+	<div id="legend-modal" class="modal">
+    <div class="modal-content">
+      <h4>Legende</h4>
+			<br>
+			<p>blau:</p>
+			<p>rot:</p>
+			<p>grün:</p>
+    </div>
+  </div>
+
+	<script>
+		// utils
+		function UUID(){
+		    var dt = new Date().getTime();
+		    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		        var r = (dt + Math.random()*16)%16 | 0;
+		        dt = Math.floor(dt/16);
+		        return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+		    });
+		    return uuid;
+		}
+		// init
+		TS.loadIndividuals();
+		$("#div-edit-button").hide();
+		$('select').material_select();
+		$('.modal').modal({
+      dismissible: true, // Modal can be dismissed by clicking outside of the modal
+      opacity: .5, // Opacity of modal background
+      inDuration: 300, // Transition in duration
+      outDuration: 200, // Transition out duration
+      startingTop: '4%', // Starting top style attribute
+      endingTop: '10%', // Ending top style attribute
+      ready: function() {}, // Callback for Modal open. Modal and trigger parameters available.
+      complete: function() { GRAPH.network.selectNodes([]); } // Callback for Modal close
+    });
+		// GUI functions
+		// modals
+		function closeModal(modal) {
+			$("#"+modal).modal('close');
+		}
+		// node LABELS
+		function nodeLabels() {
+			if (LABELS) {
+				LABELS = false;
+				$("#label-button").removeClass("red");
+				$("#label-button").addClass("green");
+				GRAPH = {};
+				init_graph();
+			} else {
+				LABELS = true;
+				$("#label-button").removeClass("green");
+				$("#label-button").addClass("red");
+				GRAPH = {};
+				init_graph();
+			}
+		}
+		// info modal
+		function openInfoEdgeModal(params, type) {
+			if(params.nodes.length === 0) {
+				$("#info_edge_uri").val(GRAPH.edges._data[params.edges[0]].role);
+				$("#info_edge_label").val(TS.ROLES[GRAPH.edges._data[params.edges[0]].role].label);
+				$("#info_edge_header").html("<i>Info für: " + TS.ROLES[GRAPH.edges._data[params.edges[0]].role].label + "</i>");
+				$('#info-edge-modal').modal('open');
+			}
+		}
+		// new concept
+		function add_concept() {
+			$('#new-modal').modal('open');
+			$("#newconcept-label").hide();
+			$("#newconcept-button").hide();
+			$("#newconcept").empty();
+			$("#newconcept").append("<option value='' disabled selected>Konzept auswählen...</option>");
+			for (var i in TS.CONCEPTS) {
+				$("#newconcept").append("<option value='"+i+"'>"+TS.CONCEPTS[i].label+"</option>");
+				$('#newconcept').material_select();
+			}
+			$("#newconcept").on("change",function() {
+				$("#newconcept-label-val").prop("placeholder",TS.CONCEPTS[this.value].placeholder);
+				$("#newconcept-label").show();
+				$("#newconcept-button").show();
+			});
+		}
+		function add_concept_submit() {
+			var id = UUID();
+			var q = "INSERT { amt:"+id+" amt:instanceOf <"+$("#newconcept").val()+"> . amt:"+id+" rdfs:label \""+$("#newconcept-label-val").val()+"\" . } WHERE {}";
+			TS.update(q,function() {
+				location.reload();
+			});
+		}
+		// delete node
+		function delete_node_submit() {
+			var delete_individual = $("#edit_uri").val();
+			var q1 = " DELETE { "+TS.quad("<"+delete_individual+">","?role","?individual","?w")+" } WHERE { ?individual amt:instanceOf ?concept . ?concept rdf:type amt:Concept . ?role rdf:type amt:Role . "+TS.quad("<"+delete_individual+">","?role","?individual","?w")+" } ";
+			var q2 = " DELETE { "+TS.quad("?individual","?role","<"+delete_individual+">","?w")+" } WHERE { ?individual amt:instanceOf ?concept . ?concept rdf:type amt:Concept . ?role rdf:type amt:Role . "+TS.quad("?individual","?role","<"+delete_individual+">","?w")+" } ";
+			var q3 = " DELETE { <"+delete_individual+"> amt:instanceOf ?concept . <"+delete_individual+"> rdfs:label ?label . } WHERE { <"+delete_individual+"> amt:instanceOf ?concept . ?concept rdf:type amt:Concept . <"+delete_individual+"> rdfs:label ?label . } ";
+			TS.update(q1+"; "+q2+"; "+q3,function() {
+				location.reload();
+			});
+		}
+		// reasoning
+		function edit_reasoning() {
+			REASONING = !REASONING;
+			if (REASONING) {
+				$("#reasoning-button").removeClass("red");
+				$("#reasoning-button").addClass("green");
+				$("#div-edit-button").hide();
+			} else {
+				$("#reasoning-button").removeClass("green");
+				$("#reasoning-button").addClass("red");
+				$("#div-edit-button").show();
+			}
+			init_graph();
+		}
+		// edit
+		function openeditmodal(params) {
+			$("#edit_uri").val(params.nodes[0]);
+			$("#edit_label").val(TS.INDIVIDUALS[params.nodes[0]]);
+			$("#edit_header").html("<i>" + $("#edit_label").val() + "</i> editieren");
+			$('#edit-modal').modal('open');
+			$("#editdiv").hide();
+			$("#editconcept-button-div").hide();
+			$("#update_table").hide();
+		}
+		function loadroles() {
+			$("#editdiv").show();
+			$("#roles").empty();
+			$("#roles").append("<option value='' disabled selected>Rolle wählen ...</option>");
+			var c = [];
+			for (var i in TS.CONCEPTS) {
+				if (TS.CONCEPTS[i].a.includes($("#edit_uri").val()))
+					c.push(i);
+			}
+			for (var i in TS.ROLES) {
+				if (c.includes(TS.ROLES[i].domain))
+					$("#roles").append("<option value='"+i+"'>"+TS.ROLES[i].label+"</option>");
+			}
+			$('#roles').material_select();
+		}
+		$("#roles").on("change",function() {
+			$("#update_tbody").empty();
+			var c = TS.ROLES[$("#roles").val()].range;
+			for (var i in TS.CONCEPTS[c].a) {
+				var individual = TS.CONCEPTS[c].a[i];
+				var w = 0;
+				for (var j in TS.ROLES[$("#roles").val()].a) {
+					if (TS.ROLES[$("#roles").val()].a[j].i1 == $("#edit_uri").val() && TS.ROLES[$("#roles").val()].a[j].i2 == individual)
+						w = TS.ROLES[$("#roles").val()].a[j].w;
+				}
+				var tr = $("<tr></tr>");
+				if (TS.INDIVIDUALS[individual] != $("#edit_label").val()) {
+					tr.append("<td>"+TS.INDIVIDUALS[individual]+"</td>");
+					//tr.append("<td><input type='text' class='weight' name='"+individual+"' value='"+w+"' /></td>");
+					tr.append("<td><p class='range-field'><input type='range' name='"+individual+"' id='w-"+individual+"' min='0' max='100' value='"+w+"'/></p></td>");
+					$("#update_tbody").append(tr);
+				}
+			}
+			$("#update_table").show();
+			$("#editconcept-button-div").show();
+		});
+		function edit_concept_submit() {
+			var q1 = "DELETE { "+TS.quad("<"+$("#edit_uri").val()+">","<"+$("#roles").val()+">","?individual","?w")+" } WHERE { ?individual amt:instanceOf ?concept . ?concept rdf:type amt:Concept . "+TS.quad("<"+$("#edit_uri").val()+">","<"+$("#roles").val()+">","?individual","?w")+" }";
+			TS.update(q1,function() {
+				var stmts = "";
+				$("#update_table tr td input").each(function(i) {
+					var w = Math.floor(Number($(this).val()));
+					if (w > 0 && w <= 100) {
+						stmts += TS.insertQuad(i,"<"+$("#edit_uri").val()+">","<"+$("#roles").val()+">","<"+$(this).attr("name")+">",w);
+					}
+				});
+				var q2 = "INSERT { "+stmts+" } WHERE {}";
+				TS.update(q2,function() {
+					location.reload();
+				});
+			});
+		}
+		// node info modal
+		function OpenNodeInfoModal(params) {
+			$("#info_node_uri").val(params.nodes[0]);
+			$("#info_node_label").val(TS.INDIVIDUALS[params.nodes[0]]);
+			$("#info_node_header").html("<i>" + $("#info_node_label").val() + "</i>");
+			$('#info-node-modal').modal('open');
+			$("#info_node_div").hide();
+			$("#info_node_table").hide();
+			loadroles2();
+		}
+		function loadroles2() {
+			$("#info_node_div").show();
+			$("#roles2").empty();
+			$("#roles2").append("<option value='' disabled selected>Rolle wählen ...</option>");
+			var c = [];
+			for (var i in TS.CONCEPTS) {
+				if (TS.CONCEPTS[i].a.includes($("#info_node_uri").val()))
+					c.push(i);
+			}
+			for (var i in TS.ROLES) {
+				if (c.includes(TS.ROLES[i].domain))
+					$("#roles2").append("<option value='"+i+"'>"+TS.ROLES[i].label+"</option>");
+			}
+			$('#roles2').material_select();
+		}
+		$("#roles2").on("change",function() {
+			$("#info_node_tbody").empty();
+			var c = TS.ROLES[$("#roles2").val()].range;
+			for (var i in TS.CONCEPTS[c].a) {
+				var individual = TS.CONCEPTS[c].a[i];
+				var w = 0;
+				for (var j in TS.ROLES[$("#roles2").val()].a) {
+					if (TS.ROLES[$("#roles2").val()].a[j].i1 == $("#info_node_uri").val() && TS.ROLES[$("#roles2").val()].a[j].i2 == individual)
+						w = TS.ROLES[$("#roles2").val()].a[j].w;
+				}
+				var tr = $("<tr></tr>");
+				if (TS.INDIVIDUALS[individual] != $("#info_node_label").val()) {
+					tr.append("<td>"+TS.INDIVIDUALS[individual]+"</td>");
+					tr.append("<td><p class='range-field'><input type='range' name='"+individual+"' id='w-"+individual+"' min='0' max='100' value='"+w+"' disabled /></p></td>");
+					$("#info_node_tbody").append(tr);
+				}
+			}
+			$("#info_node_table").show();
+		});
+	</script>
+	</body>
+</html>
