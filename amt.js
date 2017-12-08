@@ -1,3 +1,14 @@
+
+function UUID(){
+	var dt = new Date().getTime();
+	var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		var r = (dt + Math.random()*16)%16 | 0;
+		dt = Math.floor(dt/16);
+		return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+	});
+	return uuid;
+}
+
 var AMT = function() {
 	
 	var CONCEPTS = [];
@@ -59,25 +70,30 @@ var AMT = function() {
 		queryStore("SELECT ?concept ?label ?placeholder WHERE { ?concept rdf:type amt:Concept . ?concept rdfs:label ?label . ?concept amt:placeholder ?placeholder . }",function(data) {
 			CONCEPTS = data;
 			--todo;
-			if (todo == 0 && callback)
+			if (todo == 0 && callback) {
+				GRAPH.edited = copy(GRAPH.original);
 				callback();
+			}
 		});
 		
 		// load roles
 		queryStore("SELECT ?role ?label ?domain ?range WHERE { ?role rdf:type amt:Role . ?role rdfs:label ?label . ?role rdfs:domain ?domain . ?role rdfs:range ?range . }",function(data) {
 			ROLES = data;
 			--todo;
-			if (todo == 0 && callback)
+			if (todo == 0 && callback) {
+				GRAPH.edited = copy(GRAPH.original);
 				callback();
+			}
 		});
 		
 		// load nodes
 		queryStore("SELECT ?id ?label ?concept WHERE { ?concept rdf:type amt:Concept . ?id amt:instanceOf ?concept . ?id rdfs:label ?label . }",function(data) {
 			GRAPH.original.nodes = data;
-			GRAPH.edited.nodes = data;
 			--todo;
-			if (todo == 0 && callback)
+			if (todo == 0 && callback) {
+				GRAPH.edited = copy(GRAPH.original);
 				callback();
+			}
 		});
 		
 		// load edges
@@ -86,10 +102,11 @@ var AMT = function() {
 				data[i].width /= 100;
 			}
 			GRAPH.original.edges = data;
-			GRAPH.edited.edges = data;
 			--todo;
-			if (todo == 0 && callback)
+			if (todo == 0 && callback) {
+				GRAPH.edited = copy(GRAPH.original);
 				callback();
+			}
 		});
 		
 		// load axioms
@@ -104,8 +121,10 @@ var AMT = function() {
 				}
 			}
 			--todo;
-			if (todo == 0 && callback)
+			if (todo == 0 && callback) {
+				GRAPH.edited = copy(GRAPH.original);
 				callback();
+			}
 		});
 		
 	};
@@ -113,6 +132,7 @@ var AMT = function() {
 		
 		//updateStore();
 		
+		callback();
 	};
 	
 	var copy = function(graph) {
@@ -213,9 +233,9 @@ var AMT = function() {
 	};
 	
 	this.addIndividual = function(label,concept) {
-		var id = "";
+		var id = PREFIX+UUID();
 		GRAPH.edited.nodes.push({id: id, label: label, concept: concept});
-		return consistent();
+		return id;
 	};
 	this.removeIndividual = function(id) {
 		for (var i in GRAPH.edited.edges) {
@@ -231,6 +251,7 @@ var AMT = function() {
 		return consistent();
 	};
 	this.editAssertion = function(role,from,to,width) {
+		console.log(role,from,to,width);
 		var index = search(GRAPH.edited.edges,role,from,to);
 		if (index >= 0) {
 			if (width > 0)
@@ -244,6 +265,13 @@ var AMT = function() {
 		}
 		return consistent();
 	};
+	this.cancel = function() {
+		console.log(GRAPH.edited);
+		console.log(GRAPH.original);
+		GRAPH.edited = copy(GRAPH.original);
+		console.log(GRAPH.edited);
+		console.log(GRAPH.original);
+	}
 	this.getConcepts = function() {
 		return CONCEPTS;
 	};

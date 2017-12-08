@@ -50,6 +50,7 @@
 					MAINZED.graph.edges.clear();
 					MAINZED.graph.nodes.clear();
 					for (var i in updated.nodes) {
+						updated.nodes[i].length = 10/updated.nodes[i].width;
 						if (!MAINZED.edit) {
 							updated.nodes[i].chosen = false;
 						}
@@ -63,8 +64,10 @@
 						}
 					}
 					for (var i in updated.edges) {
+						updated.edges[i].arrowStrikethrough = false;
+						updated.edges[i].width = 2*updated.edges[i].width;
 						updated.edges[i].chosen = false;
-						if (updated.edges[i].width < 0.05) {
+						if (updated.edges[i].width < 0.1) {
 							updated.edges[i].hidden = !MAINZED.edit;
 						}
 						if (updated.edges[i].role.includes("connectedWith")) {
@@ -101,17 +104,117 @@
 				$(".edit").toggle();
 				$(".normal").toggle();
 				update();
+			};
+			var cancel = function() {
+				MAINZED.amt.cancel();
+				$("#save").hide();
+				edit(false);
+			};
+			var save = function() {
+				MAINZED.amt.save(location.reload);
+			}
+			var openModal = function(id,type) {
+				$("#uri").val("");
+				if (id) {
+					$("#uri").val(id);
+					var graph = MAINZED.amt.getGraph(false,true);
+					var node = false;
+					for (var i in graph.nodes) {
+						if (graph.nodes[i].id == id)
+							node = graph.nodes[i];
+					}
+					type = node.concept;
+					$("#label").val(node.label);
+				}
+				$("#concept").val(type);
+				$("#role").empty();
+				$("#table").empty();
+				var concepts = MAINZED.amt.getConcepts();
+				for (var i in concepts) {
+					if (concepts[i].concept == type) {
+						$("#label").attr("placeholder",concepts[i].placeholder);
+					}
+				}
+				$("#role").append("<option value='' disabled selected>Rolle wählen ...</option>");
+				var roles = MAINZED.amt.getRoles();
+				for (var i in roles) {
+					if (roles[i].domain == type) {
+						$("#role").append("<option value='"+roles[i].role+"'>"+roles[i].label+"</option>");
+					}
+				}
+				$("#role").on("change",function() {
+					$("#table").empty();
+					var concept = "";
+					for (var i in roles) {
+						if (roles[i].role == $("#role").val()) {
+							concept = roles[i].range;
+						}
+					}
+					var graph = MAINZED.amt.getGraph(false,true);
+					for (var i in graph.nodes) {
+						if (graph.nodes[i].concept == concept) {
+							var w = 0;
+							if (id) {
+								for (var j in graph.edges) {
+									if (graph.edges[j].role == $("#role").val() && graph.edges[j].from == id && graph.edges[j].from == graph.nodes[i].id)
+										w = graph.edges[j].width;
+								}
+							}
+							var tr = $("<tr></tr>");
+							tr.append("<td>"+graph.nodes[i].label+"</td>");
+							tr.append("<td><p class='range-field'><input type='range' name='"+graph.nodes[i].id+"' min='0' max='100' value='"+w*100+"' /></p></td>");
+							$("#table").append(tr);
+						}
+					}
+				});
+				$("#role").material_select();
+				$("#modal").modal("open");
+			};
+			var cancelEdit = function() {
+				$("#modal").modal("close");
+			}
+			var saveEdit = function() {
+				var role = $("#role").val();
+				var from = $("#uri").val();
+				if (!from) {
+					from = MAINZED.amt.addIndividual($("#label").val(),$("#concept").val());
+				}
+				$("#table tr td input").each(function(i) {
+					var w = Math.floor(Number($(this).val()));
+					if (w>0 && w<=100) {
+						var to = $(this).attr("name");
+						MAINZED.amt.editAssertion(role,from,to,w/100);
+					}
+				});
+				$("#modal").modal("close");
+				$("#label").val("");
+				$("#save").show();
+				update();
 			}
 			$(function() {
 				MAINZED.amt = new AMT();
 				MAINZED.amt.load(function() {
+					var concepts = MAINZED.amt.getConcepts();
+					for (var i in concepts) {
+						var a = $("<a class='btn-floating btn-large edit green' onclick='openModal(false,\""+concepts[i].concept+"\")' title='Add "+concepts[i].label+" node'><i class='material-icons'>add "+concepts[i].label.substr(0,1)+"</i></a>");
+						$("#buttons").prepend(a);
+					}
+					$(".edit").hide();
 					var graph = MAINZED.amt.getGraph(true);
 					MAINZED.graph.nodes = new vis.DataSet(graph.nodes);
 					MAINZED.graph.edges = new vis.DataSet(graph.edges);
+					var network = new vis.Network(document.getElementById("graph"),{nodes: MAINZED.graph.nodes, edges: MAINZED.graph.edges},{});
+					network.on("selectNode", function (params) {
+						if (MAINZED.edit)
+							openModal(params.nodes[0]);
+					});
 					update();
-					new vis.Network(document.getElementById("graph"),{nodes: MAINZED.graph.nodes, edges: MAINZED.graph.edges},{});
+				});
+				$(".modal").modal({
+					complete: cancelEdit
 				});
 				$(".edit").hide();
+				$("#save").hide();
 			});
 		</script>
 	</head>
@@ -124,15 +227,44 @@
 					<div class="col s6 left-align">
 						<b class="description">AMT. Academic Meta Tool.</b>
 					</div>
-					<div class="col s3 right-align">
-						<a class="btn-floating btn-large edit green" onclick="add()" title="Add individual"><i class="material-icons">add</i></a>
-						<a class="btn-floating btn-large edit red" onclick="edit(false)" title="Close edit mode"><i class="material-icons">edit</i></a>
+					<div id="buttons" class="col s3 right-align">
+						<a class="btn-floating btn-large edit blue" onclick="edit(false)" title="Close edit mode"><i class="material-icons">edit</i></a>
 						<a class="btn-floating btn-large normal green" onclick="edit(true)" title="Open edit mode"><i class="material-icons">edit</i></a>
 					</div>
-					<div class="save col s3 right-align">
+					<div id="save" class="col s3 right-align">
 						<a class="btn-floating btn-large edit red" onclick="cancel()" title="Cancel changes"><i class="material-icons">cancel</i></a>
-						<!--<a class="btn-floating btn-large normal black" onclick="save()" title="Save changes"><i class="material-icons">save</i></a>-->
+						<a class="btn-floating btn-large normal black" onclick="save()" title="Save changes"><i class="material-icons">save</i></a>
 					</div>
+				</div>
+			</div>
+		</div>
+		<div id="modal" class="modal">
+			<input id="uri" hidden />
+			<input id="concept" hidden />
+			<div class="modal-content">
+				<div class="row">
+					<div class="input-field col s9">
+						<input id="label" type="text" placeholder="-" />
+						<label for="label">Label</label>
+					</div>
+					<div class="col s3 right-align">
+						<a class="btn-floating btn-large red" onclick="cancelEdit()" title="Cancel changes"><i class="material-icons">cancel</i></a>
+						<a class="btn-floating btn-large green" onclick="saveEdit()" title="Save changes"><i class="material-icons">save</i></a>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s12">
+						<select id="role"></select>
+						<label for="role">Relation</label>
+					</div>
+				</div>
+				<div class="row">
+					<table class="bordered col s12">
+						<thead>
+							<tr><th>Individuum</th><th>Gewicht</th></tr>
+						</thead>
+						<tbody id="table"></tbody>
+					</table>
 				</div>
 			</div>
 		</div>
