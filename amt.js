@@ -53,10 +53,7 @@ var AMT = function() {
 				update: "PREFIX amt: <"+PREFIX+"> " + query
 			},
 			success: callback,
-			error: function(data) {
-				console.log("Es ist ein Fehler aufgetreten: "+data);
-				callback(data);
-			}
+			error: callback
 		});
 	}
 	this.setStore = function(store) {
@@ -98,9 +95,6 @@ var AMT = function() {
 		
 		// load edges
 		queryStore("SELECT ?role ?from ?to ?width WHERE { ?role rdf:type amt:Role . ?stmt rdf:subject ?from . ?stmt rdf:predicate ?role . ?stmt rdf:object ?to . ?stmt amt:weight ?width . }",function(data) {
-			for (var i in data) {
-				data[i].width /= 100;
-			}
 			GRAPH.original.edges = data;
 			--todo;
 			if (todo == 0 && callback) {
@@ -129,10 +123,22 @@ var AMT = function() {
 		
 	};
 	this.save = function(callback) {
-		
-		//updateStore();
-		
-		callback();
+		var insert = "";
+		for (var i in GRAPH.edited.nodes) {
+			insert += "<"+GRAPH.edited.nodes[i].id+"> amt:instanceOf <"+GRAPH.edited.nodes[i].concept+"> . ";
+			insert += "<"+GRAPH.edited.nodes[i].id+"> rdfs:label \""+GRAPH.edited.nodes[i].label+"\" . ";
+		}
+		for (var i in GRAPH.edited.edges) {
+			insert += "_:"+i+" rdf:subject <"+GRAPH.edited.edges[i].from+"> . ";
+			insert += "_:"+i+" rdf:predicate <"+GRAPH.edited.edges[i].role+"> . ";
+			insert += "_:"+i+" rdf:object <"+GRAPH.edited.edges[i].to+"> . ";
+			insert += "_:"+i+" amt:weight "+GRAPH.edited.edges[i].width+" . ";
+		}
+		var query = "";
+		query += " DELETE { ?id amt:instanceOf ?concept . ?id rdfs:label ?label . } WHERE { ?concept rdf:type amt:Concept . ?id amt:instanceOf ?concept . ?id rdfs:label ?label . } ; ";
+		query += " DELETE { ?stmt rdf:subject ?from . ?stmt rdf:predicate ?role . ?stmt rdf:object ?to . ?stmt amt:weight ?width . } WHERE { ?role rdf:type amt:Role . ?stmt rdf:subject ?from . ?stmt rdf:predicate ?role . ?stmt rdf:object ?to . ?stmt amt:weight ?width . } ; ";
+		query += " INSERT { "+insert+" } WHERE { }";
+		updateStore(query,callback);
 	};
 	
 	var copy = function(graph) {
@@ -238,20 +244,26 @@ var AMT = function() {
 		return id;
 	};
 	this.removeIndividual = function(id) {
-		for (var i in GRAPH.edited.edges) {
-			if (GRAPH.edited.edges[i].from == id || GRAPH.edited.edges[i].to == id) {
-				GRAPH.edited.edges.splice(i,1);
+		var change = true;
+		while (change) {
+			change = false;
+			for (var i in GRAPH.edited.edges) {
+				if (GRAPH.edited.edges[i].from == id || GRAPH.edited.edges[i].to == id) {
+					GRAPH.edited.edges.splice(i,1);
+					change = true;
+					break;
+				}
 			}
 		}
 		for (var i in GRAPH.edited.nodes) {
 			if (GRAPH.edited.nodes[i].id == id) {
 				GRAPH.edited.nodes.splice(i,1);
+				break;
 			}
 		}
 		return consistent();
 	};
 	this.editAssertion = function(role,from,to,width) {
-		console.log(role,from,to,width);
 		var index = search(GRAPH.edited.edges,role,from,to);
 		if (index >= 0) {
 			if (width > 0)
@@ -266,11 +278,7 @@ var AMT = function() {
 		return consistent();
 	};
 	this.cancel = function() {
-		console.log(GRAPH.edited);
-		console.log(GRAPH.original);
 		GRAPH.edited = copy(GRAPH.original);
-		console.log(GRAPH.edited);
-		console.log(GRAPH.original);
 	}
 	this.getConcepts = function() {
 		return CONCEPTS;

@@ -47,6 +47,7 @@
 			var update = function() {
 				if (MAINZED.amt) {
 					var updated = MAINZED.amt.getGraph(!MAINZED.edit,true);
+					console.log(updated);
 					MAINZED.graph.edges.clear();
 					MAINZED.graph.nodes.clear();
 					for (var i in updated.nodes) {
@@ -65,7 +66,6 @@
 					}
 					for (var i in updated.edges) {
 						updated.edges[i].arrowStrikethrough = false;
-						updated.edges[i].width = 2*updated.edges[i].width;
 						updated.edges[i].chosen = false;
 						if (updated.edges[i].width < 0.1) {
 							updated.edges[i].hidden = !MAINZED.edit;
@@ -99,19 +99,21 @@
 					MAINZED.graph.edges.update(updated.edges);
 				}
 			};
-			var edit = function(on) {
-				MAINZED.edit = on;
+			var edit = function() {
+				MAINZED.edit = !MAINZED.edit;
 				$(".edit").toggle();
 				$(".normal").toggle();
 				update();
 			};
 			var cancel = function() {
 				MAINZED.amt.cancel();
-				$("#save").hide();
-				edit(false);
+				$("#store").hide();
+				edit();
 			};
 			var save = function() {
-				MAINZED.amt.save(location.reload);
+				MAINZED.amt.save(function() {
+					location.reload();
+				});
 			}
 			var openModal = function(id,type) {
 				$("#uri").val("");
@@ -156,7 +158,7 @@
 							var w = 0;
 							if (id) {
 								for (var j in graph.edges) {
-									if (graph.edges[j].role == $("#role").val() && graph.edges[j].from == id && graph.edges[j].from == graph.nodes[i].id)
+									if (graph.edges[j].role == $("#role").val() && graph.edges[j].from == id && graph.edges[j].to == graph.nodes[i].id)
 										w = graph.edges[j].width;
 								}
 							}
@@ -170,27 +172,47 @@
 				$("#role").material_select();
 				$("#modal").modal("open");
 			};
+			var remove = function() {
+				var from = $("#uri").val();
+				if (from) {
+					$("#save").show();
+					if (!MAINZED.amt.removeIndividual(from)) {
+						alert("Inkonsistenz vorhanden");
+						$("#save").hide();
+					}
+				}
+				$("#store").show();
+				$("#modal").modal("close");
+				$("#label").val("");
+				update();
+			}
 			var cancelEdit = function() {
 				$("#modal").modal("close");
-			}
+				$("#label").val("");
+			};
 			var saveEdit = function() {
 				var role = $("#role").val();
 				var from = $("#uri").val();
 				if (!from) {
 					from = MAINZED.amt.addIndividual($("#label").val(),$("#concept").val());
 				}
+				$("#save").show();
 				$("#table tr td input").each(function(i) {
 					var w = Math.floor(Number($(this).val()));
-					if (w>0 && w<=100) {
-						var to = $(this).attr("name");
-						MAINZED.amt.editAssertion(role,from,to,w/100);
+					var to = $(this).attr("name");
+					var inconsistent = false;
+					if (!MAINZED.amt.editAssertion(role,from,to,w/100)) {
+						if (!inconsistent)
+							alert("Inkonsistenz vorhanden");
+						inconsistent = true;
+						$("#save").hide();
 					}
 				});
+				$("#store").show();
 				$("#modal").modal("close");
 				$("#label").val("");
-				$("#save").show();
 				update();
-			}
+			};
 			$(function() {
 				MAINZED.amt = new AMT();
 				MAINZED.amt.load(function() {
@@ -210,12 +232,21 @@
 					});
 					update();
 				});
-				$(".modal").modal({
+				$("#modal").modal({
 					complete: cancelEdit
 				});
+				$("#info").modal({
+					complete: function() {info(true);}
+				});
 				$(".edit").hide();
-				$("#save").hide();
+				$("#store").hide();
 			});
+			var info = function(close) {
+				if (close)
+					$("#info").modal("close");
+				else
+					$("#info").modal("open");
+			}
 		</script>
 	</head>
 
@@ -225,15 +256,16 @@
 			<div class="container">
 				<div class="row">
 					<div class="col s6 left-align">
-						<b class="description">AMT. Academic Meta Tool.</b>
+						<b class="description">AMT. Academic Meta Tool. Alpha-Test.</b>
+						<a class="btn-floating btn-large blue" onclick="info()" title="Information"><i class="material-icons">info</i></a>
 					</div>
 					<div id="buttons" class="col s3 right-align">
-						<a class="btn-floating btn-large edit blue" onclick="edit(false)" title="Close edit mode"><i class="material-icons">edit</i></a>
-						<a class="btn-floating btn-large normal green" onclick="edit(true)" title="Open edit mode"><i class="material-icons">edit</i></a>
+						<a class="btn-floating btn-large edit blue" onclick="edit()" title="Close edit mode"><i class="material-icons">cancel</i></a>
+						<a class="btn-floating btn-large normal blue" onclick="edit()" title="Open edit mode"><i class="material-icons">edit</i></a>
 					</div>
-					<div id="save" class="col s3 right-align">
-						<a class="btn-floating btn-large edit red" onclick="cancel()" title="Cancel changes"><i class="material-icons">cancel</i></a>
-						<a class="btn-floating btn-large normal black" onclick="save()" title="Save changes"><i class="material-icons">save</i></a>
+					<div id="store" class="col s3 right-align">
+						<div><a class="btn-floating btn-large edit red" onclick="cancel()" title="Cancel changes"><i class="material-icons">cancel</i></a></div>
+						<div id="save"><a class="btn-floating btn-large normal black" onclick="save()" title="Save changes"><i class="material-icons">save</i></a></div>
 					</div>
 				</div>
 			</div>
@@ -248,7 +280,8 @@
 						<label for="label">Label</label>
 					</div>
 					<div class="col s3 right-align">
-						<a class="btn-floating btn-large red" onclick="cancelEdit()" title="Cancel changes"><i class="material-icons">cancel</i></a>
+						<a class="btn-floating btn-large red" onclick="remove()" title="Delete node"><i class="material-icons">delete</i></a>
+						<a class="btn-floating btn-large blue" onclick="cancelEdit()" title="Cancel changes"><i class="material-icons">cancel</i></a>
 						<a class="btn-floating btn-large green" onclick="saveEdit()" title="Save changes"><i class="material-icons">save</i></a>
 					</div>
 				</div>
@@ -266,6 +299,11 @@
 						<tbody id="table"></tbody>
 					</table>
 				</div>
+			</div>
+		</div>
+		<div id="info" class="modal">
+			<div class="modal-content">
+				TODO
 			</div>
 		</div>
 	</body>
