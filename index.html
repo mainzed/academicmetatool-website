@@ -270,7 +270,7 @@
 						<a class="btn-floating btn-large edit blue" onclick="edit()" title="Close edit mode"><i class="material-icons">cancel</i></a>
 						<a class="btn-floating btn-large normal blue" onclick="edit()" title="Open edit mode"><i class="material-icons">edit</i></a>
 					</div>
-					<div id="store" class="col s3 right-align">
+					<div id="store" class="col s3 left-align">
 						<div><a class="btn-floating btn-large edit red" onclick="cancel()" title="Cancel changes"><i class="material-icons">cancel</i></a></div>
 						<div id="save"><a class="btn-floating btn-large normal black" onclick="save()" title="Save changes"><i class="material-icons">save</i></a></div>
 					</div>
@@ -310,7 +310,18 @@
 		</div>
 		<div id="info" class="modal">
 			<div class="modal-content">
-				TODO
+				<h4>AMT. Academic Meta Tool.</h4>
+				<p>&nbsp;</p>
+				<p>AMT bietet die Möglichkeit sämtlichen Kanten eine Gewichtung hinzuzufügen, um dadurch die Vagheit dieser Kante auszudrücken. Eine Beziehung zwischen zwei Knoten besteht also nur zu einem gewissen Grad. Dieser Grad, d.h. das Kantengewicht, wird üblicherweise in Prozent angegeben. AMT beinhaltet zusätzlich ein Verfahren, mit dem - unter Zuhilfenahme einer vordefinierten Ontologie - aus vorhandenen graphbasierten Daten automatisch Schlussfolgerungen gezogen werden können (Reasoning). Ein Prototyp des AMTs steht hier als Web-Anwendung zur Verfügung. In einer entwickelten Test-Ontologie können Personen und Interessen und deren Beziehungen in einem gewissen Grad zueinander modelliert werden. Diese Ontologie beinhaltet neben den genannten beiden Klassen fünf weitere Relationen, so dass Personen und Interessen miteinander in Beziehung gesetzt werden können. Außerdem enthält die Ontologie 11 Axiome, um automatisiert aus bestehenden Beziehungen neue Beziehungen generieren zu können.</p>
+				<p>&nbsp;</p>
+				<p><b>Farben</b></p>
+				<p><i>Knoten</i></p>
+				<p>blau: Person; rot: Interesse</p>
+				<p><i>Kanten</i></p>
+				<p>blau, gestrichelt: connectedWith; grün, gerichtet: interestedIn; rot: broaderThan/narrowerThan; rot, gestrichelt: matchWith</p>
+				<p>&nbsp;</p>
+				<p><b>Funktionsweise</b></p>
+				<p>Editieren klicken. Zum Beispiel neue Person/Interesse anlegen (Klick auf den grünen Button). Name angeben und ggf. eine Kantenbeschriftung (Rolle) wählen und danach die Gewichtung einstellen. Zum Speichern klicken. Zum Bearbeiten eines Knoten, diesen im Editiermodul durch Klick auswählen. Zum Beenden den blauen close Knopf drücken. Zum Speichern den schwarzen Speichern Button drücken.</p>
 			</div>
 		</div>
 	</body>
