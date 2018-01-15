@@ -60,16 +60,23 @@ var AMT = function() {
 		STORE = store;
 	}
 	this.load = function(callback) {
+		loadGraph(function(graph) {
+			GRAPH.edited = copy(graph);
+			GRAPH.original = copy(graph);
+			callback();
+		});
+	}
+	var loadGraph = function(callback) {
 		
 		var todo = 5;
+		var graph = {};
 		
 		// load concepts
 		queryStore("SELECT ?concept ?label ?placeholder WHERE { ?concept rdf:type amt:Concept . ?concept rdfs:label ?label . ?concept amt:placeholder ?placeholder . }",function(data) {
 			CONCEPTS = data;
 			--todo;
 			if (todo == 0 && callback) {
-				GRAPH.edited = copy(GRAPH.original);
-				callback();
+				callback(graph);
 			}
 		});
 		
@@ -78,28 +85,25 @@ var AMT = function() {
 			ROLES = data;
 			--todo;
 			if (todo == 0 && callback) {
-				GRAPH.edited = copy(GRAPH.original);
-				callback();
+				callback(graph);
 			}
 		});
 		
 		// load nodes
 		queryStore("SELECT ?id ?label ?concept WHERE { ?concept rdf:type amt:Concept . ?id amt:instanceOf ?concept . ?id rdfs:label ?label . }",function(data) {
-			GRAPH.original.nodes = data;
+			graph.nodes = data;
 			--todo;
 			if (todo == 0 && callback) {
-				GRAPH.edited = copy(GRAPH.original);
-				callback();
+				callback(graph);
 			}
 		});
 		
 		// load edges
 		queryStore("SELECT ?role ?from ?to ?width WHERE { ?role rdf:type amt:Role . ?stmt rdf:subject ?from . ?stmt rdf:predicate ?role . ?stmt rdf:object ?to . ?stmt amt:weight ?width . }",function(data) {
-			GRAPH.original.edges = data;
+			graph.edges = data;
 			--todo;
 			if (todo == 0 && callback) {
-				GRAPH.edited = copy(GRAPH.original);
-				callback();
+				callback(graph);
 			}
 		});
 		
@@ -116,29 +120,49 @@ var AMT = function() {
 			}
 			--todo;
 			if (todo == 0 && callback) {
-				GRAPH.edited = copy(GRAPH.original);
-				callback();
+				callback(graph);
 			}
 		});
 		
 	};
 	this.save = function(callback) {
-		var insert = "";
-		for (var i in GRAPH.edited.nodes) {
-			insert += "<"+GRAPH.edited.nodes[i].id+"> amt:instanceOf <"+GRAPH.edited.nodes[i].concept+"> . ";
-			insert += "<"+GRAPH.edited.nodes[i].id+"> rdfs:label \""+GRAPH.edited.nodes[i].label+"\" . ";
-		}
-		for (var i in GRAPH.edited.edges) {
-			insert += "_:"+i+" rdf:subject <"+GRAPH.edited.edges[i].from+"> . ";
-			insert += "_:"+i+" rdf:predicate <"+GRAPH.edited.edges[i].role+"> . ";
-			insert += "_:"+i+" rdf:object <"+GRAPH.edited.edges[i].to+"> . ";
-			insert += "_:"+i+" amt:weight "+GRAPH.edited.edges[i].width+" . ";
-		}
-		var query = "";
-		query += " DELETE { ?id amt:instanceOf ?concept . ?id rdfs:label ?label . } WHERE { ?concept rdf:type amt:Concept . ?id amt:instanceOf ?concept . ?id rdfs:label ?label . } ; ";
-		query += " DELETE { ?stmt rdf:subject ?from . ?stmt rdf:predicate ?role . ?stmt rdf:object ?to . ?stmt amt:weight ?width . } WHERE { ?role rdf:type amt:Role . ?stmt rdf:subject ?from . ?stmt rdf:predicate ?role . ?stmt rdf:object ?to . ?stmt amt:weight ?width . } ; ";
-		query += " INSERT { "+insert+" } WHERE { }";
-		updateStore(query,callback);
+		loadGraph(function(graph) {
+			var modified = false;
+			for (var i in GRAPH.original.nodes) {
+				var contains = false;
+				for (var j in graph.nodes) {
+					if (GRAPH.original.nodes[i].id == graph.nodes[j].id) {
+						contains = true;
+					}
+				}
+				if (!contains) {
+					modified = true;
+				}
+			}
+			if (modified) {
+				alert("Graph ist nicht aktuell und muss nun synchronisiert werden");
+				// TODO: merge
+				callback();
+			}
+			else {
+				var insert = "";
+				for (var i in GRAPH.edited.nodes) {
+					insert += "<"+GRAPH.edited.nodes[i].id+"> amt:instanceOf <"+GRAPH.edited.nodes[i].concept+"> . ";
+					insert += "<"+GRAPH.edited.nodes[i].id+"> rdfs:label \""+GRAPH.edited.nodes[i].label+"\" . ";
+				}
+				for (var i in GRAPH.edited.edges) {
+					insert += "_:"+i+" rdf:subject <"+GRAPH.edited.edges[i].from+"> . ";
+					insert += "_:"+i+" rdf:predicate <"+GRAPH.edited.edges[i].role+"> . ";
+					insert += "_:"+i+" rdf:object <"+GRAPH.edited.edges[i].to+"> . ";
+					insert += "_:"+i+" amt:weight "+GRAPH.edited.edges[i].width+" . ";
+				}
+				var query = "";
+				query += " DELETE { ?id amt:instanceOf ?concept . ?id rdfs:label ?label . } WHERE { ?concept rdf:type amt:Concept . ?id amt:instanceOf ?concept . ?id rdfs:label ?label . } ; ";
+				query += " DELETE { ?stmt rdf:subject ?from . ?stmt rdf:predicate ?role . ?stmt rdf:object ?to . ?stmt amt:weight ?width . } WHERE { ?role rdf:type amt:Role . ?stmt rdf:subject ?from . ?stmt rdf:predicate ?role . ?stmt rdf:object ?to . ?stmt amt:weight ?width . } ; ";
+				query += " INSERT { "+insert+" } WHERE { }";
+				updateStore(query,callback);
+			}
+		});
 	};
 	
 	var copy = function(graph) {

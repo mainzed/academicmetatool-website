@@ -50,6 +50,9 @@
 					console.log(updated);
 					MAINZED.graph.edges.clear();
 					MAINZED.graph.nodes.clear();
+					/*
+						Hier wird spezifiziert, wie die Knoten aussehen sollen
+					*/
 					for (var i in updated.nodes) {
 						updated.nodes[i].length = 10/updated.nodes[i].width;
 						if (!MAINZED.edit) {
@@ -64,6 +67,9 @@
 							updated.nodes[i].shape = "ellipse";
 						}
 					}
+					/*
+						Hier wird spezifiziert wie die Kanten aussehen sollen, welche angezeigt werden sollen, etc
+					*/
 					for (var i in updated.edges) {
 						updated.edges[i].arrowStrikethrough = false;
 						updated.edges[i].chosen = false;
@@ -81,18 +87,19 @@
 							updated.edges[i].color = {color:"green", highlight:"black"};
 							updated.edges[i].arrows = "to";
 						}
-						if (updated.edges[i].role.includes("narrowerThan")) {
-							updated.edges[i].color = {color:"red", highlight:"black"};
+						if (updated.edges[i].role.includes("interestOf")) {
+							updated.edges[i].color = {color:"green", highlight:"black"};
 							updated.edges[i].arrows = "from";
 							updated.edges[i].hidden = !MAINZED.edit;
 						}
-						if (updated.edges[i].role.includes("matchWith")) {
-							updated.edges[i].color = {color:"red", highlight:"black"};
-							updated.edges[i].dashes = true;
-						}
-						if (updated.edges[i].role.includes("broaderThan")) {
+						if (updated.edges[i].role.includes("superInterestOf")) {
 							updated.edges[i].color = {color:"red", highlight:"black"};
 							updated.edges[i].arrows = "to";
+						}
+						if (updated.edges[i].role.includes("subInterestOf")) {
+							updated.edges[i].color = {color:"red", highlight:"black"};
+							updated.edges[i].arrows = "from";
+							updated.edges[i].hidden = !MAINZED.edit;
 						}
 					}
 					MAINZED.graph.nodes.update(updated.nodes);
