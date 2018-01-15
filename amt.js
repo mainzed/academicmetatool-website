@@ -17,7 +17,7 @@ var AMT = function() {
 	var AXIOMS = [];
 	
 	var STORE = "http://higeomes.i3mainz.hs-mainz.de/openrdf-sesame/repositories/mainzed";
-	var PREFIX = "http://www.academic-meta-tool.org/";
+	var PREFIX = "http://www.academic-meta-tool.xyz/";
 	
 	var queryStore = function(query,callback) {
 		$.ajax({

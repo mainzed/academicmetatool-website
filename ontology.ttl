@@ -1,5 +1,5 @@
 @prefix mainzed: <http://mainzed.org/> .
-@prefix amt: <http://www.academic-meta-tool.org/> .
+@prefix amt: <http://www.academic-meta-tool.xyz/> .
 
 mainzed:Person rdf:type amt:Concept .
 mainzed:Person rdfs:label "Person" .

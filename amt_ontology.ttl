@@ -1,4 +1,4 @@
-@prefix amt: <http://www.academic-meta-tool.org/> .
+@prefix amt: <http://www.academic-meta-tool.xyz/> .
 
 amt:Concept rdfs:subClassOf rdfs:Class .
 # rdfs:label -> rdfs:Literal .
