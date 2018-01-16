@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 	<head>
-		<title>Samian Punzen/Töpfer</title>
+		<title>Beispiel Samian Research Punzen-Töpfer-Netzwerk</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<script type="text/javascript" src="amt.js"></script>
 		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -267,8 +267,8 @@
 			<div class="container">
 				<div class="row">
 					<div class="col s6 left-align">
-						<b class="description">AMT. Academic Meta Tool. Alpha-Test.</b>
-						<a class="btn-floating btn-large blue" onclick="info()" title="Information"><i class="material-icons">info</i></a>
+						<a class="btn-floating btn-large black" onclick="info()" title="Information"><i class="material-icons">info</i></a>
+						<b class="description">AMT. Beispiel Samian Research Punzen-Töpfer-Netzwerk.</b>
 					</div>
 					<div id="buttons" class="col s3 right-align">
 						<a class="btn-floating btn-large edit blue" onclick="edit()" title="Close edit mode"><i class="material-icons">cancel</i></a>
@@ -315,17 +315,30 @@
 		<div id="info" class="modal">
 			<div class="modal-content">
 				<h4>AMT. Academic Meta Tool.</h4>
-				<p>&nbsp;</p>
-				<p>AMT bietet die Möglichkeit sämtlichen Kanten eine Gewichtung hinzuzufügen, um dadurch die Vagheit dieser Kante auszudrücken. Eine Beziehung zwischen zwei Knoten besteht also nur zu einem gewissen Grad. Dieser Grad, d.h. das Kantengewicht, wird üblicherweise in Prozent angegeben. AMT beinhaltet zusätzlich ein Verfahren, mit dem - unter Zuhilfenahme einer vordefinierten Ontologie - aus vorhandenen graphbasierten Daten automatisch Schlussfolgerungen gezogen werden können (Reasoning). Ein Prototyp des AMTs steht hier als Web-Anwendung zur Verfügung. In einer entwickelten Test-Ontologie können Personen und Interessen und deren Beziehungen in einem gewissen Grad zueinander modelliert werden. Diese Ontologie beinhaltet neben den genannten beiden Klassen fünf weitere Relationen, so dass Personen und Interessen miteinander in Beziehung gesetzt werden können. Außerdem enthält die Ontologie 11 Axiome, um automatisiert aus bestehenden Beziehungen neue Beziehungen generieren zu können.</p>
-				<p>&nbsp;</p>
-				<p><b>Farben</b></p>
-				<p><i>Knoten</i></p>
-				<p>blau: Person; rot: Interesse</p>
-				<p><i>Kanten</i></p>
-				<p>blau, gestrichelt: connectedWith; grün, gerichtet: interestedIn; rot: broaderThan/narrowerThan; rot, gestrichelt: matchWith</p>
-				<p>&nbsp;</p>
-				<p><b>Funktionsweise</b></p>
-				<p>Editieren klicken. Zum Beispiel neue Person/Interesse anlegen (Klick auf den grünen Button). Name angeben und ggf. eine Kantenbeschriftung (Rolle) wählen und danach die Gewichtung einstellen. Zum Speichern klicken. Zum Bearbeiten eines Knoten, diesen im Editiermodul durch Klick auswählen. Zum Beenden den blauen close Knopf drücken. Zum Speichern den schwarzen Speichern Button drücken.</p>
+				<h5>Beispiel Samian Research Punzen-Töpfer-Netzwerk.</h5>
+				<br>
+				<p><b>Über AMT</b></p>
+				<p>AMT bietet die Möglichkeit sämtlichen Kanten eine Gewichtung hinzuzufügen, um dadurch die Vagheit dieser Kante auszudrücken. Eine Beziehung zwischen zwei Knoten besteht also nur zu einem gewissen Grad. Dieser Grad, d.h. das Kantengewicht, wird üblicherweise in Prozent angegeben. AMT beinhaltet zusätzlich ein Verfahren, mit dem - unter Zuhilfenahme einer vordefinierten Ontologie - aus vorhandenen graphbasierten Daten automatisch Schlussfolgerungen gezogen werden können (Reasoning). Ein Prototyp des AMTs steht hier als Web-Anwendung zur Verfügung. In einer entwickelten Test-Ontologie können <b>Töpfer</b> und <b>Punzen</b> und deren Beziehungen in einem gewissen Grad zueinander modelliert werden. Diese Ontologie beinhaltet neben den genannten beiden Klassen weitere Relationen, so dass Personen und Interessen miteinander in Beziehung gesetzt werden können. Außerdem enthält die Ontologie Axiome, um automatisiert aus bestehenden Beziehungen neue Beziehungen generieren zu können.</p>
+				<br>
+				<p><b>Knoten</b></p>
+				<p style="margin-top: 10px">
+					<div class="chip blue lighten-4">Töpfer</div>
+					<div class="chip red lighten-4">Punze</div>
+				</p>
+				<br>
+				<p><b>Kanten</b></p>
+				<p style="margin-top: 10px">
+					<div class="chip blue lighten-4">is connected with, dashed</div>
+					<div class="chip green lighten-4">is the creator of, arrow</div>
+					<div class="chip green lighten-4">was created by, arrow</div>
+					<div class="chip red lighten-4">ist eine Mutterpunze von, arrow</div>
+					<div class="chip red lighten-4">ist eine Tochterpunze von, arrow</div>
+					<div class="chip red lighten-4">arbeitet in Werkstatt mit Punze, dashed</div>
+				</p>
+				<br>
+				<p><b>About the Creators and the Data</b></p>
+				<p>* AMT Software by Florian Thiery, Martin Unold (i3mainz).
+				<br>* Data by Dr. Allard Mees, Florian Thiery (RGZM).</p>
 			</div>
 		</div>
 	</body>
