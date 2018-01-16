@@ -38,10 +38,10 @@ samian:istTochterpunzeVon rdfs:label "ist eine Tochterpunze von" .
 samian:istTochterpunzeVon rdfs:domain samian:Punze .
 samian:istTochterpunzeVon rdfs:range samian:Punze .
 
-samian:arbeitetInWerkstattVon rdf:type amt:Role .
-samian:arbeitetInWerkstattVon rdfs:label "arbeitet in Werkstatt von" .
-samian:arbeitetInWerkstattVon rdfs:domain samian:Toepfer .
-samian:arbeitetInWerkstattVon rdfs:range samian:Punze .
+samian:arbeitetInWerkstattMit rdf:type amt:Role .
+samian:arbeitetInWerkstattMit rdfs:label "arbeitet in Werkstatt mit Punze" .
+samian:arbeitetInWerkstattMit rdfs:domain samian:Toepfer .
+samian:arbeitetInWerkstattMit rdfs:range samian:Punze .
 
 # axioms
 
@@ -74,7 +74,7 @@ samian:Axiom04 amt:logic amt:LukasiewiczLogic .
 samian:Axiom05 rdf:type amt:RoleChainAxiom .
 samian:Axiom05 amt:antecedent1 samian:isCreatorOf .
 samian:Axiom05 amt:antecedent2 samian:istTochterpunzeVon .
-samian:Axiom05 amt:consequent samian:arbeitetInWerkstattVon .
+samian:Axiom05 amt:consequent samian:arbeitetInWerkstattMit .
 samian:Axiom05 amt:logic amt:GoedelLogic .
 
 # InverseAxiom
