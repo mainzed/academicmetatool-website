@@ -1,0 +1,108 @@
+@prefix samian: <http://rgzm.de/samian/> .
+@prefix amt: <http://www.academic-meta-tool.xyz/> .
+
+# concepts
+
+samian:Toepfer rdf:type amt:Concept .
+samian:Toepfer rdfs:label "Toepfer" .
+samian:Toepfer amt:placeholder "Name" .
+
+samian:Punze rdf:type amt:Concept .
+samian:Punze rdfs:label "Punze" .
+samian:Punze amt:placeholder "Punze" .
+
+# roles
+
+samian:isConnectedWith rdf:type amt:Role .
+samian:isConnectedWith rdfs:label "is connected with" .
+samian:isConnectedWith rdfs:domain samian:Toepfer .
+samian:isConnectedWith rdfs:range samian:Toepfer .
+
+samian:isCreatorOf rdf:type amt:Role .
+samian:isCreatorOf rdfs:label "is the creator of" .
+samian:isCreatorOf rdfs:domain samian:Toepfer .
+samian:isCreatorOf rdfs:range samian:Punze .
+
+samian:wasCreatedBy rdf:type amt:Role .
+samian:wasCreatedBy rdfs:label "was created by" .
+samian:wasCreatedBy rdfs:domain samian:Punze .
+samian:wasCreatedBy rdfs:range samian:Toepfer .
+
+samian:istMutterpunzeVon rdf:type amt:Role .
+samian:istMutterpunzeVon rdfs:label "ist eine Mutterpunze von" .
+samian:istMutterpunzeVon rdfs:domain samian:Punze .
+samian:istMutterpunzeVon rdfs:range samian:Punze .
+
+samian:istTochterpunzeVon rdf:type amt:Role .
+samian:istTochterpunzeVon rdfs:label "ist eine Tochterpunze von" .
+samian:istTochterpunzeVon rdfs:domain samian:Punze .
+samian:istTochterpunzeVon rdfs:range samian:Punze .
+
+samian:arbeitetInWerkstattVon rdf:type amt:Role .
+samian:arbeitetInWerkstattVon rdfs:label "arbeitet in Werkstatt von" .
+samian:arbeitetInWerkstattVon rdfs:domain samian:Toepfer .
+samian:arbeitetInWerkstattVon rdfs:range samian:Punze .
+
+# axioms
+
+# RoleChainAxiom
+
+samian:Axiom01 rdf:type amt:RoleChainAxiom .
+samian:Axiom01 amt:antecedent1 samian:isConnectedWith .
+samian:Axiom01 amt:antecedent2 samian:isConnectedWith .
+samian:Axiom01 amt:consequent samian:isConnectedWith .
+samian:Axiom01 amt:logic amt:ProductLogic .
+
+samian:Axiom02 rdf:type amt:RoleChainAxiom .
+samian:Axiom02 amt:antecedent1 samian:istTochterpunzeVon .
+samian:Axiom02 amt:antecedent2 samian:istTochterpunzeVon .
+samian:Axiom02 amt:consequent samian:istTochterpunzeVon .
+samian:Axiom02 amt:logic amt:GoedelLogic .
+
+samian:Axiom03 rdf:type amt:RoleChainAxiom .
+samian:Axiom03 amt:antecedent1 samian:istMutterpunzeVon .
+samian:Axiom03 amt:antecedent2 samian:istMutterpunzeVon .
+samian:Axiom03 amt:consequent samian:istMutterpunzeVon .
+samian:Axiom03 amt:logic amt:GoedelLogic .
+
+samian:Axiom04 rdf:type amt:RoleChainAxiom .
+samian:Axiom04 amt:antecedent1 samian:isCreatorOf .
+samian:Axiom04 amt:antecedent2 samian:wasCreatedBy .
+samian:Axiom04 amt:consequent samian:isConnectedWith .
+samian:Axiom04 amt:logic amt:LukasiewiczLogic .
+
+samian:Axiom05 rdf:type amt:RoleChainAxiom .
+samian:Axiom05 amt:antecedent1 samian:isCreatorOf .
+samian:Axiom05 amt:antecedent2 samian:istTochterpunzeVon .
+samian:Axiom05 amt:consequent samian:arbeitetInWerkstattVon .
+samian:Axiom05 amt:logic amt:GoedelLogic .
+
+# InverseAxiom
+
+samian:Axiom06 rdf:type amt:InverseAxiom .
+samian:Axiom06 amt:antecedent samian:istTochterpunzeVon .
+samian:Axiom06 amt:inverse samian:istMutterpunzeVon .
+
+samian:Axiom07 rdf:type amt:InverseAxiom .
+samian:Axiom07 amt:antecedent samian:istMutterpunzeVon .
+samian:Axiom07 amt:inverse samian:istTochterpunzeVon .
+
+samian:Axiom08 rdf:type amt:InverseAxiom .
+samian:Axiom08 amt:antecedent samian:isCreatorOf .
+samian:Axiom08 amt:inverse samian:wasCreatedBy .
+
+samian:Axiom09 rdf:type amt:InverseAxiom .
+samian:Axiom09 amt:antecedent samian:wasCreatedBy .
+samian:Axiom09 amt:inverse samian:isCreatorOf .
+
+samian:Axiom10 rdf:type amt:InverseAxiom .
+samian:Axiom10 amt:antecedent samian:isConnectedWith .
+samian:Axiom10 amt:inverse samian:isConnectedWith .
+
+# SelfDisjointAxiom
+
+samian:Axiom11 rdf:type amt:SelfDisjointAxiom .
+samian:Axiom11 amt:role samian:istTochterpunzeVon .
+
+samian:Axiom12 rdf:type amt:SelfDisjointAxiom .
+samian:Axiom12 amt:role samian:istMutterpunzeVon .
