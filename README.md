@@ -10,6 +10,10 @@ siehe [amt_ontology.ttl](https://github.com/AcademicMetaTool/amt/blob/master/amt
 
 siehe [ontology.ttl](https://github.com/AcademicMetaTool/amt/blob/master/ontology.ttl).
 
+## AMT Playground
+
+siehe [AMT Playground](http://academic-meta-tool.xyz/playground/).
+
 ## Create your own AMT app?
 
 Run `git clone https://github.com/AcademicMetaTool/amt.git` to create a local copy of this repository.
