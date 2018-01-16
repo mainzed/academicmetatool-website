@@ -1,0 +1,261 @@
+<http://www.academic-meta-tool.xyz/Axiom> <http://www.w3.org/2000/01/rdf-schema#subclassOf> <http://www.w3.org/2000/01/rdf-schema#Class> .
+<http://www.academic-meta-tool.xyz/Concept> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2000/01/rdf-schema#Class> .
+<http://www.academic-meta-tool.xyz/DisjointAxiom> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.academic-meta-tool.xyz/IntegrityAxiom> .
+<http://www.academic-meta-tool.xyz/GoedelLogic> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/Logic> .
+<http://www.academic-meta-tool.xyz/InferenceAxiom> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.academic-meta-tool.xyz/Axiom> .
+<http://www.academic-meta-tool.xyz/IntegrityAxiom> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.academic-meta-tool.xyz/Axiom> .
+<http://www.academic-meta-tool.xyz/InverseAxiom> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.academic-meta-tool.xyz/InferenceAxiom> .
+<http://www.academic-meta-tool.xyz/Logic> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/2000/01/rdf-schema#Class> .
+<http://www.academic-meta-tool.xyz/LukasiewiczLogic> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/Logic> .
+<http://www.academic-meta-tool.xyz/ProductLogic> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/Logic> .
+<http://www.academic-meta-tool.xyz/Role> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://www.academic-meta-tool.xyz/RoleChainAxiom> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.academic-meta-tool.xyz/InferenceAxiom> .
+<http://www.academic-meta-tool.xyz/SelfDisjointAxiom> <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.academic-meta-tool.xyz/IntegrityAxiom> .
+<http://rgzm.de/samian/Axiom01> <http://www.academic-meta-tool.xyz/antecedent1> <http://rgzm.de/samian/isConnectedWith> .
+<http://rgzm.de/samian/Axiom01> <http://www.academic-meta-tool.xyz/antecedent2> <http://rgzm.de/samian/isConnectedWith> .
+<http://rgzm.de/samian/Axiom01> <http://www.academic-meta-tool.xyz/consequent> <http://rgzm.de/samian/isConnectedWith> .
+<http://rgzm.de/samian/Axiom01> <http://www.academic-meta-tool.xyz/logic> <http://www.academic-meta-tool.xyz/ProductLogic> .
+<http://rgzm.de/samian/Axiom01> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/RoleChainAxiom> .
+<http://rgzm.de/samian/Axiom02> <http://www.academic-meta-tool.xyz/antecedent1> <http://rgzm.de/samian/istTochterpunzeVon> .
+<http://rgzm.de/samian/Axiom02> <http://www.academic-meta-tool.xyz/antecedent2> <http://rgzm.de/samian/istTochterpunzeVon> .
+<http://rgzm.de/samian/Axiom02> <http://www.academic-meta-tool.xyz/consequent> <http://rgzm.de/samian/istTochterpunzeVon> .
+<http://rgzm.de/samian/Axiom02> <http://www.academic-meta-tool.xyz/logic> <http://www.academic-meta-tool.xyz/GoedelLogic> .
+<http://rgzm.de/samian/Axiom02> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/RoleChainAxiom> .
+<http://rgzm.de/samian/Axiom03> <http://www.academic-meta-tool.xyz/antecedent1> <http://rgzm.de/samian/istMutterpunzeVon> .
+<http://rgzm.de/samian/Axiom03> <http://www.academic-meta-tool.xyz/antecedent2> <http://rgzm.de/samian/istMutterpunzeVon> .
+<http://rgzm.de/samian/Axiom03> <http://www.academic-meta-tool.xyz/consequent> <http://rgzm.de/samian/istMutterpunzeVon> .
+<http://rgzm.de/samian/Axiom03> <http://www.academic-meta-tool.xyz/logic> <http://www.academic-meta-tool.xyz/GoedelLogic> .
+<http://rgzm.de/samian/Axiom03> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/RoleChainAxiom> .
+<http://rgzm.de/samian/Axiom04> <http://www.academic-meta-tool.xyz/antecedent1> <http://rgzm.de/samian/isCreatorOf> .
+<http://rgzm.de/samian/Axiom04> <http://www.academic-meta-tool.xyz/antecedent2> <http://rgzm.de/samian/wasCreatedBy> .
+<http://rgzm.de/samian/Axiom04> <http://www.academic-meta-tool.xyz/consequent> <http://rgzm.de/samian/isConnectedWith> .
+<http://rgzm.de/samian/Axiom04> <http://www.academic-meta-tool.xyz/logic> <http://www.academic-meta-tool.xyz/LukasiewiczLogic> .
+<http://rgzm.de/samian/Axiom04> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/RoleChainAxiom> .
+<http://rgzm.de/samian/Axiom05> <http://www.academic-meta-tool.xyz/antecedent1> <http://rgzm.de/samian/isCreatorOf> .
+<http://rgzm.de/samian/Axiom05> <http://www.academic-meta-tool.xyz/antecedent2> <http://rgzm.de/samian/istTochterpunzeVon> .
+<http://rgzm.de/samian/Axiom05> <http://www.academic-meta-tool.xyz/consequent> <http://rgzm.de/samian/arbeitetInWerkstattVon> .
+<http://rgzm.de/samian/Axiom05> <http://www.academic-meta-tool.xyz/logic> <http://www.academic-meta-tool.xyz/GoedelLogic> .
+<http://rgzm.de/samian/Axiom05> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/RoleChainAxiom> .
+<http://rgzm.de/samian/Axiom06> <http://www.academic-meta-tool.xyz/antecedent> <http://rgzm.de/samian/istTochterpunzeVon> .
+<http://rgzm.de/samian/Axiom06> <http://www.academic-meta-tool.xyz/inverse> <http://rgzm.de/samian/istMutterpunzeVon> .
+<http://rgzm.de/samian/Axiom06> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/InverseAxiom> .
+<http://rgzm.de/samian/Axiom07> <http://www.academic-meta-tool.xyz/antecedent> <http://rgzm.de/samian/istMutterpunzeVon> .
+<http://rgzm.de/samian/Axiom07> <http://www.academic-meta-tool.xyz/inverse> <http://rgzm.de/samian/istTochterpunzeVon> .
+<http://rgzm.de/samian/Axiom07> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/InverseAxiom> .
+<http://rgzm.de/samian/Axiom08> <http://www.academic-meta-tool.xyz/antecedent> <http://rgzm.de/samian/isCreatorOf> .
+<http://rgzm.de/samian/Axiom08> <http://www.academic-meta-tool.xyz/inverse> <http://rgzm.de/samian/wasCreatedBy> .
+<http://rgzm.de/samian/Axiom08> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/InverseAxiom> .
+<http://rgzm.de/samian/Axiom09> <http://www.academic-meta-tool.xyz/antecedent> <http://rgzm.de/samian/wasCreatedBy> .
+<http://rgzm.de/samian/Axiom09> <http://www.academic-meta-tool.xyz/inverse> <http://rgzm.de/samian/isCreatorOf> .
+<http://rgzm.de/samian/Axiom09> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/InverseAxiom> .
+<http://rgzm.de/samian/Axiom10> <http://www.academic-meta-tool.xyz/antecedent> <http://rgzm.de/samian/isConnectedWith> .
+<http://rgzm.de/samian/Axiom10> <http://www.academic-meta-tool.xyz/inverse> <http://rgzm.de/samian/isConnectedWith> .
+<http://rgzm.de/samian/Axiom10> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/InverseAxiom> .
+<http://rgzm.de/samian/Axiom11> <http://www.academic-meta-tool.xyz/role> <http://rgzm.de/samian/istTochterpunzeVon> .
+<http://rgzm.de/samian/Axiom11> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/SelfDisjointAxiom> .
+<http://rgzm.de/samian/Axiom12> <http://www.academic-meta-tool.xyz/role> <http://rgzm.de/samian/istMutterpunzeVon> .
+<http://rgzm.de/samian/Axiom12> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/SelfDisjointAxiom> .
+<http://rgzm.de/samian/Punze> <http://www.academic-meta-tool.xyz/placeholder> "Punze" .
+<http://rgzm.de/samian/Punze> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/Concept> .
+<http://rgzm.de/samian/Punze> <http://www.w3.org/2000/01/rdf-schema#label> "Punze" .
+<http://rgzm.de/samian/Toepfer> <http://www.academic-meta-tool.xyz/placeholder> "Name" .
+<http://rgzm.de/samian/Toepfer> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/Concept> .
+<http://rgzm.de/samian/Toepfer> <http://www.w3.org/2000/01/rdf-schema#label> "Toepfer" .
+<http://rgzm.de/samian/arbeitetInWerkstattVon> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/Role> .
+<http://rgzm.de/samian/arbeitetInWerkstattVon> <http://www.w3.org/2000/01/rdf-schema#domain> <http://rgzm.de/samian/Toepfer> .
+<http://rgzm.de/samian/arbeitetInWerkstattVon> <http://www.w3.org/2000/01/rdf-schema#label> "arbeitet in Werkstatt von" .
+<http://rgzm.de/samian/arbeitetInWerkstattVon> <http://www.w3.org/2000/01/rdf-schema#range> <http://rgzm.de/samian/Punze> .
+<http://rgzm.de/samian/isConnectedWith> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/Role> .
+<http://rgzm.de/samian/isConnectedWith> <http://www.w3.org/2000/01/rdf-schema#domain> <http://rgzm.de/samian/Toepfer> .
+<http://rgzm.de/samian/isConnectedWith> <http://www.w3.org/2000/01/rdf-schema#label> "is connected with" .
+<http://rgzm.de/samian/isConnectedWith> <http://www.w3.org/2000/01/rdf-schema#range> <http://rgzm.de/samian/Toepfer> .
+<http://rgzm.de/samian/isCreatorOf> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/Role> .
+<http://rgzm.de/samian/isCreatorOf> <http://www.w3.org/2000/01/rdf-schema#domain> <http://rgzm.de/samian/Toepfer> .
+<http://rgzm.de/samian/isCreatorOf> <http://www.w3.org/2000/01/rdf-schema#label> "is the creator of" .
+<http://rgzm.de/samian/isCreatorOf> <http://www.w3.org/2000/01/rdf-schema#range> <http://rgzm.de/samian/Punze> .
+<http://rgzm.de/samian/istMutterpunzeVon> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/Role> .
+<http://rgzm.de/samian/istMutterpunzeVon> <http://www.w3.org/2000/01/rdf-schema#domain> <http://rgzm.de/samian/Punze> .
+<http://rgzm.de/samian/istMutterpunzeVon> <http://www.w3.org/2000/01/rdf-schema#label> "ist eine Mutterpunze von" .
+<http://rgzm.de/samian/istMutterpunzeVon> <http://www.w3.org/2000/01/rdf-schema#range> <http://rgzm.de/samian/Punze> .
+<http://rgzm.de/samian/istTochterpunzeVon> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/Role> .
+<http://rgzm.de/samian/istTochterpunzeVon> <http://www.w3.org/2000/01/rdf-schema#domain> <http://rgzm.de/samian/Punze> .
+<http://rgzm.de/samian/istTochterpunzeVon> <http://www.w3.org/2000/01/rdf-schema#label> "ist eine Tochterpunze von" .
+<http://rgzm.de/samian/istTochterpunzeVon> <http://www.w3.org/2000/01/rdf-schema#range> <http://rgzm.de/samian/Punze> .
+<http://rgzm.de/samian/wasCreatedBy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.academic-meta-tool.xyz/Role> .
+<http://rgzm.de/samian/wasCreatedBy> <http://www.w3.org/2000/01/rdf-schema#domain> <http://rgzm.de/samian/Punze> .
+<http://rgzm.de/samian/wasCreatedBy> <http://www.w3.org/2000/01/rdf-schema#label> "was created by" .
+<http://rgzm.de/samian/wasCreatedBy> <http://www.w3.org/2000/01/rdf-schema#range> <http://rgzm.de/samian/Toepfer> .
+_:node1bsibmuf2x38 <http://www.academic-meta-tool.xyz/weight> "0.9"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+_:node1bsibmuf2x38 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/1357cb59-abda-470b-8174-06b466ef76e5> .
+_:node1bsibmuf2x38 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/istMutterpunzeVon> .
+_:node1bsibmuf2x38 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/4d4b312a-d9ce-4bb5-a450-961142bcbb83> .
+_:node1bsibmuf2x39 <http://www.academic-meta-tool.xyz/weight> "0.9"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+_:node1bsibmuf2x39 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/7269a79d-0ae1-44f3-9a7a-3ebd33e74c8d> .
+_:node1bsibmuf2x39 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/istMutterpunzeVon> .
+_:node1bsibmuf2x39 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/3c76bff9-f5ec-47ff-99f7-41f123db8779> .
+_:node1bsibmuf2x40 <http://www.academic-meta-tool.xyz/weight> "0.9"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+_:node1bsibmuf2x40 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/7db7c0fc-f7e4-43b9-8065-4179a932a94b> .
+_:node1bsibmuf2x40 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/istMutterpunzeVon> .
+_:node1bsibmuf2x40 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/4ff4e784-17a7-46d9-acf9-5bf1f452dba6> .
+_:node1bsibmuf2x41 <http://www.academic-meta-tool.xyz/weight> "0.91"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+_:node1bsibmuf2x41 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/ebdff5c2-4dcf-4615-99eb-89d31a34d7ff> .
+_:node1bsibmuf2x41 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/istMutterpunzeVon> .
+_:node1bsibmuf2x41 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/e2767b7e-3803-4546-9121-a58d7d370552> .
+_:node1bsibmuf2x42 <http://www.academic-meta-tool.xyz/weight> "0.9"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+_:node1bsibmuf2x42 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/4d4b312a-d9ce-4bb5-a450-961142bcbb83> .
+_:node1bsibmuf2x42 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/istMutterpunzeVon> .
+_:node1bsibmuf2x42 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/fc3f73cd-77c3-4cd6-bc74-c8ad13a32aeb> .
+_:node1bsibmuf2x43 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x43 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/52d870b8-515b-4672-9244-a9d0e23e7dc9> .
+_:node1bsibmuf2x43 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x43 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/e2767b7e-3803-4546-9121-a58d7d370552> .
+_:node1bsibmuf2x44 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x44 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/c947518c-8d39-48d7-bdb4-33c63c8590ca> .
+_:node1bsibmuf2x44 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x44 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/e2767b7e-3803-4546-9121-a58d7d370552> .
+_:node1bsibmuf2x45 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x45 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/d0362cd7-bbac-46de-8dec-73cf65315252> .
+_:node1bsibmuf2x45 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x45 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/e2767b7e-3803-4546-9121-a58d7d370552> .
+_:node1bsibmuf2x46 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x46 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/f89d67a1-4896-4043-9e1a-928d181bb551> .
+_:node1bsibmuf2x46 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x46 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/e2767b7e-3803-4546-9121-a58d7d370552> .
+_:node1bsibmuf2x47 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x47 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/7a55c951-27de-4123-ac33-1952c21177bd> .
+_:node1bsibmuf2x47 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x47 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/ebdff5c2-4dcf-4615-99eb-89d31a34d7ff> .
+_:node1bsibmuf2x48 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x48 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/8fc3d895-a367-4f2c-8696-ba2e5d7daf76> .
+_:node1bsibmuf2x48 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x48 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/ebdff5c2-4dcf-4615-99eb-89d31a34d7ff> .
+_:node1bsibmuf2x49 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x49 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/30c2033f-ad4c-4319-88f1-75ebae56e0a7> .
+_:node1bsibmuf2x49 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x49 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/fc3f73cd-77c3-4cd6-bc74-c8ad13a32aeb> .
+_:node1bsibmuf2x50 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x50 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/34f10438-fa28-4fe5-910a-bf8d5fcc5624> .
+_:node1bsibmuf2x50 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x50 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/fc3f73cd-77c3-4cd6-bc74-c8ad13a32aeb> .
+_:node1bsibmuf2x51 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x51 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/cc9a3e41-7d2d-4b67-b3fd-14f9507ac7e2> .
+_:node1bsibmuf2x51 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x51 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/fc3f73cd-77c3-4cd6-bc74-c8ad13a32aeb> .
+_:node1bsibmuf2x52 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x52 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/fac5a718-51da-4d6a-b59b-e5436d9c8f99> .
+_:node1bsibmuf2x52 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x52 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/fc3f73cd-77c3-4cd6-bc74-c8ad13a32aeb> .
+_:node1bsibmuf2x53 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x53 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/e5d94399-abf7-41b4-b252-a7959e6ae36b> .
+_:node1bsibmuf2x53 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x53 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/4d4b312a-d9ce-4bb5-a450-961142bcbb83> .
+_:node1bsibmuf2x54 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x54 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/70b5a265-1bec-4fa2-8416-f828c2f8970f> .
+_:node1bsibmuf2x54 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x54 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/1357cb59-abda-470b-8174-06b466ef76e5> .
+_:node1bsibmuf2x55 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x55 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/7a55c951-27de-4123-ac33-1952c21177bd> .
+_:node1bsibmuf2x55 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x55 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/3c76bff9-f5ec-47ff-99f7-41f123db8779> .
+_:node1bsibmuf2x56 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x56 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/0e3ab2f9-90a9-4197-ac76-5f37c1e7e3af> .
+_:node1bsibmuf2x56 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x56 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/7269a79d-0ae1-44f3-9a7a-3ebd33e74c8d> .
+_:node1bsibmuf2x57 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x57 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/633f5509-bd7e-4ce9-955c-a521ba61e07f> .
+_:node1bsibmuf2x57 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x57 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/7269a79d-0ae1-44f3-9a7a-3ebd33e74c8d> .
+_:node1bsibmuf2x58 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x58 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/96c986ac-2f6b-40fe-a711-da62a8b13845> .
+_:node1bsibmuf2x58 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x58 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/7269a79d-0ae1-44f3-9a7a-3ebd33e74c8d> .
+_:node1bsibmuf2x59 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x59 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/f45624c9-14eb-4f5c-8a45-54cc979c556c> .
+_:node1bsibmuf2x59 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x59 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/7269a79d-0ae1-44f3-9a7a-3ebd33e74c8d> .
+_:node1bsibmuf2x60 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x60 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/01afbda8-6436-4daa-ac39-7ee6d20866b9> .
+_:node1bsibmuf2x60 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x60 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/4ff4e784-17a7-46d9-acf9-5bf1f452dba6> .
+_:node1bsibmuf2x61 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x61 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/e5d94399-abf7-41b4-b252-a7959e6ae36b> .
+_:node1bsibmuf2x61 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x61 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/4ff4e784-17a7-46d9-acf9-5bf1f452dba6> .
+_:node1bsibmuf2x62 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x62 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/0e3ab2f9-90a9-4197-ac76-5f37c1e7e3af> .
+_:node1bsibmuf2x62 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x62 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/7db7c0fc-f7e4-43b9-8065-4179a932a94b> .
+_:node1bsibmuf2x63 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x63 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/633f5509-bd7e-4ce9-955c-a521ba61e07f> .
+_:node1bsibmuf2x63 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x63 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/7db7c0fc-f7e4-43b9-8065-4179a932a94b> .
+_:node1bsibmuf2x64 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x64 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/7a55c951-27de-4123-ac33-1952c21177bd> .
+_:node1bsibmuf2x64 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x64 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/7db7c0fc-f7e4-43b9-8065-4179a932a94b> .
+_:node1bsibmuf2x65 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x65 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/96c986ac-2f6b-40fe-a711-da62a8b13845> .
+_:node1bsibmuf2x65 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x65 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/7db7c0fc-f7e4-43b9-8065-4179a932a94b> .
+_:node1bsibmuf2x66 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x66 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/f45624c9-14eb-4f5c-8a45-54cc979c556c> .
+_:node1bsibmuf2x66 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x66 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/7db7c0fc-f7e4-43b9-8065-4179a932a94b> .
+_:node1bsibmuf2x67 <http://www.academic-meta-tool.xyz/weight> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:node1bsibmuf2x67 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://www.academic-meta-tool.xyz/716dca9a-4d5a-4067-a9b5-af5f6274ff5e> .
+_:node1bsibmuf2x67 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://rgzm.de/samian/wasCreatedBy> .
+_:node1bsibmuf2x67 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://www.academic-meta-tool.xyz/e2767b7e-3803-4546-9121-a58d7d370552> .
+<http://www.academic-meta-tool.xyz/01afbda8-6436-4daa-ac39-7ee6d20866b9> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Toepfer> .
+<http://www.academic-meta-tool.xyz/01afbda8-6436-4daa-ac39-7ee6d20866b9> <http://www.w3.org/2000/01/rdf-schema#label> "Crucuro i" .
+<http://www.academic-meta-tool.xyz/0e3ab2f9-90a9-4197-ac76-5f37c1e7e3af> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Toepfer> .
+<http://www.academic-meta-tool.xyz/0e3ab2f9-90a9-4197-ac76-5f37c1e7e3af> <http://www.w3.org/2000/01/rdf-schema#label> "Severus iii" .
+<http://www.academic-meta-tool.xyz/1357cb59-abda-470b-8174-06b466ef76e5> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Punze> .
+<http://www.academic-meta-tool.xyz/1357cb59-abda-470b-8174-06b466ef76e5> <http://www.w3.org/2000/01/rdf-schema#label> "GLA-r 005b" .
+<http://www.academic-meta-tool.xyz/30c2033f-ad4c-4319-88f1-75ebae56e0a7> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Toepfer> .
+<http://www.academic-meta-tool.xyz/30c2033f-ad4c-4319-88f1-75ebae56e0a7> <http://www.w3.org/2000/01/rdf-schema#label> "Gallicanus ii" .
+<http://www.academic-meta-tool.xyz/34f10438-fa28-4fe5-910a-bf8d5fcc5624> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Toepfer> .
+<http://www.academic-meta-tool.xyz/34f10438-fa28-4fe5-910a-bf8d5fcc5624> <http://www.w3.org/2000/01/rdf-schema#label> "M. Crestio" .
+<http://www.academic-meta-tool.xyz/3c76bff9-f5ec-47ff-99f7-41f123db8779> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Punze> .
+<http://www.academic-meta-tool.xyz/3c76bff9-f5ec-47ff-99f7-41f123db8779> <http://www.w3.org/2000/01/rdf-schema#label> "GLA-r 011" .
+<http://www.academic-meta-tool.xyz/4d4b312a-d9ce-4bb5-a450-961142bcbb83> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Punze> .
+<http://www.academic-meta-tool.xyz/4d4b312a-d9ce-4bb5-a450-961142bcbb83> <http://www.w3.org/2000/01/rdf-schema#label> "GLA-r 005a" .
+<http://www.academic-meta-tool.xyz/4ff4e784-17a7-46d9-acf9-5bf1f452dba6> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Punze> .
+<http://www.academic-meta-tool.xyz/4ff4e784-17a7-46d9-acf9-5bf1f452dba6> <http://www.w3.org/2000/01/rdf-schema#label> "GLA-l 002" .
+<http://www.academic-meta-tool.xyz/52d870b8-515b-4672-9244-a9d0e23e7dc9> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Toepfer> .
+<http://www.academic-meta-tool.xyz/52d870b8-515b-4672-9244-a9d0e23e7dc9> <http://www.w3.org/2000/01/rdf-schema#label> "Cotto ii" .
+<http://www.academic-meta-tool.xyz/633f5509-bd7e-4ce9-955c-a521ba61e07f> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Toepfer> .
+<http://www.academic-meta-tool.xyz/633f5509-bd7e-4ce9-955c-a521ba61e07f> <http://www.w3.org/2000/01/rdf-schema#label> "Anonym III" .
+<http://www.academic-meta-tool.xyz/70b5a265-1bec-4fa2-8416-f828c2f8970f> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Toepfer> .
+<http://www.academic-meta-tool.xyz/70b5a265-1bec-4fa2-8416-f828c2f8970f> <http://www.w3.org/2000/01/rdf-schema#label> "Anonym I" .
+<http://www.academic-meta-tool.xyz/716dca9a-4d5a-4067-a9b5-af5f6274ff5e> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Toepfer> .
+<http://www.academic-meta-tool.xyz/716dca9a-4d5a-4067-a9b5-af5f6274ff5e> <http://www.w3.org/2000/01/rdf-schema#label> "Quintio" .
+<http://www.academic-meta-tool.xyz/7269a79d-0ae1-44f3-9a7a-3ebd33e74c8d> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Punze> .
+<http://www.academic-meta-tool.xyz/7269a79d-0ae1-44f3-9a7a-3ebd33e74c8d> <http://www.w3.org/2000/01/rdf-schema#label> "GLA-r 012" .
+<http://www.academic-meta-tool.xyz/7a55c951-27de-4123-ac33-1952c21177bd> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Toepfer> .
+<http://www.academic-meta-tool.xyz/7a55c951-27de-4123-ac33-1952c21177bd> <http://www.w3.org/2000/01/rdf-schema#label> "Mommo" .
+<http://www.academic-meta-tool.xyz/7db7c0fc-f7e4-43b9-8065-4179a932a94b> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Punze> .
+<http://www.academic-meta-tool.xyz/7db7c0fc-f7e4-43b9-8065-4179a932a94b> <http://www.w3.org/2000/01/rdf-schema#label> "GLA-l 003" .
+<http://www.academic-meta-tool.xyz/8fc3d895-a367-4f2c-8696-ba2e5d7daf76> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Toepfer> .
+<http://www.academic-meta-tool.xyz/8fc3d895-a367-4f2c-8696-ba2e5d7daf76> <http://www.w3.org/2000/01/rdf-schema#label> "Primus iii" .
+<http://www.academic-meta-tool.xyz/96c986ac-2f6b-40fe-a711-da62a8b13845> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Toepfer> .
+<http://www.academic-meta-tool.xyz/96c986ac-2f6b-40fe-a711-da62a8b13845> <http://www.w3.org/2000/01/rdf-schema#label> "Vanderio" .
+<http://www.academic-meta-tool.xyz/c947518c-8d39-48d7-bdb4-33c63c8590ca> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Toepfer> .
+<http://www.academic-meta-tool.xyz/c947518c-8d39-48d7-bdb4-33c63c8590ca> <http://www.w3.org/2000/01/rdf-schema#label> "Passienus" .
+<http://www.academic-meta-tool.xyz/cc9a3e41-7d2d-4b67-b3fd-14f9507ac7e2> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Toepfer> .
+<http://www.academic-meta-tool.xyz/cc9a3e41-7d2d-4b67-b3fd-14f9507ac7e2> <http://www.w3.org/2000/01/rdf-schema#label> "Lupus" .
+<http://www.academic-meta-tool.xyz/d0362cd7-bbac-46de-8dec-73cf65315252> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Toepfer> .
+<http://www.academic-meta-tool.xyz/d0362cd7-bbac-46de-8dec-73cf65315252> <http://www.w3.org/2000/01/rdf-schema#label> "Iustus i" .
+<http://www.academic-meta-tool.xyz/e2767b7e-3803-4546-9121-a58d7d370552> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Punze> .
+<http://www.academic-meta-tool.xyz/e2767b7e-3803-4546-9121-a58d7d370552> <http://www.w3.org/2000/01/rdf-schema#label> "CUP-r 001" .
+<http://www.academic-meta-tool.xyz/e5d94399-abf7-41b4-b252-a7959e6ae36b> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Toepfer> .
+<http://www.academic-meta-tool.xyz/e5d94399-abf7-41b4-b252-a7959e6ae36b> <http://www.w3.org/2000/01/rdf-schema#label> "Frontinus i" .
+<http://www.academic-meta-tool.xyz/ebdff5c2-4dcf-4615-99eb-89d31a34d7ff> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Punze> .
+<http://www.academic-meta-tool.xyz/ebdff5c2-4dcf-4615-99eb-89d31a34d7ff> <http://www.w3.org/2000/01/rdf-schema#label> "CUP-r 002" .
+<http://www.academic-meta-tool.xyz/f45624c9-14eb-4f5c-8a45-54cc979c556c> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Toepfer> .
+<http://www.academic-meta-tool.xyz/f45624c9-14eb-4f5c-8a45-54cc979c556c> <http://www.w3.org/2000/01/rdf-schema#label> "Calvinus" .
+<http://www.academic-meta-tool.xyz/f89d67a1-4896-4043-9e1a-928d181bb551> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Toepfer> .
+<http://www.academic-meta-tool.xyz/f89d67a1-4896-4043-9e1a-928d181bb551> <http://www.w3.org/2000/01/rdf-schema#label> "Medillus" .
+<http://www.academic-meta-tool.xyz/fac5a718-51da-4d6a-b59b-e5436d9c8f99> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Toepfer> .
+<http://www.academic-meta-tool.xyz/fac5a718-51da-4d6a-b59b-e5436d9c8f99> <http://www.w3.org/2000/01/rdf-schema#label> "Vitalis ii" .
+<http://www.academic-meta-tool.xyz/fc3f73cd-77c3-4cd6-bc74-c8ad13a32aeb> <http://www.academic-meta-tool.xyz/instanceOf> <http://rgzm.de/samian/Punze> .
+<http://www.academic-meta-tool.xyz/fc3f73cd-77c3-4cd6-bc74-c8ad13a32aeb> <http://www.w3.org/2000/01/rdf-schema#label> "GLA-r 005" .
