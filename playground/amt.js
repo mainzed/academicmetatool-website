@@ -16,6 +16,14 @@ function UUID(){
 	return uuid;
 }
 
+function copyToClipboard(element) {
+  	var text = $(element).clone().find('br').prepend('\r\n').end().text();
+	//console.log(text);
+    element = $('<textarea>').appendTo('body').val(text).select();
+    document.execCommand('copy');
+    element.remove();
+}
+
 var AMT = function() {
 
 	var CONCEPTS = [];
