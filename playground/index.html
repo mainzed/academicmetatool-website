@@ -463,8 +463,8 @@
 		</div>
 		<div id="info" class="modal">
 			<div class="modal-content">
-				<h4>AMT. Academic Meta Tool.</h4>
-				<h5>Beispiel Samian Research Punzen-Töpfer-Netzwerk.</h5>
+				<h4>Academic Meta Tool. AMT.</h4>
+				<h5>Ontologie: Personen-Interessen-Netzwerk</h5>
 				<br>
 				<p><b>Über AMT</b></p>
 				<p>AMT bietet die Möglichkeit sämtlichen Kanten eine Gewichtung hinzuzufügen, um dadurch die Vagheit dieser Kante auszudrücken. Eine Beziehung zwischen zwei Knoten besteht also nur zu einem gewissen Grad. Dieser Grad, d.h. das Kantengewicht, wird üblicherweise in Prozent angegeben. AMT beinhaltet zusätzlich ein Verfahren, mit dem - unter Zuhilfenahme einer vordefinierten Ontologie - aus vorhandenen graphbasierten Daten automatisch Schlussfolgerungen gezogen werden können (Reasoning). Ein Prototyp des AMTs steht hier als Web-Anwendung zur Verfügung. In einer entwickelten Test-Ontologie können <b>Personen</b> und <b>Interessen</b> und deren Beziehungen in einem gewissen Grad zueinander modelliert werden. Diese Ontologie beinhaltet neben den genannten beiden Klassen weitere Relationen, so dass Personen und Interessen miteinander in Beziehung gesetzt werden können. Außerdem enthält die Ontologie Axiome, um automatisiert aus bestehenden Beziehungen neue Beziehungen generieren zu können.</p>
@@ -496,9 +496,13 @@
 					Wenn freigeschaltet, zum Speichern der Quadtupels im Triplestrore den schwarzen "savebutton" drücken.
 				</p>
 				<br>
-				<p><b>About the Creators and the Data</b></p>
-				<p>* AMT Software by Florian Thiery, Martin Unold (i3mainz).
-				<br>* Data by Florian Thiery, Martin Unold (i3mainz).</p>
+				<p><b>Export</b></p>
+				<p>
+					Der Playground bietet (noch) keine Möglichkeit zum Speichern der Daten. Eine einfache Exportfunktion ist jedoch implementiert. Durch Klick auf den "Download-Button" kann der aktuell angezeigte Graph (egal ob im Editor- oder Reasoning-Modus) in drei Varianten exportiert werden. Es stehen hier ein <b>JSON-Object</b> mit allen Knoten und Kanten, <b>CSV-Strings</b>, jeweils für Nodes und Edges und ein <b>cypher-Statement</b> zum direkten Import z.B. in Neo4J zur Verfügung. Mit Klick auf einer der Funktionen wird ein String in die Zwischenablage kopiert.
+				</p>
+				<br>
+				<p><b>About</b></p>
+				<p>* AMT-Software by Martin Unold (i3mainz) & Florian Thiery (i3mainz,RGZM).
 			</div>
 		</div>
 		<div id="exportModal" class="modal">
