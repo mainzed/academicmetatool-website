@@ -44,10 +44,12 @@
 			var MAINZED = {};
 			MAINZED.graph = {};
 			MAINZED.edit = false;
+			MAINZED.thisNodes = [];
+			MAINZED.thisEdges = [];
 			var update = function() {
 				if (MAINZED.amt) {
 					var updated = MAINZED.amt.getGraph(!MAINZED.edit,true);
-					console.log(updated);
+					//console.log(updated);
 					MAINZED.graph.edges.clear();
 					MAINZED.graph.nodes.clear();
 					/*
@@ -104,6 +106,11 @@
 					}
 					MAINZED.graph.nodes.update(updated.nodes);
 					MAINZED.graph.edges.update(updated.edges);
+					//console.log("mode",MAINZED.edit)
+					//console.info("nodes", updated.nodes, JSON.stringify(updated.nodes));
+					//console.info("edges",updated.edges, JSON.stringify(updated.edges));
+					MAINZED.thisNodes = updated.nodes;
+					MAINZED.thisEdges = updated.edges;
 				}
 			};
 			var edit = function() {
@@ -245,6 +252,9 @@
 				$("#info").modal({
 					complete: function() {info(true);}
 				});
+				$("#exportModal").modal({
+					complete: function() {info(true);}
+				});
 				$(".edit").hide();
 				$("#store").hide();
 			});
@@ -253,6 +263,148 @@
 					$("#info").modal("close");
 				else
 					$("#info").modal("open");
+			}
+			var exportOptions = function(close) {
+				if (close)
+					$("#exportModal").modal("close");
+				else
+					$("#exportModal").modal("open");
+			}
+			var exportData = function(type,kind) {
+				if (type==="json") {
+					var nodesAndEdges = {};
+					nodesAndEdges.nodes = MAINZED.thisNodes;
+					nodesAndEdges.edges = MAINZED.thisEdges;
+					// COPY TO CLIPBOARD
+					$("#hiddenclipboard").text(JSON.stringify(nodesAndEdges));
+					copyToClipboard('#hiddenclipboard');
+				} else if (type==="csv") {
+					if (kind==="nodes") {
+						var nodesAndEdges = "id,label,concept\r\n";
+						for (var node in MAINZED.thisNodes) {
+							nodesAndEdges += MAINZED.thisNodes[node].id+","+MAINZED.thisNodes[node].label+","+MAINZED.thisNodes[node].concept+"\r\n";
+						}
+						$("#hiddenclipboard").text(nodesAndEdges);
+						copyToClipboard('#hiddenclipboard');
+					} else {
+						var nodesAndEdges = "from,to,role,width\r\n";
+						for (var edge in MAINZED.thisEdges) {
+							if (!MAINZED.thisEdges[edge].hidden) {
+								nodesAndEdges += MAINZED.thisEdges[edge].from+","+MAINZED.thisEdges[edge].to+","+MAINZED.thisEdges[edge].role+","+MAINZED.thisEdges[edge].width+"\r\n";
+							}
+						}
+						$("#hiddenclipboard").text(nodesAndEdges);
+						copyToClipboard('#hiddenclipboard');
+					}
+				} else if (type==="cypher") {
+					var nodesAndEdges = "";
+					var map = [];
+					var nodeIDs = [];
+					// CREATE NODE -> CREATE (shortID:Concept{label: 'text'})
+					for (var node in MAINZED.thisNodes) {
+						if (MAINZED.thisNodes[node].concept.includes("Person")) {
+							var nodeItem = {};
+							nodeItem.id = MAINZED.thisNodes[node].id;
+							nodeItem.node = cypherNode;
+							nodeItem.shortID = MAINZED.thisNodes[node].id.replace("http://www.academic-meta-tool.xyz/","");
+							nodeIDs.push(nodeItem.shortID);
+							map.push(nodeItem);
+							var cypherNode = "("+nodeItem.shortID+":Person{label: '"+MAINZED.thisNodes[node].label+"'})";
+							nodesAndEdges += "CREATE "+cypherNode+ "\r\n";
+						} else if (MAINZED.thisNodes[node].concept.includes("Interest")) {
+							var nodeItem = {};
+							nodeItem.id = MAINZED.thisNodes[node].id;
+							nodeItem.node = cypherNode;
+							nodeItem.shortID = MAINZED.thisNodes[node].id.replace("http://www.academic-meta-tool.xyz/","");
+							nodeIDs.push(nodeItem.shortID);
+							map.push(nodeItem);
+							var cypherNode = "("+nodeItem.shortID+":Interest{label: '"+MAINZED.thisNodes[node].label+"'})";
+							nodesAndEdges += "CREATE "+cypherNode+ "\r\n";
+						}
+					}
+					// MERGE NODES AS EDGE -> MERGE (shortID)-[:ROLE{width:width}]->(shortID)
+					for (var edge in MAINZED.thisEdges) {
+						if (MAINZED.thisEdges[edge].role.includes("connectedWith") && !MAINZED.thisEdges[edge].hidden) {
+							var cypherEdge = "(*)-[:CONNECTED_WITH{width:%}]->(**)";
+							for (var item in map) {
+								if (map[item].id===MAINZED.thisEdges[edge].from) {
+									cypherEdge = cypherEdge.replace("*",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+								}
+								if (map[item].id===MAINZED.thisEdges[edge].to) {
+									cypherEdge = cypherEdge.replace("**",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+								}
+							}
+							nodesAndEdges += "MERGE "+cypherEdge+ "\r\n";
+						}
+						if (MAINZED.thisEdges[edge].role.includes("interestedIn") && !MAINZED.thisEdges[edge].hidden) {
+							var cypherEdge = "(*)-[:INTERESTED_IN{width:%}]->(**)";
+							for (var item in map) {
+								if (map[item].id===MAINZED.thisEdges[edge].from) {
+									cypherEdge = cypherEdge.replace("*",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+								}
+								if (map[item].id===MAINZED.thisEdges[edge].to) {
+									cypherEdge = cypherEdge.replace("**",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+								}
+							}
+							nodesAndEdges += "MERGE "+cypherEdge+ "\r\n";
+						}
+						if (MAINZED.thisEdges[edge].role.includes("interestOf") && !MAINZED.thisEdges[edge].hidden) {
+							var cypherEdge = "(*)-[:INTEREST_OF{width:%}]->(**)";
+							for (var item in map) {
+								if (map[item].id===MAINZED.thisEdges[edge].from) {
+									cypherEdge = cypherEdge.replace("*",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+								}
+								if (map[item].id===MAINZED.thisEdges[edge].to) {
+									cypherEdge = cypherEdge.replace("**",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+								}
+							}
+							nodesAndEdges += "MERGE "+cypherEdge+ "\r\n";
+						}
+						if (MAINZED.thisEdges[edge].role.includes("subInterestOf") && !MAINZED.thisEdges[edge].hidden) {
+							var cypherEdge = "(*)-[:SUB_INTEREST_OF{width:%}]->(**)";
+							for (var item in map) {
+								if (map[item].id===MAINZED.thisEdges[edge].from) {
+									cypherEdge = cypherEdge.replace("*",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+								}
+								if (map[item].id===MAINZED.thisEdges[edge].to) {
+									cypherEdge = cypherEdge.replace("**",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+								}
+							}
+							nodesAndEdges += "MERGE "+cypherEdge+ "\r\n";
+						}
+						if (MAINZED.thisEdges[edge].role.includes("superInterestOf") && !MAINZED.thisEdges[edge].hidden) {
+							var cypherEdge = "(*)-[:SUPER_INTEREST_OF{width:%}]->(**)";
+							for (var item in map) {
+								if (map[item].id===MAINZED.thisEdges[edge].from) {
+									cypherEdge = cypherEdge.replace("*",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+								}
+								if (map[item].id===MAINZED.thisEdges[edge].to) {
+									cypherEdge = cypherEdge.replace("**",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+								}
+							}
+							nodesAndEdges += "MERGE "+cypherEdge+ "\r\n";
+						}
+					}
+					// ADD RETURN ALL NODES
+					var returnCall = "RETURN ";
+					for (var nodeID in nodeIDs) {
+						returnCall += nodeIDs[nodeID] + ",";
+					}
+					nodesAndEdges += returnCall.slice(0, -1);
+					// COPY TO CLIPBOARD
+					$("#hiddenclipboard").text(nodesAndEdges);
+					copyToClipboard('#hiddenclipboard');
+				}
 			}
 		</script>
 	</head>
@@ -264,7 +416,8 @@
 				<div class="row">
 					<div class="col s6 left-align">
 						<a class="btn-floating btn-large black" onclick="info()" title="Information"><i class="material-icons">info</i></a>
-						<b class="description">AMT. Academic Meta Tool. Alpha-Test. Playground.</b>
+						<a class="btn-floating btn-large green" onclick="exportOptions()" title="Download Edges and Nodes"><i class="material-icons">file_download</i></a>
+						<b class="description">Academic Meta Tool Playground.</b>
 					</div>
 					<div id="buttons" class="col s3 right-align">
 						<a class="btn-floating btn-large edit blue" onclick="edit()" title="Close edit mode"><i class="material-icons">cancel</i></a>
@@ -346,6 +499,23 @@
 				<p><b>About the Creators and the Data</b></p>
 				<p>* AMT Software by Florian Thiery, Martin Unold (i3mainz).
 				<br>* Data by Florian Thiery, Martin Unold (i3mainz).</p>
+			</div>
+		</div>
+		<div id="exportModal" class="modal">
+			<div class="modal-content">
+				<h4>Copy Edges and Nodes to Clipboard</h4>
+				<br><br>
+				<h5>JSON array</h5>
+				<a class="btn-floating btn-large green" onclick="exportData('json')" title="Copy Edges and Nodes as JSON"><i class="material-icons">code</i></a>
+				<br><br>
+				<h5>CSV (edges,nodes)</h5>
+				<a class="btn-floating btn-large green" onclick="exportData('csv','nodes')" title="Copy Nodes as CSV"><i class="material-icons">fiber_manual_record</i></a>
+				&nbsp;&nbsp;
+				<a class="btn-floating btn-large green" onclick="exportData('csv','edges')" title="Copy Edges as CSV"><i class="material-icons">arrow_forward</i></a>
+				<br><br>
+				<h5>CYPHER statements</h5>
+				<a class="btn-floating btn-large green" onclick="exportData('cypher')" title="Copy Edges and Nodes as CYPHER"><i class="material-icons">input</i></a>
+				<textarea id="hiddenclipboard" hidden></textarea>
 			</div>
 		</div>
 	</body>
