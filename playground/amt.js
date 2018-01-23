@@ -1,3 +1,10 @@
+function StrID() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  for (var i = 0; i < 12; i++)
+	text += possible.charAt(Math.floor(Math.random() * possible.length));
+  return text;
+}
 
 function UUID(){
 	var dt = new Date().getTime();
@@ -263,7 +270,7 @@ var AMT = function() {
 	};
 
 	this.addIndividual = function(label,concept) {
-		var id = PREFIX+UUID();
+		var id = PREFIX+StrID();
 		GRAPH.edited.nodes.push({id: id, label: label, concept: concept});
 		return id;
 	};
