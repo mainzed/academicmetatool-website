@@ -1,3 +1,10 @@
+function StrID() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  for (var i = 0; i < 12; i++)
+	text += possible.charAt(Math.floor(Math.random() * possible.length));
+  return text;
+}
 
 function UUID(){
 	var dt = new Date().getTime();
@@ -7,6 +14,14 @@ function UUID(){
 		return (c=='x' ? r :(r&0x3|0x8)).toString(16);
 	});
 	return uuid;
+}
+
+function copyToClipboard(element) {
+  	var text = $(element).clone().find('br').prepend('\r\n').end().text();
+	//console.log(text);
+    element = $('<textarea>').appendTo('body').val(text).select();
+    document.execCommand('copy');
+    element.remove();
 }
 
 var AMT = function() {

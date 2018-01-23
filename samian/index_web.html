@@ -44,10 +44,12 @@
 			var MAINZED = {};
 			MAINZED.graph = {};
 			MAINZED.edit = false;
+			MAINZED.thisNodes = [];
+			MAINZED.thisEdges = [];
 			var update = function() {
 				if (MAINZED.amt) {
 					var updated = MAINZED.amt.getGraph(!MAINZED.edit,true);
-					console.log(updated);
+					//console.log(updated);
 					MAINZED.graph.edges.clear();
 					MAINZED.graph.nodes.clear();
 					/*
@@ -108,6 +110,11 @@
 					}
 					MAINZED.graph.nodes.update(updated.nodes);
 					MAINZED.graph.edges.update(updated.edges);
+					//console.log("mode",MAINZED.edit)
+					//console.info("nodes", updated.nodes, JSON.stringify(updated.nodes));
+					//console.info("edges",updated.edges, JSON.stringify(updated.edges));
+					MAINZED.thisNodes = updated.nodes;
+					MAINZED.thisEdges = updated.edges;
 				}
 			};
 			var edit = function() {
@@ -249,6 +256,9 @@
 				$("#info").modal({
 					complete: function() {info(true);}
 				});
+				$("#exportModal").modal({
+					complete: function() {info(true);}
+				});
 				$(".edit").hide();
 				$("#store").hide();
 			});
@@ -257,6 +267,204 @@
 					$("#info").modal("close");
 				else
 					$("#info").modal("open");
+			}
+			var exportOptions = function(close) {
+				if (close)
+					$("#exportModal").modal("close");
+				else
+					$("#exportModal").modal("open");
+			}
+			var exportData = function(type,kind) {
+				if (type==="json") {
+					var nodesAndEdges = {};
+					nodesAndEdges.nodes = MAINZED.thisNodes;
+					nodesAndEdges.edges = MAINZED.thisEdges;
+					// COPY TO CLIPBOARD
+					$("#hiddenclipboard").text(JSON.stringify(nodesAndEdges));
+					copyToClipboard('#hiddenclipboard');
+				} else if (type==="csv") {
+					if (kind==="nodes") {
+						var nodesAndEdges = "id,label,concept\r\n";
+						for (var node in MAINZED.thisNodes) {
+							nodesAndEdges += MAINZED.thisNodes[node].id+","+MAINZED.thisNodes[node].label+","+MAINZED.thisNodes[node].concept+"\r\n";
+						}
+						$("#hiddenclipboard").text(nodesAndEdges);
+						copyToClipboard('#hiddenclipboard');
+					} else {
+						var nodesAndEdges = "from,to,role,width\r\n";
+						for (var edge in MAINZED.thisEdges) {
+							if (!MAINZED.thisEdges[edge].hidden) {
+								nodesAndEdges += MAINZED.thisEdges[edge].from+","+MAINZED.thisEdges[edge].to+","+MAINZED.thisEdges[edge].role+","+MAINZED.thisEdges[edge].width+"\r\n";
+							}
+						}
+						$("#hiddenclipboard").text(nodesAndEdges);
+						copyToClipboard('#hiddenclipboard');
+					}
+				} else if (type==="cypher") {
+					var nodesAndEdges = "";
+					var map = [];
+					var nodeIDs = [];
+					// CREATE NODE -> CREATE (shortID:Concept{label: 'text'})
+					for (var node in MAINZED.thisNodes) {
+						if (MAINZED.thisNodes[node].concept.includes("Toepfer")) {
+							var nodeItem = {};
+							nodeItem.id = MAINZED.thisNodes[node].id;
+							nodeItem.node = cypherNode;
+							nodeItem.shortID = MAINZED.thisNodes[node].id.replace("http://www.academic-meta-tool.xyz/","");
+							nodeItem.shortID = nodeItem.shortID.replace(/-/g , "");
+							nodeItem.shortID = nodeItem.shortID.replace(/[0-9]/g, "X");
+							nodeIDs.push(nodeItem.shortID);
+							map.push(nodeItem);
+							var cypherNode = "("+nodeItem.shortID+":Toepfer{label: '"+MAINZED.thisNodes[node].label+"'})";
+							nodesAndEdges += "CREATE "+cypherNode+ "\r\n";
+						} else if (MAINZED.thisNodes[node].concept.includes("Punze")) {
+							var nodeItem = {};
+							nodeItem.id = MAINZED.thisNodes[node].id;
+							nodeItem.node = cypherNode;
+							nodeItem.shortID = MAINZED.thisNodes[node].id.replace("http://www.academic-meta-tool.xyz/","");
+							nodeItem.shortID = nodeItem.shortID.replace(/-/g , "");
+							nodeItem.shortID = nodeItem.shortID.replace(/[0-9]/g, "X");
+							nodeIDs.push(nodeItem.shortID);
+							map.push(nodeItem);
+							var cypherNode = "("+nodeItem.shortID+":Punze{label: '"+MAINZED.thisNodes[node].label+"'})";
+							nodesAndEdges += "CREATE "+cypherNode+ "\r\n";
+						}
+					}
+					// MERGE NODES AS EDGE -> MERGE (shortID)-[:ROLE{width:width}]->(shortID)
+					for (var edge in MAINZED.thisEdges) {
+						if (MAINZED.thisEdges[edge].role.includes("isConnectedWith") && !MAINZED.thisEdges[edge].hidden) {
+							var cypherEdge = "(*)-[:IS_CONNECTED_WITH{width:%}]->(**)";
+							for (var item in map) {
+								if (map[item].id===MAINZED.thisEdges[edge].from) {
+									cypherEdge = cypherEdge.replace("*",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
+								}
+								if (map[item].id===MAINZED.thisEdges[edge].to) {
+									cypherEdge = cypherEdge.replace("**",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
+								}
+							}
+							nodesAndEdges += "MERGE "+cypherEdge+ "\r\n";
+						}
+						if (MAINZED.thisEdges[edge].role.includes("isCreatorOf") && !MAINZED.thisEdges[edge].hidden) {
+							var cypherEdge = "(*)-[:IS_CREATOR_OF{width:%}]->(**)";
+							for (var item in map) {
+								if (map[item].id===MAINZED.thisEdges[edge].from) {
+									cypherEdge = cypherEdge.replace("*",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
+								}
+								if (map[item].id===MAINZED.thisEdges[edge].to) {
+									cypherEdge = cypherEdge.replace("**",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
+								}
+							}
+							nodesAndEdges += "MERGE "+cypherEdge+ "\r\n";
+						}
+						if (MAINZED.thisEdges[edge].role.includes("wasCreatedBy") && !MAINZED.thisEdges[edge].hidden) {
+							var cypherEdge = "(*)-[:WAS_CREATED_BY{width:%}]->(**)";
+							for (var item in map) {
+								if (map[item].id===MAINZED.thisEdges[edge].from) {
+									cypherEdge = cypherEdge.replace("*",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
+								}
+								if (map[item].id===MAINZED.thisEdges[edge].to) {
+									cypherEdge = cypherEdge.replace("**",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
+								}
+							}
+							nodesAndEdges += "MERGE "+cypherEdge+ "\r\n";
+						}
+						if (MAINZED.thisEdges[edge].role.includes("istMutterpunzeVon") && !MAINZED.thisEdges[edge].hidden) {
+							var cypherEdge = "(*)-[:IST_MUTTERPUNZE_VON{width:%}]->(**)";
+							for (var item in map) {
+								if (map[item].id===MAINZED.thisEdges[edge].from) {
+									cypherEdge = cypherEdge.replace("*",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
+								}
+								if (map[item].id===MAINZED.thisEdges[edge].to) {
+									cypherEdge = cypherEdge.replace("**",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
+								}
+							}
+							nodesAndEdges += "MERGE "+cypherEdge+ "\r\n";
+						}
+						if (MAINZED.thisEdges[edge].role.includes("istTochterpunzeVon") && !MAINZED.thisEdges[edge].hidden) {
+							var cypherEdge = "(*)-[:IST_TOCHTERPUNZE_VON{width:%}]->(**)";
+							for (var item in map) {
+								if (map[item].id===MAINZED.thisEdges[edge].from) {
+									cypherEdge = cypherEdge.replace("*",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
+								}
+								if (map[item].id===MAINZED.thisEdges[edge].to) {
+									cypherEdge = cypherEdge.replace("**",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
+								}
+							}
+							nodesAndEdges += "MERGE "+cypherEdge+ "\r\n";
+						}
+						if (MAINZED.thisEdges[edge].role.includes("arbeitetInWerkstattMit") && !MAINZED.thisEdges[edge].hidden) {
+							var cypherEdge = "(*)-[:ARBEITET_IN_WERKSTATT_MIT{width:%}]->(**)";
+							for (var item in map) {
+								if (map[item].id===MAINZED.thisEdges[edge].from) {
+									cypherEdge = cypherEdge.replace("*",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
+								}
+								if (map[item].id===MAINZED.thisEdges[edge].to) {
+									cypherEdge = cypherEdge.replace("**",map[item].shortID);
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
+								}
+							}
+							nodesAndEdges += "MERGE "+cypherEdge+ "\r\n";
+						}
+					}
+					// ADD RETURN ALL NODES
+					var returnCall = "RETURN ";
+					for (var nodeID in nodeIDs) {
+						returnCall += nodeIDs[nodeID] + ",";
+					}
+					nodesAndEdges += returnCall.slice(0, -1);
+					// COPY TO CLIPBOARD
+					$("#hiddenclipboard").text(nodesAndEdges);
+					copyToClipboard('#hiddenclipboard');
+					// CLOSE MODAL
+					$("#exportModal").modal("close");
+				}
 			}
 		</script>
 	</head>
@@ -268,7 +476,8 @@
 				<div class="row">
 					<div class="col s6 left-align">
 						<a class="btn-floating btn-large black" onclick="info()" title="Information"><i class="material-icons">info</i></a>
-						<b class="description">AMT. Samian Research Punzen-Töpfer-Netzwerk.</b>
+						<a class="btn-floating btn-large green" onclick="exportOptions()" title="Download Edges and Nodes"><i class="material-icons">file_download</i></a>
+						<b class="description">Samian Punzen-Töpfer-Netzwerk.</b>
 					</div>
 					<div id="buttons" class="col s3 right-align">
 						<a class="btn-floating btn-large edit blue" onclick="edit()" title="Close edit mode"><i class="material-icons">cancel</i></a>
@@ -354,5 +563,21 @@
 Frühgeschichtlicher Altertümer 45, 1 (Mainz 2014).</p>
 			</div>
 		</div>
+		<div id="exportModal" class="modal">
+			<div class="modal-content">
+				<h4>Copy Edges and Nodes to Clipboard</h4>
+				<br><br>
+				<h5>JSON array</h5>
+				<a class="btn-floating btn-large green" onclick="exportData('json')" title="Copy Edges and Nodes as JSON"><i class="material-icons">code</i></a>
+				<br><br>
+				<h5>CSV (edges,nodes)</h5>
+				<a class="btn-floating btn-large green" onclick="exportData('csv','nodes')" title="Copy Nodes as CSV"><i class="material-icons">fiber_manual_record</i></a>
+				&nbsp;&nbsp;
+				<a class="btn-floating btn-large green" onclick="exportData('csv','edges')" title="Copy Edges as CSV"><i class="material-icons">arrow_forward</i></a>
+				<br><br>
+				<h5>CYPHER statements</h5>
+				<a class="btn-floating btn-large green" onclick="exportData('cypher')" title="Copy Edges and Nodes as CYPHER"><i class="material-icons">input</i></a>
+				<textarea id="hiddenclipboard" hidden></textarea>
+			</div>
 	</body>
 </html>
