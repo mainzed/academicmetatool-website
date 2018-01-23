@@ -329,11 +329,17 @@
 							for (var item in map) {
 								if (map[item].id===MAINZED.thisEdges[edge].from) {
 									cypherEdge = cypherEdge.replace("*",map[item].shortID);
-									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
 								}
 								if (map[item].id===MAINZED.thisEdges[edge].to) {
 									cypherEdge = cypherEdge.replace("**",map[item].shortID);
-									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
 								}
 							}
 							nodesAndEdges += "MERGE "+cypherEdge+ "\r\n";
@@ -343,11 +349,17 @@
 							for (var item in map) {
 								if (map[item].id===MAINZED.thisEdges[edge].from) {
 									cypherEdge = cypherEdge.replace("*",map[item].shortID);
-									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
 								}
 								if (map[item].id===MAINZED.thisEdges[edge].to) {
 									cypherEdge = cypherEdge.replace("**",map[item].shortID);
-									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
 								}
 							}
 							nodesAndEdges += "MERGE "+cypherEdge+ "\r\n";
@@ -357,11 +369,17 @@
 							for (var item in map) {
 								if (map[item].id===MAINZED.thisEdges[edge].from) {
 									cypherEdge = cypherEdge.replace("*",map[item].shortID);
-									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
 								}
 								if (map[item].id===MAINZED.thisEdges[edge].to) {
 									cypherEdge = cypherEdge.replace("**",map[item].shortID);
-									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
 								}
 							}
 							nodesAndEdges += "MERGE "+cypherEdge+ "\r\n";
@@ -371,11 +389,17 @@
 							for (var item in map) {
 								if (map[item].id===MAINZED.thisEdges[edge].from) {
 									cypherEdge = cypherEdge.replace("*",map[item].shortID);
-									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
 								}
 								if (map[item].id===MAINZED.thisEdges[edge].to) {
 									cypherEdge = cypherEdge.replace("**",map[item].shortID);
-									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
 								}
 							}
 							nodesAndEdges += "MERGE "+cypherEdge+ "\r\n";
@@ -385,11 +409,17 @@
 							for (var item in map) {
 								if (map[item].id===MAINZED.thisEdges[edge].from) {
 									cypherEdge = cypherEdge.replace("*",map[item].shortID);
-									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
 								}
 								if (map[item].id===MAINZED.thisEdges[edge].to) {
 									cypherEdge = cypherEdge.replace("**",map[item].shortID);
-									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width)
+									cypherEdge = cypherEdge.replace("%",MAINZED.thisEdges[edge].width);
+									if (cypherEdge.includes("Infinity")) {
+										cypherEdge = cypherEdge.replace("Infinity",1.0);
+									}
 								}
 							}
 							nodesAndEdges += "MERGE "+cypherEdge+ "\r\n";
