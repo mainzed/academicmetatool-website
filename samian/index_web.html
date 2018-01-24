@@ -279,27 +279,63 @@
 					var nodesAndEdges = {};
 					nodesAndEdges.nodes = MAINZED.thisNodes;
 					nodesAndEdges.edges = MAINZED.thisEdges;
+					nodesAndEdges = JSON.stringify(nodesAndEdges);
+					if (nodesAndEdges.includes("Infinity")) {
+						nodesAndEdges = nodesAndEdges.replace("Infinity",1.0);
+					}
 					// COPY TO CLIPBOARD
-					$("#hiddenclipboard").text(JSON.stringify(nodesAndEdges));
+					$("#hiddenclipboard").text(nodesAndEdges);
 					copyToClipboard('#hiddenclipboard');
+					// CLOSE MODAL
+					$("#exportModal").modal("close");
 				} else if (type==="csv") {
 					if (kind==="nodes") {
 						var nodesAndEdges = "id,label,concept\r\n";
 						for (var node in MAINZED.thisNodes) {
 							nodesAndEdges += MAINZED.thisNodes[node].id+","+MAINZED.thisNodes[node].label+","+MAINZED.thisNodes[node].concept+"\r\n";
 						}
+						// COPY TO CLIPBOARD
 						$("#hiddenclipboard").text(nodesAndEdges);
 						copyToClipboard('#hiddenclipboard');
+						// CLOSE MODAL
+						$("#exportModal").modal("close");
 					} else {
 						var nodesAndEdges = "from,to,role,width\r\n";
 						for (var edge in MAINZED.thisEdges) {
 							if (!MAINZED.thisEdges[edge].hidden) {
 								nodesAndEdges += MAINZED.thisEdges[edge].from+","+MAINZED.thisEdges[edge].to+","+MAINZED.thisEdges[edge].role+","+MAINZED.thisEdges[edge].width+"\r\n";
+								if (nodesAndEdges.includes("Infinity")) {
+									nodesAndEdges = nodesAndEdges.replace("Infinity",1.0);
+								}
 							}
 						}
+						// COPY TO CLIPBOARD
 						$("#hiddenclipboard").text(nodesAndEdges);
 						copyToClipboard('#hiddenclipboard');
+						// CLOSE MODAL
+						$("#exportModal").modal("close");
 					}
+				} else if (type==="rdf") {
+					var nodesAndEdges = "";
+					for (var node in MAINZED.thisNodes) {
+						nodesAndEdges += "<"+MAINZED.thisNodes[node].id+"> "+"<http://www.academic-meta-tool.xyz/instanceOf>"+" <"+MAINZED.thisNodes[node].concept+"> .\r\n";
+						nodesAndEdges += "<"+MAINZED.thisNodes[node].id+"> "+"<http://www.w3.org/2000/01/rdf-schema#label>"+" \""+MAINZED.thisNodes[node].label+"\" .\r\n";
+					}
+					for (var edge in MAINZED.thisEdges) {
+						var emptyNode = "_:"+StrID();
+						nodesAndEdges += emptyNode+" <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject>"+" <"+MAINZED.thisEdges[edge].from+"> .\r\n";
+						nodesAndEdges += emptyNode+" <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate>"+" <"+MAINZED.thisEdges[edge].role+"> .\r\n";
+						nodesAndEdges += emptyNode+" <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>"+" <"+MAINZED.thisEdges[edge].to+"> .\r\n";
+						nodesAndEdges += emptyNode+" <http://www.academic-meta-tool.xyz/weight>"+" \""+MAINZED.thisEdges[edge].width+"\"^^<http://www.w3.org/2001/XMLSchema#integer> .\r\n";
+						if (nodesAndEdges.includes("Infinity")) {
+							nodesAndEdges = nodesAndEdges.replace("Infinity",1.0);
+						}
+					}
+					// COPY TO CLIPBOARD
+					$("#hiddenclipboard").text(nodesAndEdges);
+					copyToClipboard('#hiddenclipboard');
+					// CLOSE MODAL
+					$("#exportModal").modal("close");
 				} else if (type==="cypher") {
 					var nodesAndEdges = "";
 					var map = [];
@@ -567,17 +603,28 @@ Frühgeschichtlicher Altertümer 45, 1 (Mainz 2014).</p>
 			<div class="modal-content">
 				<h4>Copy Edges and Nodes to Clipboard</h4>
 				<br><br>
-				<h5>JSON array</h5>
-				<a class="btn-floating btn-large green" onclick="exportData('json')" title="Copy Edges and Nodes as JSON"><i class="material-icons">code</i></a>
-				<br><br>
-				<h5>CSV (edges,nodes)</h5>
-				<a class="btn-floating btn-large green" onclick="exportData('csv','nodes')" title="Copy Nodes as CSV"><i class="material-icons">fiber_manual_record</i></a>
-				&nbsp;&nbsp;
-				<a class="btn-floating btn-large green" onclick="exportData('csv','edges')" title="Copy Edges as CSV"><i class="material-icons">arrow_forward</i></a>
-				<br><br>
-				<h5>CYPHER statements</h5>
-				<a class="btn-floating btn-large green" onclick="exportData('cypher')" title="Copy Edges and Nodes as CYPHER"><i class="material-icons">input</i></a>
+				<table class="centered stripped">
+	        <thead>
+	          <tr>
+	              <th width="25%">JSON array</th>
+	              <th width="25%">CSV as edges,nodes</th>
+	              <th width="25%">CYPHER statements</th>
+								<th width="25%">RDF</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	          <tr>
+	            <td><a class="btn-floating btn-large green" onclick="exportData('json')" title="Copy Edges and Nodes as JSON"><i class="material-icons">code</i></a></td>
+	            <td><a class="btn-floating btn-large green" onclick="exportData('csv','nodes')" title="Copy Nodes as CSV"><i class="material-icons">fiber_manual_record</i></a>
+							&nbsp;&nbsp;
+							<a class="btn-floating btn-large green" onclick="exportData('csv','edges')" title="Copy Edges as CSV"><i class="material-icons">arrow_forward</i></a></td>
+	            <td><a class="btn-floating btn-large green" onclick="exportData('cypher')" title="Copy Edges and Nodes as CYPHER"><i class="material-icons">input</i></a></td>
+							<td><a class="btn-floating btn-large green" onclick="exportData('rdf')" title="Copy Edges as RDF"><i class="material-icons">share</i></a></td>
+	          </tr>
+	        </tbody>
+      	</table>
 				<textarea id="hiddenclipboard" hidden></textarea>
 			</div>
+		</div>
 	</body>
 </html>
