@@ -282,6 +282,10 @@ var AMT = function() {
 		GRAPH.edited.nodes.push({id: id, label: label, concept: concept});
 		return id;
 	};
+  this.addExistingIndividual = function(id,label,concept) {
+		GRAPH.edited.nodes.push({id: id, label: label, concept: concept});
+		return id;
+	};
 	this.removeIndividual = function(id) {
 		var change = true;
 		while (change) {
@@ -314,6 +318,10 @@ var AMT = function() {
 			if (width > 0)
 				GRAPH.edited.edges.push({role: role, from: from, to: to, width: width});
 		}
+		return consistent();
+	};
+  this.addExistingAssertion = function(id,role,from,to,width) {
+		GRAPH.edited.edges.push({role: role, from: from, to: to, width: width});
 		return consistent();
 	};
 	this.cancel = function() {

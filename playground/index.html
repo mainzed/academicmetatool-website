@@ -253,7 +253,10 @@
 					complete: function() {info(true);}
 				});
 				$("#exportModal").modal({
-					complete: function() {info(true);}
+					complete: function() {exportOptions(true);}
+				});
+				$("#loadModal").modal({
+					complete: function() {loadJSONGraph(true);}
 				});
 				$(".edit").hide();
 				$("#store").hide();
@@ -269,6 +272,12 @@
 					$("#exportModal").modal("close");
 				else
 					$("#exportModal").modal("open");
+			}
+			var loadJSONGraph = function(close) {
+				if (close)
+					$("#loadModal").modal("close");
+				else
+					$("#loadModal").modal("open");
 			}
 			var exportData = function(type,kind) {
 				if (type==="json") {
@@ -438,6 +447,17 @@
 					$("#exportModal").modal("close");
 				}
 			}
+			var loadJSONGraphInApp = function() {
+				var json = JSON.parse($("#json").val());
+				for (var node in json.nodes) {
+					MAINZED.amt.addExistingIndividual(json.nodes[node].id,json.nodes[node].label,json.nodes[node].concept);
+				}
+				for (var edge in json.edges) {
+					MAINZED.amt.addExistingAssertion(json.edges[edge].id,json.edges[edge].role,json.edges[edge].from,json.edges[edge].to,json.edges[edge].width);
+				}
+				update();
+				$("#loadModal").modal("close");
+			}
 		</script>
 	</head>
 
@@ -449,6 +469,7 @@
 					<div class="col s6 left-align">
 						<a class="btn-floating btn-large black" onclick="info()" title="Information"><i class="material-icons">info</i></a>
 						<a class="btn-floating btn-large green" onclick="exportOptions()" title="Download Edges and Nodes"><i class="material-icons">file_download</i></a>
+						<a class="btn-floating btn-large green" onclick="loadJSONGraph()" title="load JSON Graph"><i class="material-icons">file_upload</i></a>
 						<b class="description">Academic Meta Tool Playground.</b>
 					</div>
 					<div id="buttons" class="col s3 right-align">
@@ -553,6 +574,21 @@
 				<a class="btn-floating btn-large green" onclick="exportData('cypher')" title="Copy Edges and Nodes as CYPHER"><i class="material-icons">input</i></a>
 				<textarea id="hiddenclipboard" hidden></textarea>
 			</div>
+		</div>
+			<div id="loadModal" class="modal">
+				<div class="modal-content">
+					<h4>Load JSON Graph</h4>
+					<form class="col s12">
+						<div class="row">
+			        <div class="input-field col s12">
+			          <i class="material-icons prefix">code</i>
+			          <textarea id="json" class="materialize-textarea"></textarea>
+			          <label for="json">JSON Graph</label>
+			        </div>
+			      </div>
+		    </form>
+				<center><a class="btn-floating btn-large green" onclick="loadJSONGraphInApp()" title="load"><i class="material-icons">check</i></a></center>
+				</div>
 		</div>
 	</body>
 </html>
