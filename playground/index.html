@@ -28,6 +28,7 @@
 			}
 			#footer {
 				height: 100px;
+				color: black;
 			}
 			#graph {
 				height: calc(100% - 100px);
@@ -42,6 +43,7 @@
 		</style>
 		<script>
 			var MAINZED = {};
+			MAINZED.ontology = "mainzed";
 			MAINZED.graph = {};
 			MAINZED.edit = false;
 			MAINZED.thisNodes = [];
@@ -52,56 +54,116 @@
 					//console.log(updated);
 					MAINZED.graph.edges.clear();
 					MAINZED.graph.nodes.clear();
-					/*
-						Hier wird spezifiziert, wie die Knoten aussehen sollen
-					*/
-					for (var i in updated.nodes) {
-						updated.nodes[i].length = 10/updated.nodes[i].width;
-						if (!MAINZED.edit) {
-							updated.nodes[i].chosen = false;
+					if (MAINZED.ontology==="mainzed") {
+						/*
+							Hier wird spezifiziert, wie die Knoten aussehen sollen
+						*/
+						for (var i in updated.nodes) {
+							updated.nodes[i].length = 10/updated.nodes[i].width;
+							if (!MAINZED.edit) {
+								updated.nodes[i].chosen = false;
+							}
+							if (updated.nodes[i].concept.includes("Person")) {
+								updated.nodes[i].color = {background:'lightblue', border:'blue', highlight:{background:'white',border:'black'}};
+								updated.nodes[i].shape = "box";
+							}
+							if (updated.nodes[i].concept.includes("Interest")) {
+								updated.nodes[i].color = {background:'pink', border:'red', highlight:{background:'white',border:'black'}};
+								updated.nodes[i].shape = "ellipse";
+							}
 						}
-						if (updated.nodes[i].concept.includes("Person")) {
-							updated.nodes[i].color = {background:'lightblue', border:'blue', highlight:{background:'white',border:'black'}};
-							updated.nodes[i].shape = "box";
-						}
-						if (updated.nodes[i].concept.includes("Interest")) {
-							updated.nodes[i].color = {background:'pink', border:'red', highlight:{background:'white',border:'black'}};
-							updated.nodes[i].shape = "ellipse";
-						}
-					}
-					/*
-						Hier wird spezifiziert wie die Kanten aussehen sollen, welche angezeigt werden sollen, etc
-					*/
-					for (var i in updated.edges) {
-						updated.edges[i].arrowStrikethrough = false;
-						updated.edges[i].chosen = false;
-						if (updated.edges[i].width < 0.1) {
-							updated.edges[i].hidden = !MAINZED.edit;
-						}
-						if (updated.edges[i].role.includes("connectedWith")) {
-							updated.edges[i].color = {color:"blue", highlight:"black"};
-							updated.edges[i].dashes = true;
-							if (updated.edges[i].from.localeCompare(updated.edges[i].to) >= 0) {
+						/*
+							Hier wird spezifiziert wie die Kanten aussehen sollen, welche angezeigt werden sollen, etc
+						*/
+						for (var i in updated.edges) {
+							updated.edges[i].arrowStrikethrough = false;
+							updated.edges[i].chosen = false;
+							if (updated.edges[i].width < 0.1) {
+								updated.edges[i].hidden = !MAINZED.edit;
+							}
+							if (updated.edges[i].role.includes("connectedWith")) {
+								updated.edges[i].color = {color:"blue", highlight:"black"};
+								updated.edges[i].dashes = true;
+								if (updated.edges[i].from.localeCompare(updated.edges[i].to) >= 0) {
+									updated.edges[i].hidden = !MAINZED.edit;
+								}
+							}
+							if (updated.edges[i].role.includes("interestedIn")) {
+								updated.edges[i].color = {color:"green", highlight:"black"};
+								updated.edges[i].arrows = "to";
+							}
+							if (updated.edges[i].role.includes("interestOf")) {
+								updated.edges[i].color = {color:"green", highlight:"black"};
+								updated.edges[i].arrows = "from";
+								updated.edges[i].hidden = !MAINZED.edit;
+							}
+							if (updated.edges[i].role.includes("superInterestOf")) {
+								updated.edges[i].color = {color:"red", highlight:"black"};
+								updated.edges[i].arrows = "to";
+							}
+							if (updated.edges[i].role.includes("subInterestOf")) {
+								updated.edges[i].color = {color:"red", highlight:"black"};
+								updated.edges[i].arrows = "from";
 								updated.edges[i].hidden = !MAINZED.edit;
 							}
 						}
-						if (updated.edges[i].role.includes("interestedIn")) {
-							updated.edges[i].color = {color:"green", highlight:"black"};
-							updated.edges[i].arrows = "to";
+					}
+					if (MAINZED.ontology==="samian") {
+						/*
+							Hier wird spezifiziert, wie die Knoten aussehen sollen
+						*/
+						for (var i in updated.nodes) {
+							updated.nodes[i].length = 10/updated.nodes[i].width;
+							if (!MAINZED.edit) {
+								updated.nodes[i].chosen = false;
+							}
+							if (updated.nodes[i].concept.includes("Toepfer")) {
+								updated.nodes[i].color = {background:'lightgreen', border:'lightgreen', highlight:{background:'white',border:'black'}};
+								updated.nodes[i].shape = "box";
+							}
+							if (updated.nodes[i].concept.includes("Punze")) {
+								updated.nodes[i].color = {background:'orange', border:'orange', highlight:{background:'white',border:'black'}};
+								updated.nodes[i].shape = "ellipse";
+							}
 						}
-						if (updated.edges[i].role.includes("interestOf")) {
-							updated.edges[i].color = {color:"green", highlight:"black"};
-							updated.edges[i].arrows = "from";
-							updated.edges[i].hidden = !MAINZED.edit;
-						}
-						if (updated.edges[i].role.includes("superInterestOf")) {
-							updated.edges[i].color = {color:"red", highlight:"black"};
-							updated.edges[i].arrows = "to";
-						}
-						if (updated.edges[i].role.includes("subInterestOf")) {
-							updated.edges[i].color = {color:"red", highlight:"black"};
-							updated.edges[i].arrows = "from";
-							updated.edges[i].hidden = !MAINZED.edit;
+						/*
+							Hier wird spezifiziert wie die Kanten aussehen sollen, welche angezeigt werden sollen, etc
+						*/
+						for (var i in updated.edges) {
+							updated.edges[i].arrowStrikethrough = false;
+							updated.edges[i].chosen = false;
+							if (updated.edges[i].width < 0.1) {
+								updated.edges[i].hidden = !MAINZED.edit;
+							}
+							if (updated.edges[i].role.includes("isConnectedWith")) {
+								updated.edges[i].color = {color:"green", highlight:"black"};
+								updated.edges[i].dashes = true;
+								if (updated.edges[i].from.localeCompare(updated.edges[i].to) >= 0) {
+									updated.edges[i].hidden = !MAINZED.edit;
+								}
+							}
+							if (updated.edges[i].role.includes("isCreatorOf")) {
+								updated.edges[i].color = {color:"blue", highlight:"black"};
+								updated.edges[i].arrows = "to";
+							}
+							if (updated.edges[i].role.includes("wasCreatedBy")) {
+								updated.edges[i].color = {color:"blue", highlight:"black"};
+								updated.edges[i].arrows = "from";
+								updated.edges[i].hidden = !MAINZED.edit;
+							}
+							if (updated.edges[i].role.includes("istMutterpunzeVon")) {
+								updated.edges[i].color = {color:"orange", highlight:"black"};
+								updated.edges[i].arrows = "to";
+							}
+							if (updated.edges[i].role.includes("istTochterpunzeVon")) {
+								updated.edges[i].color = {color:"orange", highlight:"black"};
+								updated.edges[i].arrows = "from";
+								updated.edges[i].hidden = !MAINZED.edit;
+							}
+							if (updated.edges[i].role.includes("arbeitetInWerkstattVon")) {
+								updated.edges[i].color = {color:"blue", highlight:"black"};
+								updated.edges[i].dashes = true;
+							}
 						}
 					}
 					MAINZED.graph.nodes.update(updated.nodes);
@@ -255,9 +317,64 @@
 				$("#loadModal").modal({
 					complete: function() {loadJSONGraph(true);}
 				});
+				$("#propertiesModal").modal({
+					complete: function() {loadJSONGraph(true);}
+				});
 				$(".edit").hide();
 				$("#store").hide();
 			});
+			var switchOntology = function() {
+				MAINZED = {};
+				MAINZED.ontology = $("#ontology").val();
+				MAINZED.graph = {};
+				MAINZED.edit = false;
+				MAINZED.thisNodes = [];
+				MAINZED.thisEdges = [];
+				MAINZED.amt = new AMT();
+				if (MAINZED.ontology==="mainzed") {
+					MAINZED.amt.setStore("http://higeomes.i3mainz.hs-mainz.de/openrdf-sesame/repositories/mainzed2");
+				} else if (MAINZED.ontology==="samian") {
+					MAINZED.amt.setStore("http://ls-dev.i3mainz.hs-mainz.de/rdf4j-server/repositories/samianamt");
+				} else {
+					MAINZED.amt.setStore("http://higeomes.i3mainz.hs-mainz.de/openrdf-sesame/repositories/mainzed2");
+				}
+				console.log(MAINZED);
+				MAINZED.amt.load(function() {
+					var concepts = MAINZED.amt.getConcepts();
+					$("#buttons .green").remove();
+					for (var i in concepts) {
+						var a = $("<a class='btn-floating btn-large edit green' onclick='openModal(false,\""+concepts[i].concept+"\")' title='Add "+concepts[i].label+" node'><i class='material-icons'>add "+concepts[i].label.substr(0,1)+"</i></a>");
+						$("#buttons").prepend(a);
+					}
+					$(".edit").hide();
+					var graph = MAINZED.amt.getGraph(true);
+					MAINZED.graph.nodes = new vis.DataSet(graph.nodes);
+					MAINZED.graph.edges = new vis.DataSet(graph.edges);
+					var network = new vis.Network(document.getElementById("graph"),{nodes: MAINZED.graph.nodes, edges: MAINZED.graph.edges},{});
+					network.on("selectNode", function (params) {
+						if (MAINZED.edit)
+							openModal(params.nodes[0]);
+					});
+					update();
+				});
+				$("#modal").modal({
+					complete: cancelEdit
+				});
+				$("#info").modal({
+					complete: function() {info(true);}
+				});
+				$("#exportModal").modal({
+					complete: function() {exportOptions(true);}
+				});
+				$("#loadModal").modal({
+					complete: function() {loadJSONGraph(true);}
+				});
+				$("#propertiesModal").modal({
+					complete: function() {propModal(true);}
+				});
+				$(".edit").hide();
+				$("#store").hide();
+			};
 			var info = function(close) {
 				if (close)
 					$("#info").modal("close");
@@ -277,6 +394,14 @@
 					$("#loadModal").modal("close");
 				else
 					$("#loadModal").modal("open");
+			}
+			var propModal = function(close) {
+				$("#ontology").material_select();
+				$("#ontology").val(MAINZED.ontology);
+				if (close)
+					$("#propertiesModal").modal("close");
+				else
+					$("#propertiesModal").modal("open");
 			}
 			var exportData = function(type,kind) {
 				if (type==="json") {
@@ -498,14 +623,17 @@
 
 	<body>
 		<div id="graph" class="col s12"></div>
-		<div id="footer" class="page-footer grey col s12">
+		<div id="footer" class="page-footer col s12">
 			<div class="container">
 				<div class="row">
-					<div class="col s6 left-align">
+					<div id="footertitle" class="col s3 left-align">
+						<b class="description">The AMT Playground.</b>
+					</div>
+					<div id="props" class="col s3 left-align">
 						<a class="btn-floating btn-large black" onclick="info()" title="Information"><i class="material-icons">info</i></a>
-						<a class="btn-floating btn-large green" onclick="exportOptions()" title="Download Edges and Nodes"><i class="material-icons">file_download</i></a>
-						<a class="btn-floating btn-large green" onclick="loadJSONGraph()" title="load JSON Graph"><i class="material-icons">file_upload</i></a>
-						<b class="description">Academic Meta Tool Playground.</b>
+						<a class="btn-floating btn-large black" onclick="propModal()" title="Ontology wechseln"><i class="material-icons">palette</i></a>
+						<a class="btn-floating btn-large black" onclick="exportOptions()" title="Download Edges and Nodes"><i class="material-icons">file_download</i></a>
+						<a class="btn-floating btn-large black" onclick="loadJSONGraph()" title="load JSON Graph"><i class="material-icons">file_upload</i></a>
 					</div>
 					<div id="buttons" class="col s3 right-align">
 						<a class="btn-floating btn-large edit blue" onclick="edit()" title="Close edit mode"><i class="material-icons">cancel</i></a>
@@ -552,50 +680,47 @@
 		<div id="info" class="modal">
 			<div class="modal-content">
 				<h4>Academic Meta Tool. AMT.</h4>
-				<h5>Ontologie: Personen-Interessen-Netzwerk</h5>
-				<br>
 				<p><b>Über AMT</b></p>
+				<br>
 				<p>AMT bietet die Möglichkeit sämtlichen Kanten eine Gewichtung hinzuzufügen, um dadurch die Vagheit dieser Kante auszudrücken. Eine Beziehung zwischen zwei Knoten besteht also nur zu einem gewissen Grad. Dieser Grad, d.h. das Kantengewicht, wird üblicherweise in Prozent angegeben. AMT beinhaltet zusätzlich ein Verfahren, mit dem - unter Zuhilfenahme einer vordefinierten Ontologie - aus vorhandenen graphbasierten Daten automatisch Schlussfolgerungen gezogen werden können (Reasoning). Ein Prototyp des AMTs steht hier als Web-Anwendung zur Verfügung. In einer entwickelten Test-Ontologie können <b>Personen</b> und <b>Interessen</b> und deren Beziehungen in einem gewissen Grad zueinander modelliert werden. Diese Ontologie beinhaltet neben den genannten beiden Klassen weitere Relationen, so dass Personen und Interessen miteinander in Beziehung gesetzt werden können. Außerdem enthält die Ontologie Axiome, um automatisiert aus bestehenden Beziehungen neue Beziehungen generieren zu können.</p>
 				<br>
-				<p><b>Knoten</b></p>
-				<p style="margin-top: 10px">
-					<div class="chip blue lighten-4">Person</div>
-					<div class="chip red lighten-4">Interesse</div>
-				</p>
-				<br>
-				<p><b>Kanten</b></p>
-				<p style="margin-top: 10px">
-					<div class="chip blue lighten-4">is connected with, dashed</div>
-					<div class="chip green lighten-4">is interested in, arrow</div>
-					<div class="chip green lighten-4">is an interest of, arrow</div>
-					<div class="chip red lighten-4">is a subinterest of, arrow</div>
-					<div class="chip red lighten-4">is a superinterest of, arrow</div>
-				</p>
-				<br>
 				<p><b>How to?</b></p>
+				<br>
 				<p>
-					Zum Editieren den "editboutton" klicken.<br>
-					Danach zum Beispiel eine neue Person/Interesse anlegen (Klick auf den grünen Button).<br>
-					Das Label des Knotens angeben und ggf. eine Kantenbeschriftung (Rolle) wählen und danach die Gewichtung der Verbindung einstellen.<br>
-					Zum Speichern den grünen "savebutton" klicken.<br>
-					Zum Bearbeiten eines Knoten, diesen im Editiermodul durch Klick auswählen.<br>
-					Zur Reasoning-Ansicht den blauen "closebutton" drücken (durch erneuten Klick auf den "editbutton" kann wieder in diesen Modus zurückgesprungen werden).<br>
-					Ggf. Zum Abbruch den roten "cancelbutton" klicken.<br>
-					Wenn freigeschaltet, zum Speichern der Quadtupels im Triplestrore den schwarzen "savebutton" drücken.
+					1. Auswahl der Ontologie über den "Farbpaletten-Buton."
+					<br>
+					2. Ggf. Laden eines JSON-Graphen über "Laden-Button."
+					<br>
+					3. Nodes und Edges im "Editmodus" erstellen, dazu "Edit-Button" klicken.
+					<br>
+					4. Node erstellen durch Klick auf "Add-Buttons" oder Node bearbeiten durch Klick auf einen Node.
+					<br>
+					5. Label, Relation und Gewicht im "Edit-Modal" modifizieren und mit "Save-Button" übernehmen (oder Änderungen verwerfen / Node löschen).
+					<br>
+					6. Über blauen "Close-Editmode-Button" in den Reasoning Modus kommen oder mit dem roten "Close-Button" die Änderungen verwerfen.
+					<br>
+					7. Graph exportieren über "Export-Button".
 				</p>
+				<br>
+				<p><b>Auswahl der Ontologie</b></p>
+				<br>
+				<p>Wählen Sie mit dem "Palettensymbol" die Ontologie aus.</p>
 				<br>
 				<p><b>Export</b></p>
+				<br>
 				<p>
 					Der Playground bietet (noch) keine Möglichkeit zum Speichern der Daten. Eine einfache Exportfunktion ist jedoch implementiert. Durch Klick auf den "Download-Button" kann der aktuell angezeigte Graph (egal ob im Editor- oder Reasoning-Modus) in drei Varianten exportiert werden. Es stehen hier ein <b>JSON-Object</b> mit allen Knoten und Kanten, <b>CSV-Strings</b>, jeweils für Nodes und Edges und ein <b>cypher-Statement</b> zum direkten Import z.B. in Neo4J zur Verfügung. Mit Klick auf einer der Funktionen wird ein String in die Zwischenablage kopiert.
 				</p>
 				<br>
 				<p><b>Import</b></p>
+				<br>
 				<p>
 					Nach einem Export in das "JSON-Format" kann über den "loadButton" ein bereits existierer AMT Graph geladen werden.
 				</p>
 				<br>
 				<p><b>About</b></p>
-				<p>* AMT-Software by Martin Unold (i3mainz) & Florian Thiery (i3mainz,RGZM).
+				<br>
+				<p>* AMT-Software by Martin Unold (i3mainz) & Florian Thiery (i3mainz, RGZM).
 			</div>
 		</div>
 		<div id="exportModal" class="modal">
@@ -640,5 +765,36 @@
 				<center><a class="btn-floating btn-large green" onclick="loadJSONGraphInApp()" title="load"><i class="material-icons">check</i></a></center>
 				</div>
 		</div>
+		<div id="propertiesModal" class="modal">
+			<div class="modal-content">
+				<h4>Properties</h4>
+				<br>
+				<h5>Ontologie</h5>
+				<ul class="collection">
+		      <li class="collection-item">1) Personen-Interessen-Netzwerk</li>
+		      <li class="collection-item">
+						<div class="chip blue lighten-4">Person</div>
+						<div class="chip red lighten-4">Interesse</div>
+					</li>
+		      <li class="collection-item">2) Töpfer-Punzen-Netzwerk</li>
+					<li class="collection-item">
+						<div class="chip green lighten-4">Töpfer</div>
+						<div class="chip orange lighten-4">Punze</div>
+					</li>
+		    </ul>
+				<form class="col s12">
+					<div class="row">
+						<div class="input-field col s12">
+					    <select id="ontology">
+								<option value="mainzed">Personen-Interessen-Netzwerk</option>
+								<option value="samian">Töpfer-Punzen-Netzwerk</option>
+							</select>
+    					<label>Ontologie</label>
+  					</div>
+					</div>
+			</form>
+			<center><a class="btn-floating btn-large green" onclick="switchOntology()" title="load"><i class="material-icons">check</i></a></center>
+			</div>
+	</div>
 	</body>
 </html>
