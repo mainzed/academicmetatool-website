@@ -1,0 +1,188 @@
+@prefix amt: <http://academic-meta-tool.xyz/vocab#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix dcterms: <http://purl.org/dc/terms/>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix skos: <http://www.w3.org/2004/02/skos/core#>.
+
+# Ontology
+
+ls: a owl:Ontology;
+  dcterms:title "Academic Meta Tool Vocabulary"@en;
+  dcterms:created "2018-01-19"^^xsd:date;
+  dcterms:description "A vocabulary for Academic Meta Tool."@en;
+  owl:versionInfo "Penny Edition";
+  dc:creator "Florian Thiery M.Sc. (i3mainz, RGZM)";
+  dc:creator "Martin Unold M.Sc. (i3mainz)";
+  dcterms:licence <http://creativecommons.org/licenses/by/4.0/>;
+  rdfs:seeAlso <http://academic-meta-tool.xyz/vocab/>.
+
+# Classes
+
+# Concept &. Role
+
+amt:Concept a owl:Class;
+  rdfs:SubClassOf rdfs:Class;
+  skos:definition "";
+  rdfs:label "Concept"@en;
+  rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+amt:Role a owl:Class;
+  rdfs:SubClassOf rdf:Property;
+  skos:definition "";
+  rdfs:label "Role"@en;
+  rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+# Logics
+
+amt:Logic a owl:Class;
+  rdfs:SubClassOf rdfs:Class;
+  skos:definition "";
+  rdfs:label "Logic"@en;
+  rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+amt:LukasiewiczLogic a owl:Class;
+  rdf:type amt:Logic;
+  skos:definition "";
+  rdfs:label "Lukasiewicz Logic"@en;
+  rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+amt:ProductLogic a owl:Class;
+  rdf:type amt:Logic;
+  skos:definition "";
+  rdfs:label "Product Logic"@en;
+  rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+amt:GoedelLogic a owl:Class;
+  rdf:type amt:Logic;
+  skos:definition "";
+  rdfs:label "Goedel Logic"@en;
+  rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+# Axioms
+
+amt:Axiom a owl:Class;
+  rdfs:SubClassOf rdfs:Class;
+  skos:definition "";
+  rdfs:label "Axiom"@en;
+  rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+amt:InferenceAxiom a owl:Class;
+  rdfs:SubClassOf amt:Axiom;
+  skos:definition "";
+  rdfs:label "Inference Axiom"@en;
+  rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+amt:IntegrityAxiom a owl:Class;
+  rdfs:SubClassOf amt:Axiom;
+  skos:definition "";
+  rdfs:label "Inference Axiom"@en;
+  rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+amt:RoleChainAxiom a owl:Class;
+  rdfs:SubClassOf amt:InferenceAxiom;
+  skos:definition "";
+  rdfs:label "Role Chain Axiom"@en;
+  rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+amt:InverseAxiom a owl:Class;
+  rdfs:SubClassOf amt:InferenceAxiom;
+  skos:definition "";
+  rdfs:label "Inverse Axiom"@en;
+  rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+amt:DisjointAxiom a owl:Class;
+  rdfs:SubClassOf amt:IntegrityAxiom;
+  skos:definition "";
+  rdfs:label "Disjoint Axiom"@en;
+  rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+amt:SelfDisjointAxiom a owl:Class;
+  rdfs:SubClassOf amt:IntegrityAxiom;
+  skos:definition "";
+  rdfs:label "Self Disjoint Axiom"@en;
+  rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+# Properties
+
+# Concept
+
+amt:placeholder a owl:ObjectProperty, rdf:Property;
+	skos:definition "";
+	rdfs:label "placeholder"@en;
+	rdfs:domain amt:Concept;
+	rdfs:range rdfs:Literal;
+	rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+# RoleChainAxiom
+
+amt:antecedent1 a owl:ObjectProperty, rdf:Property;
+	skos:definition "";
+	rdfs:label "antecedent1"@en;
+	rdfs:domain amt:RoleChainAxiom;
+	rdfs:range amt:Role;
+	rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+amt:antecedent2 a owl:ObjectProperty, rdf:Property;
+	skos:definition "";
+	rdfs:label "antecedent2"@en;
+	rdfs:domain amt:RoleChainAxiom;
+	rdfs:range amt:Role;
+	rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+amt:consequent a owl:ObjectProperty, rdf:Property;
+	skos:definition "";
+	rdfs:label "consequent"@en;
+	rdfs:domain amt:RoleChainAxiom;
+	rdfs:range amt:Role;
+	rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+amt:logic a owl:ObjectProperty, rdf:Property;
+	skos:definition "";
+	rdfs:label "logic"@en;
+	rdfs:domain amt:RoleChainAxiom;
+	rdfs:range amt:Logic;
+	rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+# InverseAxiom
+
+amt:antecedent a owl:ObjectProperty, rdf:Property;
+	skos:definition "";
+	rdfs:label "antecedent"@en;
+	rdfs:domain amt:InverseAxiom;
+	rdfs:range amt:Role;
+	rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+amt:inverse a owl:ObjectProperty, rdf:Property;
+	skos:definition "";
+	rdfs:label "inverse"@en;
+	rdfs:domain amt:InverseAxiom;
+	rdfs:range amt:Role;
+	rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+# DisjointAxiom
+
+amt:role1 a owl:ObjectProperty, rdf:Property;
+	skos:definition "";
+	rdfs:label "role1"@en;
+	rdfs:domain amt:DisjointAxiom;
+	rdfs:range amt:Role;
+	rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+amt:role2 a owl:ObjectProperty, rdf:Property;
+	skos:definition "";
+	rdfs:label "role2"@en;
+	rdfs:domain amt:DisjointAxiom;
+	rdfs:range amt:Role;
+	rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
+
+# SelfDisjointAxiom
+
+amt:role a owl:ObjectProperty, rdf:Property;
+	skos:definition "";
+	rdfs:label "role"@en;
+	rdfs:domain amt:SelfDisjointAxiom;
+	rdfs:range amt:Role;
+	rdfs:isDefinedBy <http://academic-meta-tool.xyz/vocab/>.
