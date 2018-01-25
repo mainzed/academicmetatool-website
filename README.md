@@ -4,7 +4,7 @@ AMT bietet die Möglichkeit sämtlichen Kanten eine Gewichtung hinzuzufügen, um
 
 ## They AMT Ontology
 
-siehe [amt_ontology.ttl](https://github.com/AcademicMetaTool/amt/blob/master/amt_ontology.ttl).
+[amt_ontology.ttl](https://github.com/AcademicMetaTool/amt/blob/master/amt_ontology.ttl).
 
 ## Example Ontologies
 
@@ -13,7 +13,7 @@ siehe [amt_ontology.ttl](https://github.com/AcademicMetaTool/amt/blob/master/amt
 
 ## AMT Playground
 
-siehe [AMT Playground](http://academic-meta-tool.xyz/playground/).
+[AMT Playground](http://academic-meta-tool.xyz/playground/).
 
 ## Create your own AMT app?
 
