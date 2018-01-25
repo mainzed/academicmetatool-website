@@ -8,8 +8,8 @@ AMT bietet die Möglichkeit sämtlichen Kanten eine Gewichtung hinzuzufügen, um
 
 ## Example Ontologies
 
-* [Personen-Interessen-Netzwerk](https://github.com/AcademicMetaTool/amt/blob/master/playground/ontology_mainzed.ttl).
-* [Töpfer-Punzen-Netzwerk ](https://github.com/AcademicMetaTool/amt/blob/master/playground/samian_mainzed.ttl).
+* [Personen-Interessen-Netzwerk](https://github.com/AcademicMetaTool/amt/blob/master/playground/ontology_mainzed.ttl)
+* [Töpfer-Punzen-Netzwerk ](https://github.com/AcademicMetaTool/amt/blob/master/playground/samian_mainzed.ttl)
 
 ## AMT Playground
 
