@@ -1,4 +1,9 @@
-@prefix amt: <http://www.academic-meta-tool.xyz/> .
+# AMT Ontology - Leonard Edition
+# http://academic-meta-tool.xyz/ontology
+
+@prefix amt: <http://academic-meta-tool.xyz/vocab#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
 amt:Concept rdfs:subClassOf rdfs:Class .
 # rdfs:label -> rdfs:Literal .
@@ -36,4 +41,3 @@ amt:Logic rdfs:subClassOf rdfs:Class .
 amt:LukasiewiczLogic rdf:type amt:Logic .
 amt:ProductLogic rdf:type amt:Logic .
 amt:GoedelLogic rdf:type amt:Logic .
-
