@@ -304,6 +304,7 @@
 							openModal(params.nodes[0]);
 					});
 					update();
+					propModal();
 				});
 				$("#modal").modal({
 					complete: cancelEdit
@@ -633,7 +634,7 @@
 					</div>
 					<div id="props" class="col s3 left-align">
 						<a class="btn-floating btn-large black" onclick="info()" title="Information"><i class="material-icons">info</i></a>
-						<a class="btn-floating btn-large black" onclick="propModal()" title="Ontology wechseln"><i class="material-icons">palette</i></a>
+						<!--<a class="btn-floating btn-large black" onclick="propModal()" title="Ontology wechseln"><i class="material-icons">palette</i></a>-->
 						<a class="btn-floating btn-large black" onclick="exportOptions()" title="Download Edges and Nodes"><i class="material-icons">file_download</i></a>
 						<a class="btn-floating btn-large black" onclick="loadJSONGraph()" title="load JSON Graph"><i class="material-icons">file_upload</i></a>
 					</div>
@@ -689,7 +690,7 @@
 				<p><b>How to?</b></p>
 				<br>
 				<p>
-					1. Auswahl der Ontologie über den "Farbpaletten-Buton."
+					1. Auswahl der Ontologie.
 					<br>
 					2. Ggf. Laden eines JSON-Graphen über "Laden-Button."
 					<br>
@@ -769,21 +770,13 @@
 		</div>
 		<div id="propertiesModal" class="modal">
 			<div class="modal-content">
-				<h4>Properties</h4>
+				<h4>Ontologie wählen</h4>
 				<br>
-				<h5>Ontologie</h5>
 				<ul class="collection">
-		      <li class="collection-item">1) Personen-Interessen-Netzwerk</li>
-		      <li class="collection-item">
-						<div class="chip blue lighten-4">Person</div>
-						<div class="chip red lighten-4">Interesse</div>
-					</li>
-		      <li class="collection-item">2) Töpfer-Punzen-Netzwerk</li>
-					<li class="collection-item">
-						<div class="chip green lighten-4">Töpfer</div>
-						<div class="chip orange lighten-4">Punze</div>
-					</li>
+		      <li class="collection-item"><b>Personen-Interessen-Netzwerk</b>&nbsp;&nbsp;<div class="chip blue lighten-4">Person</div>&nbsp;<div class="chip red lighten-4">Interesse</div></li>
+					<li class="collection-item"><b>Töpfer-Punzen-Netzwerk</b>&nbsp;&nbsp;<div class="chip green lighten-4">Töpfer</div>&nbsp;<div class="chip orange lighten-4">Punze</div></li>
 		    </ul>
+				<br>
 				<form class="col s12">
 					<div class="row">
 						<div class="input-field col s12">
