@@ -48,19 +48,101 @@
     <pre>
         <code class="language-rdf" data-lang="rdf">
           amt:Role rdfs:subClassOf rdf:Property .
-          amt:Role rdfs:label rdfs:Literal
-          amt:Role rdfs:domain amt:Concept
-          amt:Role rdfs:range amt:Concept</code>
+          amt:Role rdfs:label rdfs:Literal .
+          amt:Role rdfs:domain amt:Concept .
+          amt:Role rdfs:range amt:Concept .</code>
     </pre>
 </figure>
 <h4><a name="Role-example">Example</a></h4>
 <figure class="highlight">
     <pre>
         <code class="language-rdf" data-lang="rdf">
-          mainzed:connectedWith rdf:type amt:Role .
-          mainzed:connectedWith rdfs:label "is connected with" .
-          mainzed:connectedWith rdfs:domain mainzed:Person .
-          mainzed:connectedWith rdfs:range mainzed:Person .</code>
+          example:connectedWith rdf:type amt:Role .
+          example:connectedWith rdfs:label "is connected with" .
+          example:connectedWith rdfs:domain example:Person .
+          example:connectedWith rdfs:range example:Person .</code>
+    </pre>
+</figure>
+<h3><a name="RoleChainAxiom">amt:RoleChainAxiom</a></h3>
+<br>
+<a href="rca.png"><img src="rca.png" width="50%"></a>
+<h4><a name="RoleChainAxiom-model">Model</a></h4>
+<figure class="highlight">
+    <pre>
+        <code class="language-rdf" data-lang="rdf">
+          amt:RoleChainAxiom rdfs:subClassOf amt:InferenceAxiom .
+          amt:RoleChainAxiom amt:antecedent1 amt:Role .
+          amt:RoleChainAxiom amt:antecedent2 amt:Role .
+          amt:RoleChainAxiom amt:consequent amt:Role .
+          amt:RoleChainAxiom amt:logic amt:Logic .</code>
+    </pre>
+</figure>
+<h4><a name="RoleChainAxiom-example">Example</a></h4>
+<figure class="highlight">
+    <pre>
+        <code class="language-rdf" data-lang="rdf">
+          example:RCA rdf:type amt:RoleChainAxiom .
+          example:RCA amt:antecedent1 example:connectedWith .
+          example:RCA amt:antecedent2 example:connectedWith .
+          example:RCA amt:consequent example:connectedWith .
+          example:RCA amt:logic amt:ProductLogic .</code>
+    </pre>
+</figure>
+<h3><a name="InverseAxiom">amt:InverseAxiom</a></h3>
+<br>
+<a href="ia.png"><img src="ia.png" width="50%"></a>
+<h4><a name="InverseAxiom-model">Model</a></h4>
+<figure class="highlight">
+    <pre>
+        <code class="language-rdf" data-lang="rdf">
+          amt:InverseAxiom rdfs:subClassOf amt:InferenceAxiom .
+          amt:InverseAxiom amt:antecedent amt:Role .
+          amt:InverseAxiom amt:inverse amt:Role .</code>
+    </pre>
+</figure>
+<h4><a name="InverseAxiom-example">Example</a></h4>
+<figure class="highlight">
+    <pre>
+        <code class="language-rdf" data-lang="rdf">
+          example:IA rdf:type amt:InverseAxiom .
+          example:IA amt:antecedent example:interestOf .
+          example:IA amt:inverse example:interestedIn .</code>
+    </pre>
+</figure>
+<h3><a name="DisjointAxiom">amt:DisjointAxiom</a></h3>
+<h4><a name="DisjointAxiom-model">Model</a></h4>
+<figure class="highlight">
+    <pre>
+        <code class="language-rdf" data-lang="rdf">
+          amt:DisjointAxiom rdfs:subClassOf amt:IntegrityAxiom .
+          amt:DisjointAxiom amt:role1 amt:Role .
+          amt:DisjointAxiom amt:role2 amt:Role .</code>
+    </pre>
+</figure>
+<h4><a name="DisjointAxiom-example">Example</a></h4>
+<figure class="highlight">
+    <pre>
+        <code class="language-rdf" data-lang="rdf">
+          example:DA rdf:type amt:DisjointAxiom .
+          example:DA amt:role1 example:istEinMusikinstrument .
+          example:DA amt:role1 example:istEinBuch .</code>
+    </pre>
+</figure>
+<h3><a name="SelfDisjointAxiom">amt:SelfDisjointAxiom</a></h3>
+<h4><a name="SelfDisjointAxiom-model">Model</a></h4>
+<figure class="highlight">
+    <pre>
+        <code class="language-rdf" data-lang="rdf">
+          amt:SelfDisjointAxiom rdfs:subClassOf amt:IntegrityAxiom .
+          amt:SelfDisjointAxiom amt:role amt:Role .</code>
+    </pre>
+</figure>
+<h4><a name="SelfDisjointAxiom-example">Example</a></h4>
+<figure class="highlight">
+    <pre>
+        <code class="language-rdf" data-lang="rdf">
+          example:SDA rdf:type amt:SelfDisjointAxiom .
+          example:SDA amt:role example:superInterestOf .</code>
     </pre>
 </figure>
 
