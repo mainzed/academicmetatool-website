@@ -62,8 +62,8 @@
 							updated.nodes[i].chosen = false;
 						}
 						if (updated.nodes[i].concept.includes("Event")) {
-							updated.nodes[i].color = {background:'lightblue', border:'blue', highlight:{background:'white',border:'black'}};
-							updated.nodes[i].shape = "box";
+							updated.nodes[i].color = {background:'#00ccff', border:'#00ccff', highlight:{background:'white', border:'#00ccff'}};
+							updated.nodes[i].shape = "circle";
 						} else {
 							updated.nodes[i].color = {background:'grey', border:'black', highlight:{background:'white',border:'black'}};
 							updated.nodes[i].shape = "box";
@@ -79,15 +79,51 @@
 							updated.edges[i].hidden = !TIME.edit;
 						}
 						var roleWithPrefix = "http://academic-meta-tool.xyz/AllenFreksa#";
-						if (updated.edges[i].role===roleWithPrefix+"b") {
+						if (updated.edges[i].role===roleWithPrefix+"q") {
+							updated.edges[i].color = {color:"grey", highlight:"black"};
+							updated.edges[i].dashes = true;
+						} else if (updated.edges[i].role===roleWithPrefix+"e") {
+							updated.edges[i].color = {color:"grey", highlight:"black"};
+							updated.edges[i].arrows = "to";
+						} else if (updated.edges[i].role===roleWithPrefix+"b") {
 							updated.edges[i].color = {color:"red", highlight:"black"};
 							updated.edges[i].arrows = "to";
 						} else if (updated.edges[i].role===roleWithPrefix+"a") {
 							updated.edges[i].color = {color:"green", highlight:"black"};
 							updated.edges[i].arrows = "to";
+						} else if (updated.edges[i].role===roleWithPrefix+"d") {
+							updated.edges[i].color = {color:"blue", highlight:"black"};
+							updated.edges[i].arrows = "to";
+						} else if (updated.edges[i].role===roleWithPrefix+"di") {
+							updated.edges[i].color = {color:"blue", highlight:"black"};
+							updated.edges[i].arrows = "to";
+						} else if (updated.edges[i].role===roleWithPrefix+"o") {
+							updated.edges[i].color = {color:"yellow", highlight:"black"};
+							updated.edges[i].arrows = "to";
+						} else if (updated.edges[i].role===roleWithPrefix+"oi") {
+							updated.edges[i].color = {color:"yellow", highlight:"black"};
+							updated.edges[i].arrows = "to";
+						} else if (updated.edges[i].role===roleWithPrefix+"m") {
+							updated.edges[i].color = {color:"orange", highlight:"black"};
+							updated.edges[i].arrows = "to";
+						} else if (updated.edges[i].role===roleWithPrefix+"mi") {
+							updated.edges[i].color = {color:"orange", highlight:"black"};
+							updated.edges[i].arrows = "to";
+						} else if (updated.edges[i].role===roleWithPrefix+"s") {
+							updated.edges[i].color = {color:"#66ff99", highlight:"black"};
+							updated.edges[i].arrows = "to";
+						} else if (updated.edges[i].role===roleWithPrefix+"si") {
+							updated.edges[i].color = {color:"#66ff99", highlight:"black"};
+							updated.edges[i].arrows = "to";
+						} else if (updated.edges[i].role===roleWithPrefix+"f") {
+							updated.edges[i].color = {color:"#9933ff", highlight:"black"};
+							updated.edges[i].arrows = "to";
+						} else if (updated.edges[i].role===roleWithPrefix+"fi") {
+							updated.edges[i].color = {color:"#9933ff", highlight:"black"};
+							updated.edges[i].arrows = "to";
 						} else {
 							updated.edges[i].color = {color:"black", highlight:"black"};
-							updated.edges[i].dashes = true;
+							updated.edges[i].arrows = "to";
 						}
 					}
 					TIME.graph.nodes.update(updated.nodes);

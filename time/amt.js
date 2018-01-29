@@ -208,6 +208,9 @@ var AMT = function() {
 		if (k<0 && width>0) {
 			//edges.push({role: role, from: from, to: to, width: width});
       var roleShort = role.replace("http://academic-meta-tool.xyz/AllenFreksa#","");
+      if (roleShort==="q") {
+        roleShort = "?";
+      }
       edges.push({role: role, from: from, to: to, width: width, label: roleShort, font: {align: 'middle', size:10, color:'red', face:'arial'}});
 			return true;
 		}
