@@ -129,11 +129,12 @@ var AMT = function() {
 				if (!AXIOMS[data[i].axiom])
 					AXIOMS[data[i].axiom] = {};
 				if (data[i].p == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
-					AXIOMS[data[i].axiom].type = data[i].o.substr(PREFIX.length);
+					AXIOMS[data[i].axiom].type = data[i].o.substr(PREFIX.length-4);
 				else {
-					AXIOMS[data[i].axiom][data[i].p.substr(PREFIX.length)] = data[i].o;
+          AXIOMS[data[i].axiom][data[i].p.substr(PREFIX.length-4)] = data[i].o;
 				}
 			}
+      console.log(AXIOMS);
 			--todo;
 			if (todo == 0 && callback) {
 				callback(graph);
