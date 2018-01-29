@@ -31,7 +31,7 @@ var AMT = function() {
 	var GRAPH = { original: {nodes: [], edges: []}, edited: {nodes: [], edges: []} };
 	var AXIOMS = [];
 
-	var STORE = "http://higeomes.i3mainz.hs-mainz.de/openrdf-sesame/repositories/mainzed2";
+	var STORE = "http://higeomes.i3mainz.hs-mainz.de/openrdf-sesame/repositories/amttextelsem";
 	var PREFIX = "http://www.academic-meta-tool.xyz/vocab#";
 
 	var queryStore = function(query,callback) {
