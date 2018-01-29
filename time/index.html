@@ -79,21 +79,11 @@
 							if (updated.edges[i].width < 0.1) {
 								updated.edges[i].hidden = !TIME.edit;
 							}
-							if (updated.edges[i].role.includes("connectedWith")) {
-								updated.edges[i].color = {color:"blue", highlight:"black"};
-								updated.edges[i].dashes = true;
-							} else if (updated.edges[i].role.includes("interestedIn")) {
+							if (updated.edges[i].role.includes("interestedIn")) {
 								updated.edges[i].color = {color:"green", highlight:"black"};
 								updated.edges[i].arrows = "to";
 							} else if (updated.edges[i].role.includes("interestOf")) {
 								updated.edges[i].color = {color:"green", highlight:"black"};
-								updated.edges[i].arrows = "from";
-								updated.edges[i].hidden = !TIME.edit;
-							} else if (updated.edges[i].role.includes("superInterestOf")) {
-								updated.edges[i].color = {color:"red", highlight:"black"};
-								updated.edges[i].arrows = "to";
-							} else if (updated.edges[i].role.includes("subInterestOf")) {
-								updated.edges[i].color = {color:"red", highlight:"black"};
 								updated.edges[i].arrows = "from";
 								updated.edges[i].hidden = !TIME.edit;
 							} else {
@@ -151,7 +141,13 @@
 				for (var i in roles) {
 					if (roles[i].domain == type) {
 						// load only Allen types
-						$("#role").append("<option value='"+roles[i].role+"'>"+roles[i].label+"</option>");
+						var role = roles[i].role;
+						var timeprefix = "http://academic-meta-tool.xyz/AllenFreksa#";
+						if (role===timeprefix+"b" || role===timeprefix+"m" || role===timeprefix+"o" || role===timeprefix+"fi" || role===timeprefix+"di" ||
+								role===timeprefix+"si" || role===timeprefix+"e" || role===timeprefix+"s" || role===timeprefix+"d" || role===timeprefix+"f" ||
+								role===timeprefix+"oi" || role===timeprefix+"mi" || role===timeprefix+"a") {
+									$("#role").append("<option value='"+roles[i].role+"'>"+roles[i].label+"</option>");
+						}
 					}
 				}
 				$("#role").on("change",function() {
