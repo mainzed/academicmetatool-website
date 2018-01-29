@@ -32,7 +32,7 @@ var AMT = function() {
 	var AXIOMS = [];
 
 	var STORE = "http://higeomes.i3mainz.hs-mainz.de/openrdf-sesame/repositories/amttextelsem";
-	var PREFIX = "http://www.academic-meta-tool.xyz/vocab#";
+	var PREFIX = "http://academic-meta-tool.xyz/vocab#";
 
 	var queryStore = function(query,callback) {
 		$.ajax({
@@ -89,6 +89,7 @@ var AMT = function() {
 		// load concepts
 		queryStore("SELECT ?concept ?label ?placeholder WHERE { ?concept rdf:type amt:Concept . ?concept rdfs:label ?label . ?concept amt:placeholder ?placeholder . }",function(data) {
 			CONCEPTS = data;
+      console.log(CONCEPTS);
 			--todo;
 			if (todo == 0 && callback) {
 				callback(graph);

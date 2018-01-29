@@ -53,58 +53,56 @@
 					var updated = TEXTELSEM.amt.getGraph(!TEXTELSEM.edit,true);
 					TEXTELSEM.graph.edges.clear();
 					TEXTELSEM.graph.nodes.clear();
-					if (TEXTELSEM.ontology==="textelsem") {
-						/*
-							Hier wird spezifiziert, wie die Knoten aussehen sollen
-						*/
-						for (var i in updated.nodes) {
-							updated.nodes[i].length = 10/updated.nodes[i].width;
-							if (!TEXTELSEM.edit) {
-								updated.nodes[i].chosen = false;
-							}
-							if (updated.nodes[i].concept.includes("Person")) {
-								updated.nodes[i].color = {background:'lightblue', border:'blue', highlight:{background:'white',border:'black'}};
-								updated.nodes[i].shape = "box";
-							}
-							if (updated.nodes[i].concept.includes("Interest")) {
-								updated.nodes[i].color = {background:'pink', border:'red', highlight:{background:'white',border:'black'}};
-								updated.nodes[i].shape = "ellipse";
+					/*
+						Hier wird spezifiziert, wie die Knoten aussehen sollen
+					*/
+					for (var i in updated.nodes) {
+						updated.nodes[i].length = 10/updated.nodes[i].width;
+						if (!TEXTELSEM.edit) {
+							updated.nodes[i].chosen = false;
+						}
+						if (updated.nodes[i].concept.includes("Person")) {
+							updated.nodes[i].color = {background:'lightblue', border:'blue', highlight:{background:'white',border:'black'}};
+							updated.nodes[i].shape = "box";
+						}
+						if (updated.nodes[i].concept.includes("Interest")) {
+							updated.nodes[i].color = {background:'pink', border:'red', highlight:{background:'white',border:'black'}};
+							updated.nodes[i].shape = "ellipse";
+						}
+					}
+					/*
+						Hier wird spezifiziert wie die Kanten aussehen sollen, welche angezeigt werden sollen, etc
+					*/
+					for (var i in updated.edges) {
+						updated.edges[i].arrowStrikethrough = false;
+						updated.edges[i].chosen = false;
+						if (updated.edges[i].width < 0.1) {
+							updated.edges[i].hidden = !TEXTELSEM.edit;
+						}
+						if (updated.edges[i].role.includes("connectedWith")) {
+							updated.edges[i].color = {color:"blue", highlight:"black"};
+							updated.edges[i].dashes = true;
+							if (updated.edges[i].from.localeCompare(updated.edges[i].to) >= 0) {
+								updated.edges[i].hidden = !TEXTELSEM.edit;
 							}
 						}
-						/*
-							Hier wird spezifiziert wie die Kanten aussehen sollen, welche angezeigt werden sollen, etc
-						*/
-						for (var i in updated.edges) {
-							updated.edges[i].arrowStrikethrough = false;
-							updated.edges[i].chosen = false;
-							if (updated.edges[i].width < 0.1) {
-								updated.edges[i].hidden = !TEXTELSEM.edit;
-							}
-							if (updated.edges[i].role.includes("connectedWith")) {
-								updated.edges[i].color = {color:"blue", highlight:"black"};
-								updated.edges[i].dashes = true;
-								if (updated.edges[i].from.localeCompare(updated.edges[i].to) >= 0) {
-									updated.edges[i].hidden = !TEXTELSEM.edit;
-								}
-							}
-							if (updated.edges[i].role.includes("interestedIn")) {
-								updated.edges[i].color = {color:"green", highlight:"black"};
-								updated.edges[i].arrows = "to";
-							}
-							if (updated.edges[i].role.includes("interestOf")) {
-								updated.edges[i].color = {color:"green", highlight:"black"};
-								updated.edges[i].arrows = "from";
-								updated.edges[i].hidden = !TEXTELSEM.edit;
-							}
-							if (updated.edges[i].role.includes("superInterestOf")) {
-								updated.edges[i].color = {color:"red", highlight:"black"};
-								updated.edges[i].arrows = "to";
-							}
-							if (updated.edges[i].role.includes("subInterestOf")) {
-								updated.edges[i].color = {color:"red", highlight:"black"};
-								updated.edges[i].arrows = "from";
-								updated.edges[i].hidden = !TEXTELSEM.edit;
-							}
+						if (updated.edges[i].role.includes("interestedIn")) {
+							updated.edges[i].color = {color:"green", highlight:"black"};
+							updated.edges[i].arrows = "to";
+						}
+						if (updated.edges[i].role.includes("interestOf")) {
+							updated.edges[i].color = {color:"green", highlight:"black"};
+							updated.edges[i].arrows = "from";
+							updated.edges[i].hidden = !TEXTELSEM.edit;
+						}
+						if (updated.edges[i].role.includes("superInterestOf")) {
+							updated.edges[i].color = {color:"red", highlight:"black"};
+							updated.edges[i].arrows = "to";
+						}
+						if (updated.edges[i].role.includes("subInterestOf")) {
+							updated.edges[i].color = {color:"red", highlight:"black"};
+							updated.edges[i].arrows = "from";
+							updated.edges[i].hidden = !TEXTELSEM.edit;
 						}
 					}
 					TEXTELSEM.graph.nodes.update(updated.nodes);
