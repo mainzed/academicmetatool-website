@@ -264,7 +264,7 @@
 				TIME.thisNodes = [];
 				TIME.thisEdges = [];
 				TIME.amt = new AMT();
-				TIME.amt.setStore("http://ls-dev.i3mainz.hs-mainz.de/rdf4j-server/repositories/amttime");
+				TIME.amt.setStore("http://higeomes.i3mainz.hs-mainz.de/openrdf-sesame/repositories/amttime");
 				console.log(TIME);
 				TIME.amt.load(function() {
 					var concepts = TIME.amt.getConcepts();

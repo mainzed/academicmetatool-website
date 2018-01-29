@@ -31,18 +31,17 @@ var AMT = function() {
 	var GRAPH = { original: {nodes: [], edges: []}, edited: {nodes: [], edges: []} };
 	var AXIOMS = [];
 
-	var STORE = "http://ls-dev.i3mainz.hs-mainz.de/rdf4j-server/repositories/amttime";
-	var PREFIX = "http://www.academic-meta-tool.xyz/vocab#";
-  var PREFIXES = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX amt: <http://academic-meta-tool.xyz/vocab#> ";
+	var STORE = "http://higeomes.i3mainz.hs-mainz.de/openrdf-sesame/repositories/amttime";
+	var PREFIX = "http://academic-meta-tool.xyz/vocab#";
 
-	var queryStore = function(query,callback) {
+  var queryStore = function(query,callback) {
 		$.ajax({
 			url: STORE,
 			dataType: 'jsonp',
 			type: 'GET',
 			data: {
 				queryLn: 'SPARQL',
-				query: PREFIXES + query,
+				query: "PREFIX amt: <"+PREFIX+"> " + query,
 				Accept: 'application/json'
 			},
 			success: function(data) {
@@ -129,12 +128,11 @@ var AMT = function() {
 				if (!AXIOMS[data[i].axiom])
 					AXIOMS[data[i].axiom] = {};
 				if (data[i].p == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
-					AXIOMS[data[i].axiom].type = data[i].o.substr(PREFIX.length-4);
+					AXIOMS[data[i].axiom].type = data[i].o.substr(PREFIX.length);
 				else {
-          AXIOMS[data[i].axiom][data[i].p.substr(PREFIX.length-4)] = data[i].o;
+          AXIOMS[data[i].axiom][data[i].p.substr(PREFIX.length)] = data[i].o;
 				}
 			}
-      console.log(AXIOMS);
 			--todo;
 			if (todo == 0 && callback) {
 				callback(graph);
