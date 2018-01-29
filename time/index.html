@@ -62,12 +62,9 @@
 							if (!TIME.edit) {
 								updated.nodes[i].chosen = false;
 							}
-							if (updated.nodes[i].concept.includes("Person")) {
+							if (updated.nodes[i].concept.includes("Event")) {
 								updated.nodes[i].color = {background:'lightblue', border:'blue', highlight:{background:'white',border:'black'}};
 								updated.nodes[i].shape = "box";
-							} else if (updated.nodes[i].concept.includes("Interest")) {
-								updated.nodes[i].color = {background:'pink', border:'red', highlight:{background:'white',border:'black'}};
-								updated.nodes[i].shape = "ellipse";
 							} else {
 								updated.nodes[i].color = {background:'grey', border:'black', highlight:{background:'white',border:'black'}};
 								updated.nodes[i].shape = "box";
