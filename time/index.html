@@ -217,7 +217,7 @@
 				if (from) {
 					$("#save").show();
 					if (!TIME.amt.removeIndividual(from)) {
-						alert("Inkonsistenz vorhanden");
+						console.log("Inkonsistenz vorhanden");
 						$("#save").hide();
 					}
 				}
@@ -243,7 +243,7 @@
 					var inconsistent = false;
 					if (!TIME.amt.editAssertion(role,from,to,w/100)) {
 						if (!inconsistent)
-							alert("Inkonsistenz vorhanden");
+							console.log("Inkonsistenz vorhanden");
 						inconsistent = true;
 						$("#save").hide();
 					}

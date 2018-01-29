@@ -266,7 +266,8 @@ var AMT = function() {
 			if (a.type == "DisjointAxiom") {
 				for (var j in graph.edges) {
 					if (graph.edges[j].role == a.role1 && search(graph.edges,a.role2,graph.edges[j].from,graph.edges[j].to)>=0) {
-						return false;
+            console.info("!consistent ->DisjointAxiom");
+            return false;
 					}
 				}
 			}
@@ -274,7 +275,8 @@ var AMT = function() {
 			if (a.type == "SelfDisjointAxiom") {
 				for (var k in graph.edges) {
 					if (graph.edges[k].role == a.role && graph.edges[k].from == graph.edges[k].to) {
-						return false;
+            console.info("!consistent ->SelfDisjointAxiom");
+            return false;
 					}
 				}
 			}
