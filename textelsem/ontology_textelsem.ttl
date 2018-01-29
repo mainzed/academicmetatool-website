@@ -1,0 +1,103 @@
+@prefix textelsem: <http://www.higeomes.org/> .
+@prefix amt: <http://www.academic-meta-tool.xyz/vocab#> .
+
+# concepts
+
+textelsem:Person rdf:type amt:Concept .
+textelsem:Person rdfs:label "Person" .
+textelsem:Person amt:placeholder "Nachname, Vorname" .
+
+textelsem:Interest rdf:type amt:Concept .
+textelsem:Interest rdfs:label "Interesse" .
+textelsem:Interest amt:placeholder "Interesse" .
+
+# roles
+
+textelsem:connectedWith rdf:type amt:Role .
+textelsem:connectedWith rdfs:label "is connected with" .
+textelsem:connectedWith rdfs:domain textelsem:Person .
+textelsem:connectedWith rdfs:range textelsem:Person .
+
+textelsem:interestedIn rdf:type amt:Role .
+textelsem:interestedIn rdfs:label "is interested in" .
+textelsem:interestedIn rdfs:domain textelsem:Person .
+textelsem:interestedIn rdfs:range textelsem:Interest .
+
+textelsem:interestOf rdf:type amt:Role .
+textelsem:interestOf rdfs:label "is an interest of" .
+textelsem:interestOf rdfs:domain textelsem:Interest .
+textelsem:interestOf rdfs:range textelsem:Person .
+
+textelsem:subInterestOf rdf:type amt:Role .
+textelsem:subInterestOf rdfs:label "is a subinterest of" .
+textelsem:subInterestOf rdfs:domain textelsem:Interest .
+textelsem:subInterestOf rdfs:range textelsem:Interest .
+
+textelsem:superInterestOf rdf:type amt:Role .
+textelsem:superInterestOf rdfs:label "is a superinterest of" .
+textelsem:superInterestOf rdfs:domain textelsem:Interest .
+textelsem:superInterestOf rdfs:range textelsem:Interest .
+
+# axioms
+
+# RoleChainAxiom
+
+textelsem:Axiom01 rdf:type amt:RoleChainAxiom .
+textelsem:Axiom01 amt:antecedent1 textelsem:connectedWith .
+textelsem:Axiom01 amt:antecedent2 textelsem:connectedWith .
+textelsem:Axiom01 amt:consequent textelsem:connectedWith .
+textelsem:Axiom01 amt:logic amt:ProductLogic .
+
+textelsem:Axiom02 rdf:type amt:RoleChainAxiom .
+textelsem:Axiom02 amt:antecedent1 textelsem:subInterestOf .
+textelsem:Axiom02 amt:antecedent2 textelsem:subInterestOf .
+textelsem:Axiom02 amt:consequent textelsem:subInterestOf .
+textelsem:Axiom02 amt:logic amt:GoedelLogic .
+
+textelsem:Axiom03 rdf:type amt:RoleChainAxiom .
+textelsem:Axiom03 amt:antecedent1 textelsem:superInterestOf .
+textelsem:Axiom03 amt:antecedent2 textelsem:superInterestOf .
+textelsem:Axiom03 amt:consequent textelsem:superInterestOf .
+textelsem:Axiom03 amt:logic amt:GoedelLogic .
+
+textelsem:Axiom04 rdf:type amt:RoleChainAxiom .
+textelsem:Axiom04 amt:antecedent1 textelsem:interestedIn .
+textelsem:Axiom04 amt:antecedent2 textelsem:interestOf .
+textelsem:Axiom04 amt:consequent textelsem:connectedWith .
+textelsem:Axiom04 amt:logic amt:LukasiewiczLogic .
+
+textelsem:Axiom05 rdf:type amt:RoleChainAxiom .
+textelsem:Axiom05 amt:antecedent1 textelsem:interestedIn .
+textelsem:Axiom05 amt:antecedent2 textelsem:subInterestOf .
+textelsem:Axiom05 amt:consequent textelsem:interestedIn .
+textelsem:Axiom05 amt:logic amt:GoedelLogic .
+
+# InverseAxiom
+
+textelsem:Axiom06 rdf:type amt:InverseAxiom .
+textelsem:Axiom06 amt:antecedent textelsem:interestOf .
+textelsem:Axiom06 amt:inverse textelsem:interestedIn .
+
+textelsem:Axiom07 rdf:type amt:InverseAxiom .
+textelsem:Axiom07 amt:antecedent textelsem:interestedIn .
+textelsem:Axiom07 amt:inverse textelsem:interestOf .
+
+textelsem:Axiom08 rdf:type amt:InverseAxiom .
+textelsem:Axiom08 amt:antecedent textelsem:subInterestOf .
+textelsem:Axiom08 amt:inverse textelsem:superInterestOf .
+
+textelsem:Axiom09 rdf:type amt:InverseAxiom .
+textelsem:Axiom09 amt:antecedent textelsem:superInterestOf .
+textelsem:Axiom09 amt:inverse textelsem:subInterestOf .
+
+textelsem:Axiom10 rdf:type amt:InverseAxiom .
+textelsem:Axiom10 amt:antecedent textelsem:connectedWith .
+textelsem:Axiom10 amt:inverse textelsem:connectedWith .
+
+# SelfDisjointAxiom
+
+textelsem:Axiom11 rdf:type amt:SelfDisjointAxiom .
+textelsem:Axiom11 amt:role textelsem:subInterestOf .
+
+textelsem:Axiom12 rdf:type amt:SelfDisjointAxiom .
+textelsem:Axiom12 amt:role textelsem:superInterestOf .
