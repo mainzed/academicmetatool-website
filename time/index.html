@@ -78,11 +78,11 @@
 						if (updated.edges[i].width < 0.1) {
 							updated.edges[i].hidden = !TIME.edit;
 						}
-						var roleWthPrefix = "http://academic-meta-tool.xyz/AllenFreksa#";
-						if (updated.edges[i].role===roleWthPrefix+"b") {
+						var roleWithPrefix = "http://academic-meta-tool.xyz/AllenFreksa#";
+						if (updated.edges[i].role===roleWithPrefix+"b") {
 							updated.edges[i].color = {color:"red", highlight:"black"};
 							updated.edges[i].arrows = "to";
-						} else if (updated.edges[i].role===roleWthPrefix+"a") {
+						} else if (updated.edges[i].role===roleWithPrefix+"a") {
 							updated.edges[i].color = {color:"green", highlight:"black"};
 							updated.edges[i].arrows = "to";
 						} else {
