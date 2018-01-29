@@ -1,5 +1,5 @@
 @prefix samian: <http://rgzm.de/samian/> .
-@prefix amt: <http://www.academic-meta-tool.xyz/vocab#> .
+@prefix amt: <http:/academic-meta-tool.xyz/vocab#> .
 
 # concepts
 
