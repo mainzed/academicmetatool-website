@@ -48,7 +48,7 @@
 			TIME.edit = false;
 			TIME.thisNodes = [];
 			TIME.thisEdges = [];
-			TIME.questionMark = true;
+			TIME.inverse = false;
 			var update = function() {
 				if (TIME.amt) {
 					var updated = TIME.amt.getGraph(!TIME.edit,true);
@@ -83,7 +83,7 @@
 						if (updated.edges[i].role===roleWithPrefix+"q") {
 							updated.edges[i].color = {color:"grey", highlight:"black"};
 							updated.edges[i].dashes = true;
-							updated.edges[i].hidden = TIME.questionMark;
+							updated.edges[i].hidden = true;
 						} else if (updated.edges[i].role===roleWithPrefix+"e") {
 							updated.edges[i].color = {color:"grey", highlight:"black"};
 							updated.edges[i].arrows = "to";
@@ -99,30 +99,35 @@
 						} else if (updated.edges[i].role===roleWithPrefix+"di") {
 							updated.edges[i].color = {color:"blue", highlight:"black"};
 							updated.edges[i].arrows = "to";
+							updated.edges[i].hidden = TIME.inverse;
 						} else if (updated.edges[i].role===roleWithPrefix+"o") {
 							updated.edges[i].color = {color:"yellow", highlight:"black"};
 							updated.edges[i].arrows = "to";
 						} else if (updated.edges[i].role===roleWithPrefix+"oi") {
 							updated.edges[i].color = {color:"yellow", highlight:"black"};
 							updated.edges[i].arrows = "to";
+							updated.edges[i].hidden = TIME.inverse;
 						} else if (updated.edges[i].role===roleWithPrefix+"m") {
 							updated.edges[i].color = {color:"orange", highlight:"black"};
 							updated.edges[i].arrows = "to";
 						} else if (updated.edges[i].role===roleWithPrefix+"mi") {
 							updated.edges[i].color = {color:"orange", highlight:"black"};
 							updated.edges[i].arrows = "to";
+							updated.edges[i].hidden = TIME.inverse;
 						} else if (updated.edges[i].role===roleWithPrefix+"s") {
 							updated.edges[i].color = {color:"#66ff99", highlight:"black"};
 							updated.edges[i].arrows = "to";
 						} else if (updated.edges[i].role===roleWithPrefix+"si") {
 							updated.edges[i].color = {color:"#66ff99", highlight:"black"};
 							updated.edges[i].arrows = "to";
+							updated.edges[i].hidden = TIME.inverse;
 						} else if (updated.edges[i].role===roleWithPrefix+"f") {
 							updated.edges[i].color = {color:"#9933ff", highlight:"black"};
 							updated.edges[i].arrows = "to";
 						} else if (updated.edges[i].role===roleWithPrefix+"fi") {
 							updated.edges[i].color = {color:"#9933ff", highlight:"black"};
 							updated.edges[i].arrows = "to";
+							updated.edges[i].hidden = TIME.inverse;
 						} else {
 							updated.edges[i].color = {color:"black", highlight:"black"};
 							updated.edges[i].arrows = "to";
@@ -150,8 +155,8 @@
 					location.reload();
 				});
 			}
-			var questionMark = function() {
-				TIME.questionMark = !TIME.questionMark;
+			var showInverse = function() {
+				TIME.inverse = !TIME.inverse;
 				update();
 			}
 			var openModal = function(id,type) {
@@ -601,7 +606,7 @@
 					</div>
 					<div id="props" class="col s3 left-align">
 						<a class="btn-floating btn-large black" onclick="info()" title="Information"><i class="material-icons">info</i></a>
-						<a class="btn-floating btn-large black" onclick="questionMark()" title="Ontology wechseln"><i class="material-icons">palette</i></a>
+						<a class="btn-floating btn-large black" onclick="showInverse()" title="Ontology wechseln"><i class="material-icons">palette</i></a>
 						<a class="btn-floating btn-large black" onclick="exportOptions()" title="Download Edges and Nodes"><i class="material-icons">file_download</i></a>
 						<a class="btn-floating btn-large black" onclick="loadJSONGraph()" title="load JSON Graph"><i class="material-icons">file_upload</i></a>
 					</div>
