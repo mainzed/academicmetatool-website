@@ -186,7 +186,8 @@ var AMT = function() {
 			cpy.nodes.push({id: graph.nodes[i].id, label: graph.nodes[i].label, concept: graph.nodes[i].concept});
 		}
 		for (var i in graph.edges) {
-			cpy.edges.push({role: graph.edges[i].role, from: graph.edges[i].from, to: graph.edges[i].to, width: graph.edges[i].width});
+      var role = graph.edges[i].role.replace("http://academic-meta-tool.xyz/AllenFreksa#","");
+      cpy.edges.push({role: graph.edges[i].role, from: graph.edges[i].from, to: graph.edges[i].to, width: graph.edges[i].width, label: role, font: {align: 'middle', size:10, color:'black', face:'arial'}});
 		}
 		return cpy;
 	};
@@ -205,7 +206,9 @@ var AMT = function() {
 			return true;
 		}
 		if (k<0 && width>0) {
-			edges.push({role: role, from: from, to: to, width: width});
+			//edges.push({role: role, from: from, to: to, width: width});
+      var roleShort = role.replace("http://academic-meta-tool.xyz/AllenFreksa#","");
+      edges.push({role: role, from: from, to: to, width: width, label: roleShort, font: {align: 'middle', size:10, color:'red', face:'arial'}});
 			return true;
 		}
 		return false;
