@@ -48,6 +48,7 @@
 			TIME.edit = false;
 			TIME.thisNodes = [];
 			TIME.thisEdges = [];
+			TIME.questionMark = true;
 			var update = function() {
 				if (TIME.amt) {
 					var updated = TIME.amt.getGraph(!TIME.edit,true);
@@ -82,6 +83,7 @@
 						if (updated.edges[i].role===roleWithPrefix+"q") {
 							updated.edges[i].color = {color:"grey", highlight:"black"};
 							updated.edges[i].dashes = true;
+							updated.edges[i].hidden = TIME.questionMark;
 						} else if (updated.edges[i].role===roleWithPrefix+"e") {
 							updated.edges[i].color = {color:"grey", highlight:"black"};
 							updated.edges[i].arrows = "to";
@@ -147,6 +149,10 @@
 				TIME.amt.save(function() {
 					location.reload();
 				});
+			}
+			var questionMark = function() {
+				TIME.questionMark = !TIME.questionMark;
+				update();
 			}
 			var openModal = function(id,type) {
 				$("#uri").val("");
@@ -595,7 +601,7 @@
 					</div>
 					<div id="props" class="col s3 left-align">
 						<a class="btn-floating btn-large black" onclick="info()" title="Information"><i class="material-icons">info</i></a>
-						<!--<a class="btn-floating btn-large black" onclick="propModal()" title="Ontology wechseln"><i class="material-icons">palette</i></a>-->
+						<a class="btn-floating btn-large black" onclick="questionMark()" title="Ontology wechseln"><i class="material-icons">palette</i></a>
 						<a class="btn-floating btn-large black" onclick="exportOptions()" title="Download Edges and Nodes"><i class="material-icons">file_download</i></a>
 						<a class="btn-floating btn-large black" onclick="loadJSONGraph()" title="load JSON Graph"><i class="material-icons">file_upload</i></a>
 					</div>
