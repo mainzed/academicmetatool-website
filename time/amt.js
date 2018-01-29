@@ -97,7 +97,7 @@ var AMT = function() {
 		});
 
 		// load roles
-		queryStore("SELECT ?role ?label ?domain ?range WHERE { ?role rdf:type amt:Role . ?role rdfs:label ?label . ?role rdfs:domain ?domain . ?role rdfs:range ?range . }",function(data) {
+		queryStore("SELECT ?role ?label ?domain ?range WHERE { ?role rdf:type amt:Role . ?role rdfs:label ?label . ?role rdfs:domain ?domain . ?role rdfs:range ?range . } ORDER BY ASC(?label)",function(data) {
 			ROLES = data;
 			--todo;
 			if (todo == 0 && callback) {
