@@ -32,7 +32,7 @@ var AMT = function() {
 	var AXIOMS = [];
 
 	var STORE = "http://higeomes.i3mainz.hs-mainz.de/openrdf-sesame/repositories/mainzed2";
-	var PREFIX = "http://www.academic-meta-tool.xyz/vocab#";
+	var PREFIX = "http://academic-meta-tool.xyz/vocab#";
 
 	var queryStore = function(query,callback) {
 		$.ajax({
