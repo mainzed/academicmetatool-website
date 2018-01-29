@@ -53,43 +53,41 @@
 					var updated = TIME.amt.getGraph(!TIME.edit,true);
 					TIME.graph.edges.clear();
 					TIME.graph.nodes.clear();
-					if (TIME.ontology==="time") {
-						/*
-							Hier wird spezifiziert, wie die Knoten aussehen sollen
-						*/
-						for (var i in updated.nodes) {
-							updated.nodes[i].length = 10/updated.nodes[i].width;
-							if (!TIME.edit) {
-								updated.nodes[i].chosen = false;
-							}
-							if (updated.nodes[i].concept.includes("Event")) {
-								updated.nodes[i].color = {background:'lightblue', border:'blue', highlight:{background:'white',border:'black'}};
-								updated.nodes[i].shape = "box";
-							} else {
-								updated.nodes[i].color = {background:'grey', border:'black', highlight:{background:'white',border:'black'}};
-								updated.nodes[i].shape = "box";
-							}
+					/*
+						Hier wird spezifiziert, wie die Knoten aussehen sollen
+					*/
+					for (var i in updated.nodes) {
+						updated.nodes[i].length = 10/updated.nodes[i].width;
+						if (!TIME.edit) {
+							updated.nodes[i].chosen = false;
 						}
-						/*
-							Hier wird spezifiziert wie die Kanten aussehen sollen, welche angezeigt werden sollen, etc
-						*/
-						for (var i in updated.edges) {
-							updated.edges[i].arrowStrikethrough = false;
-							updated.edges[i].chosen = false;
-							if (updated.edges[i].width < 0.1) {
-								updated.edges[i].hidden = !TIME.edit;
-							}
-							if (updated.edges[i].role.includes("interestedIn")) {
-								updated.edges[i].color = {color:"green", highlight:"black"};
-								updated.edges[i].arrows = "to";
-							} else if (updated.edges[i].role.includes("interestOf")) {
-								updated.edges[i].color = {color:"green", highlight:"black"};
-								updated.edges[i].arrows = "from";
-								updated.edges[i].hidden = !TIME.edit;
-							} else {
-								updated.edges[i].color = {color:"black", highlight:"black"};
-								updated.edges[i].dashes = true;
-							}
+						if (updated.nodes[i].concept.includes("Event")) {
+							updated.nodes[i].color = {background:'lightblue', border:'blue', highlight:{background:'white',border:'black'}};
+							updated.nodes[i].shape = "box";
+						} else {
+							updated.nodes[i].color = {background:'grey', border:'black', highlight:{background:'white',border:'black'}};
+							updated.nodes[i].shape = "box";
+						}
+					}
+					/*
+						Hier wird spezifiziert wie die Kanten aussehen sollen, welche angezeigt werden sollen, etc
+					*/
+					for (var i in updated.edges) {
+						updated.edges[i].arrowStrikethrough = false;
+						updated.edges[i].chosen = false;
+						if (updated.edges[i].width < 0.1) {
+							updated.edges[i].hidden = !TIME.edit;
+						}
+						var roleWthPrefix = "http://academic-meta-tool.xyz/AllenFreksa#";
+						if (updated.edges[i].role===roleWthPrefix+"b") {
+							updated.edges[i].color = {color:"red", highlight:"black"};
+							updated.edges[i].arrows = "to";
+						} else if (updated.edges[i].role===roleWthPrefix+"a") {
+							updated.edges[i].color = {color:"green", highlight:"black"};
+							updated.edges[i].arrows = "to";
+						} else {
+							updated.edges[i].color = {color:"black", highlight:"black"};
+							updated.edges[i].dashes = true;
 						}
 					}
 					TIME.graph.nodes.update(updated.nodes);
