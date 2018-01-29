@@ -33,6 +33,7 @@ var AMT = function() {
 
 	var STORE = "http://ls-dev.i3mainz.hs-mainz.de/rdf4j-server/repositories/amttime";
 	var PREFIX = "http://www.academic-meta-tool.xyz/vocab#";
+  var PREFIXES = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX amt: <http://academic-meta-tool.xyz/vocab#> ";
 
 	var queryStore = function(query,callback) {
 		$.ajax({
@@ -41,7 +42,7 @@ var AMT = function() {
 			type: 'GET',
 			data: {
 				queryLn: 'SPARQL',
-				query: "PREFIX amt: <"+PREFIX+"> " + query,
+				query: PREFIXES + query,
 				Accept: 'application/json'
 			},
 			success: function(data) {
@@ -88,7 +89,7 @@ var AMT = function() {
 
 		// load concepts
 		queryStore("SELECT ?concept ?label ?placeholder WHERE { ?concept rdf:type amt:Concept . ?concept rdfs:label ?label . ?concept amt:placeholder ?placeholder . }",function(data) {
-			CONCEPTS = data;
+      CONCEPTS = data;
 			--todo;
 			if (todo == 0 && callback) {
 				callback(graph);
