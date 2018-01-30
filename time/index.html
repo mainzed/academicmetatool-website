@@ -64,7 +64,7 @@
 						}
 						if (updated.nodes[i].concept.includes("Event")) {
 							updated.nodes[i].color = {background:'#00ccff', border:'#00ccff', highlight:{background:'white', border:'#00ccff'}};
-							updated.nodes[i].shape = "circle";
+							updated.nodes[i].shape = "box";
 						} else {
 							updated.nodes[i].color = {background:'grey', border:'black', highlight:{background:'white',border:'black'}};
 							updated.nodes[i].shape = "box";
@@ -79,12 +79,17 @@
 					} else {
 						hiddenQuestionMarks = true;
 					}
-					var hiddenInverse = true;
-					if ($('input[name=group1]:checked').val()==="showAllInverse") {
+					var hiddenInverse = false;
+					/*var hiddenInverse = true;
+					if (TIME.edit) {
 						hiddenInverse = false;
 					} else {
-						hiddenInverse = true;
-					}
+						if ($('input[name=group1]:checked').val()==="showAllInverse") {
+							hiddenInverse = false;
+						} else {
+							hiddenInverse = true;
+						}
+					}*/
 					for (var i in updated.edges) {
 						updated.edges[i].arrowStrikethrough = false;
 						updated.edges[i].chosen = false;
