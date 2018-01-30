@@ -23,8 +23,8 @@
 				position: absolute;
 				overflow: hidden;
 				display: flex;
-		    min-height: 100vh;
-		    flex-direction: column;
+		    	min-height: 100vh;
+		    	flex-direction: column;
 			}
 			#footer {
 				height: 100px;
@@ -73,6 +73,18 @@
 					/*
 						Hier wird spezifiziert wie die Kanten aussehen sollen, welche angezeigt werden sollen, etc
 					*/
+					var hiddenQuestionMarks = true;
+					if ($("#showQuestionMark").is(":checked")) {
+						hiddenQuestionMarks = false;
+					} else {
+						hiddenQuestionMarks = true;
+					}
+					var hiddenInverse = true;
+					if ($('input[name=group1]:checked').val()==="showAllInverse") {
+						hiddenInverse = false;
+					} else {
+						hiddenInverse = true;
+					}
 					for (var i in updated.edges) {
 						updated.edges[i].arrowStrikethrough = false;
 						updated.edges[i].chosen = false;
@@ -83,7 +95,7 @@
 						if (updated.edges[i].role===roleWithPrefix+"q") {
 							updated.edges[i].color = {color:"grey", highlight:"black"};
 							updated.edges[i].dashes = true;
-							updated.edges[i].hidden = true;
+							updated.edges[i].hidden = hiddenQuestionMarks;
 						} else if (updated.edges[i].role===roleWithPrefix+"e") {
 							updated.edges[i].color = {color:"grey", highlight:"black"};
 							updated.edges[i].arrows = "to";
@@ -99,35 +111,35 @@
 						} else if (updated.edges[i].role===roleWithPrefix+"di") {
 							updated.edges[i].color = {color:"blue", highlight:"black"};
 							updated.edges[i].arrows = "to";
-							updated.edges[i].hidden = TIME.inverse;
+							updated.edges[i].hidden = hiddenInverse;
 						} else if (updated.edges[i].role===roleWithPrefix+"o") {
 							updated.edges[i].color = {color:"yellow", highlight:"black"};
 							updated.edges[i].arrows = "to";
 						} else if (updated.edges[i].role===roleWithPrefix+"oi") {
 							updated.edges[i].color = {color:"yellow", highlight:"black"};
 							updated.edges[i].arrows = "to";
-							updated.edges[i].hidden = TIME.inverse;
+							updated.edges[i].hidden = hiddenInverse;
 						} else if (updated.edges[i].role===roleWithPrefix+"m") {
 							updated.edges[i].color = {color:"orange", highlight:"black"};
 							updated.edges[i].arrows = "to";
 						} else if (updated.edges[i].role===roleWithPrefix+"mi") {
 							updated.edges[i].color = {color:"orange", highlight:"black"};
 							updated.edges[i].arrows = "to";
-							updated.edges[i].hidden = TIME.inverse;
+							updated.edges[i].hidden = hiddenInverse;
 						} else if (updated.edges[i].role===roleWithPrefix+"s") {
 							updated.edges[i].color = {color:"#66ff99", highlight:"black"};
 							updated.edges[i].arrows = "to";
 						} else if (updated.edges[i].role===roleWithPrefix+"si") {
 							updated.edges[i].color = {color:"#66ff99", highlight:"black"};
 							updated.edges[i].arrows = "to";
-							updated.edges[i].hidden = TIME.inverse;
+							updated.edges[i].hidden = hiddenInverse;
 						} else if (updated.edges[i].role===roleWithPrefix+"f") {
 							updated.edges[i].color = {color:"#9933ff", highlight:"black"};
 							updated.edges[i].arrows = "to";
 						} else if (updated.edges[i].role===roleWithPrefix+"fi") {
 							updated.edges[i].color = {color:"#9933ff", highlight:"black"};
 							updated.edges[i].arrows = "to";
-							updated.edges[i].hidden = TIME.inverse;
+							updated.edges[i].hidden = hiddenInverse;
 						} else {
 							updated.edges[i].color = {color:"black", highlight:"black"};
 							updated.edges[i].arrows = "to";
@@ -154,10 +166,6 @@
 				TIME.amt.save(function() {
 					location.reload();
 				});
-			}
-			var showInverse = function() {
-				TIME.inverse = !TIME.inverse;
-				update();
 			}
 			var openModal = function(id,type) {
 				$("#uri").val("");
@@ -300,6 +308,10 @@
 					dismissible: false,
 					complete: function() {loadJSONGraph(true);}
 				});
+				$("#graphPropModal").modal({
+					dismissible: false,
+					complete: function() {openGraphPropModal(true);}
+				});
 				$(".edit").hide();
 				$("#store").hide();
 			});
@@ -347,6 +359,10 @@
 					dismissible: false,
 					complete: function() {propModal(true);}
 				});
+				$("#graphPropModal").modal({
+					dismissible: false,
+					complete: function() {openGraphPropModal(true);}
+				});
 				$(".edit").hide();
 				$("#store").hide();
 			};
@@ -377,6 +393,17 @@
 					$("#propertiesModal").modal("close");
 				else
 					$("#propertiesModal").modal("open");
+			}
+			var openGraphPropModal = function(close) {
+				$("#exportModal").modal("close");
+				if (close)
+					$("#graphPropModal").modal("close");
+				else
+					$("#graphPropModal").modal("open");
+			}
+			var reloadGraphWithProperties = function() {
+				update();
+				$("#graphPropModal").modal("close");
 			}
 			var exportData = function(type,kind) {
 				if (type==="json") {
@@ -606,7 +633,7 @@
 					</div>
 					<div id="props" class="col s4 left-align">
 						<a class="btn-floating btn-large black" onclick="info()" title="Information"><i class="material-icons">info</i></a>
-						<a class="btn-floating btn-large black" onclick="showInverse()" title="Ontology wechseln"><i class="material-icons">palette</i></a>
+						<a class="btn-floating btn-large black" onclick="openGraphPropModal()" title="Ontology wechseln"><i class="material-icons">palette</i></a>
 						<a class="btn-floating btn-large black" onclick="exportOptions()" title="Download Edges and Nodes"><i class="material-icons">file_download</i></a>
 						<a class="btn-floating btn-large black" onclick="loadJSONGraph()" title="load JSON Graph"><i class="material-icons">file_upload</i></a>
 					</div>
@@ -708,7 +735,7 @@
 	              <th width="25%">JSON array</th>
 	              <th width="25%">CSV as edges,nodes</th>
 	              <th width="25%">CYPHER statements</th>
-								<th width="25%">RDF</th>
+				  <th width="25%">RDF</th>
 	          </tr>
 	        </thead>
 	        <tbody>
@@ -760,6 +787,18 @@
 			</form>
 			<center><a class="btn-floating btn-large green" onclick="switchOntology()" title="load"><i class="material-icons">check</i></a></center>
 			</div>
+	</div>
+	<div id="graphPropModal" class="modal">
+		<div class="modal-content">
+			<h4>Graph Properties</h4>
+			<br>
+			<p><input type="checkbox" id="showQuestionMark" /><label for="showQuestionMark">show unknown relations (?)</label></p>
+			<br>
+			<p><input name="group1" type="radio" class="with-gap" id="showAllInverse" value="showAllInverse" /><label for="showAllInverse">show all inverse relations</label></p>
+			<p><input name="group1" type="radio" class="with-gap" id="showNoInverse" value="showNoInverse" checked /><label for="showNoInverse">show no inverse relations</label></p>
+			<br>
+			<center><a class="btn-floating btn-large green" onclick="reloadGraphWithProperties()" title="reload"><i class="material-icons">check</i></a></center>
+		</div>
 	</div>
 	</body>
 </html>
