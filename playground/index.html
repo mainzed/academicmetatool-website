@@ -450,7 +450,7 @@
 				} else if (type==="rdf") {
 					var nodesAndEdges = "";
 					for (var node in MAINZED.thisNodes) {
-						nodesAndEdges += "<"+MAINZED.thisNodes[node].id+"> "+"<http://www.academic-meta-tool.xyz/instanceOf>"+" <"+MAINZED.thisNodes[node].concept+"> .\r\n";
+						nodesAndEdges += "<"+MAINZED.thisNodes[node].id+"> "+"<http://academic-meta-tool.xyz/vocab#instanceOf>"+" <"+MAINZED.thisNodes[node].concept+"> .\r\n";
 						nodesAndEdges += "<"+MAINZED.thisNodes[node].id+"> "+"<http://www.w3.org/2000/01/rdf-schema#label>"+" \""+MAINZED.thisNodes[node].label+"\" .\r\n";
 					}
 					for (var edge in MAINZED.thisEdges) {
@@ -458,7 +458,7 @@
 						nodesAndEdges += emptyNode+" <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject>"+" <"+MAINZED.thisEdges[edge].from+"> .\r\n";
 						nodesAndEdges += emptyNode+" <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate>"+" <"+MAINZED.thisEdges[edge].role+"> .\r\n";
 						nodesAndEdges += emptyNode+" <http://www.w3.org/1999/02/22-rdf-syntax-ns#object>"+" <"+MAINZED.thisEdges[edge].to+"> .\r\n";
-						nodesAndEdges += emptyNode+" <http://www.academic-meta-tool.xyz/weight>"+" \""+MAINZED.thisEdges[edge].width+"\"^^<http://www.w3.org/2001/XMLSchema#integer> .\r\n";
+						nodesAndEdges += emptyNode+" <http://academic-meta-tool.xyz/vocab#weight>"+" \""+MAINZED.thisEdges[edge].width+"\"^^<http://www.w3.org/2001/XMLSchema#integer> .\r\n";
 						if (nodesAndEdges.includes("Infinity")) {
 							nodesAndEdges = nodesAndEdges.replace("Infinity",1.0);
 						}
@@ -478,7 +478,7 @@
 							var nodeItem = {};
 							nodeItem.id = MAINZED.thisNodes[node].id;
 							nodeItem.node = cypherNode;
-							nodeItem.shortID = MAINZED.thisNodes[node].id.replace("http://www.academic-meta-tool.xyz/","");
+							nodeItem.shortID = MAINZED.thisNodes[node].id.replace("http://academic-meta-tool.xyz/vocab#","");
 							nodeIDs.push(nodeItem.shortID);
 							map.push(nodeItem);
 							var cypherNode = "("+nodeItem.shortID+":Person{label: '"+MAINZED.thisNodes[node].label+"'})";
@@ -487,7 +487,7 @@
 							var nodeItem = {};
 							nodeItem.id = MAINZED.thisNodes[node].id;
 							nodeItem.node = cypherNode;
-							nodeItem.shortID = MAINZED.thisNodes[node].id.replace("http://www.academic-meta-tool.xyz/","");
+							nodeItem.shortID = MAINZED.thisNodes[node].id.replace("http://academic-meta-tool.xyz/vocab#","");
 							nodeIDs.push(nodeItem.shortID);
 							map.push(nodeItem);
 							var cypherNode = "("+nodeItem.shortID+":Interest{label: '"+MAINZED.thisNodes[node].label+"'})";
