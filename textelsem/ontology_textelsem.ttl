@@ -1,103 +1,257 @@
-@prefix textelsem: <http://www.higeomes.org/> .
+@prefix textelsem: <http://higeomes.i3mainz.hs-mainz.de/textelsem/ArchDB/> .
 @prefix amt: <http://academic-meta-tool.xyz/vocab#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
 # concepts
 
 textelsem:Person rdf:type amt:Concept .
 textelsem:Person rdfs:label "Person" .
-textelsem:Person amt:placeholder "Nachname, Vorname" .
+textelsem:Person amt:placeholder "Name, Firstname" .
 
-textelsem:Interest rdf:type amt:Concept .
-textelsem:Interest rdfs:label "Interesse" .
-textelsem:Interest amt:placeholder "Interesse" .
+textelsem:Findspot rdf:type amt:Concept .
+textelsem:Findspot rdfs:label "Findspot" .
+textelsem:Findspot amt:placeholder "Findspot" .
+
+textelsem:Bibliography rdf:type amt:Concept .
+textelsem:Bibliography rdfs:label "Bibliography" .
+textelsem:Bibliography amt:placeholder "Author, Title" .
+
+textelsem:Country rdf:type amt:Concept .
+textelsem:Country rdfs:label "Country" .
+textelsem:Country amt:placeholder "Country" .
+
+textelsem:Dating rdf:type amt:Concept .
+textelsem:Dating rdfs:label "Dating" .
+textelsem:Dating amt:placeholder "Dating" .
+
+textelsem:Excavation rdf:type amt:Concept .
+textelsem:Excavation rdfs:label "Excavation" .
+textelsem:Excavation amt:placeholder "Excavation" .
+
+textelsem:Geozone rdf:type amt:Concept .
+textelsem:Geozone rdfs:label "Geozone" .
+textelsem:Geozone amt:placeholder "Geozone" .
+
+textelsem:Kind rdf:type amt:Concept .
+textelsem:Kind rdfs:label "Kind" .
+textelsem:Kind amt:placeholder "Kind" .
+
+textelsem:Location rdf:type amt:Concept .
+textelsem:Location rdfs:label "Location" .
+textelsem:Location amt:placeholder "Location" .
+
+textelsem:Role rdf:type amt:Concept .
+textelsem:Role rdfs:label "Role" .
+textelsem:Role amt:placeholder "Role" .
+
+textelsem:Size rdf:type amt:Concept .
+textelsem:Size rdfs:label "Size" .
+textelsem:Size amt:placeholder "Size" .
+
+textelsem:Statement rdf:type amt:Concept .
+textelsem:Statement rdfs:label "Statement" .
+textelsem:Statement amt:placeholder "Statement" .
+
+textelsem:Survey rdf:type amt:Concept .
+textelsem:Survey rdfs:label "Survey" .
+textelsem:Survey amt:placeholder "Survey" .
 
 # roles
 
-textelsem:connectedWith rdf:type amt:Role .
-textelsem:connectedWith rdfs:label "is connected with" .
-textelsem:connectedWith rdfs:domain textelsem:Person .
-textelsem:connectedWith rdfs:range textelsem:Person .
+textelsem:hasLocation rdf:type amt:Role .
+textelsem:hasLocation rdfs:label "has location" .
+textelsem:hasLocation rdfs:domain textelsem:Findspot .
+textelsem:hasLocation rdfs:range textelsem:Location .
 
-textelsem:interestedIn rdf:type amt:Role .
-textelsem:interestedIn rdfs:label "is interested in" .
-textelsem:interestedIn rdfs:domain textelsem:Person .
-textelsem:interestedIn rdfs:range textelsem:Interest .
+textelsem:hasStatement rdf:type amt:Role .
+textelsem:hasStatement rdfs:label "has statement" .
+textelsem:hasStatement rdfs:domain textelsem:Findspot .
+textelsem:hasStatement rdfs:range textelsem:Statement .
 
-textelsem:interestOf rdf:type amt:Role .
-textelsem:interestOf rdfs:label "is an interest of" .
-textelsem:interestOf rdfs:domain textelsem:Interest .
-textelsem:interestOf rdfs:range textelsem:Person .
+textelsem:isLocationOf rdf:type amt:Role .
+textelsem:isLocationOf rdfs:label "is location of" .
+textelsem:isLocationOf rdfs:domain textelsem:Location .
+textelsem:isLocationOf rdfs:range textelsem:Findspot .
 
-textelsem:subInterestOf rdf:type amt:Role .
-textelsem:subInterestOf rdfs:label "is a subinterest of" .
-textelsem:subInterestOf rdfs:domain textelsem:Interest .
-textelsem:subInterestOf rdfs:range textelsem:Interest .
+textelsem:isStatementAbout rdf:type amt:Role .
+textelsem:isStatementAbout rdfs:label "is statement about" .
+textelsem:isStatementAbout rdfs:domain textelsem:Statement .
+textelsem:isStatementAbout rdfs:range textelsem:Findspot .
 
-textelsem:superInterestOf rdf:type amt:Role .
-textelsem:superInterestOf rdfs:label "is a superinterest of" .
-textelsem:superInterestOf rdfs:domain textelsem:Interest .
-textelsem:superInterestOf rdfs:range textelsem:Interest .
+textelsem:hasSurvey rdf:type amt:Role .
+textelsem:hasSurvey rdfs:label "has survey" .
+textelsem:hasSurvey rdfs:domain textelsem:Findspot .
+textelsem:hasSurvey rdfs:range textelsem:Survey .
+
+textelsem:surveyFindspot rdf:type amt:Role .
+textelsem:surveyFindspot rdfs:label "is survey with findspot" .
+textelsem:surveyFindspot rdfs:domain textelsem:Survey .
+textelsem:surveyFindspot rdfs:range textelsem:Findspot .
+
+textelsem:hasExcavation rdf:type amt:Role .
+textelsem:hasExcavation rdfs:label "has excavation" .
+textelsem:hasExcavation rdfs:domain textelsem:Findspot .
+textelsem:hasExcavation rdfs:range textelsem:Excavation .
+
+textelsem:hasDating rdf:type amt:Role .
+textelsem:hasDating rdfs:label "has dating" .
+textelsem:hasDating rdfs:domain textelsem:Statement .
+textelsem:hasDating rdfs:range textelsem:Dating .
+
+textelsem:hasKind rdf:type amt:Role .
+textelsem:hasKind rdfs:label "has kind" .
+textelsem:hasKind rdfs:domain textelsem:Statement .
+textelsem:hasKind rdfs:range textelsem:Kind .
+
+textelsem:hasRole rdf:type amt:Role .
+textelsem:hasRole rdfs:label "has role" .
+textelsem:hasRole rdfs:domain textelsem:Statement .
+textelsem:hasRole rdfs:range textelsem:Role .
+
+textelsem:hasSize rdf:type amt:Role .
+textelsem:hasSize rdfs:label "has size" .
+textelsem:hasSize rdfs:domain textelsem:Statement .
+textelsem:hasSize rdfs:range textelsem:Size .
+
+textelsem:isPartOf rdf:type amt:Role .
+textelsem:isPartOf rdfs:label "is part of" .
+textelsem:isPartOf rdfs:domain textelsem:Dating .
+textelsem:isPartOf rdfs:range textelsem:Dating .
+
+textelsem:findspotCountry rdf:type amt:Role .
+textelsem:findspotCountry rdfs:label "is findspot in country" .
+textelsem:findspotCountry rdfs:domain textelsem:Findspot .
+textelsem:findspotCountry rdfs:range textelsem:Country .
+
+textelsem:findspotGeozone rdf:type amt:Role .
+textelsem:findspotGeozone rdfs:label "is findspot in geozone" .
+textelsem:findspotGeozone rdfs:domain textelsem:Findspot .
+textelsem:findspotGeozone rdfs:range textelsem:Geozone .
+
+textelsem:findspotBibliography rdf:type amt:Role .
+textelsem:findspotBibliography rdfs:label "is findspot with bibliography" .
+textelsem:findspotBibliography rdfs:domain textelsem:Findspot .
+textelsem:findspotBibliography rdfs:range textelsem:Bibliography .
+
+textelsem:bibliographyAuthor rdf:type amt:Role .
+textelsem:bibliographyAuthor rdfs:label "has author" .
+textelsem:bibliographyAuthor rdfs:domain textelsem:Bibliography .
+textelsem:bibliographyAuthor rdfs:range textelsem:Person .
+
+textelsem:bibliographyEditor rdf:type amt:Role .
+textelsem:bibliographyEditor rdfs:label "has editor" .
+textelsem:bibliographyEditor rdfs:domain textelsem:Bibliography .
+textelsem:bibliographyEditor rdfs:range textelsem:Person .
+
+textelsem:excavationPerson rdf:type amt:Role .
+textelsem:excavationPerson rdfs:label "is excavation with related person" .
+textelsem:excavationPerson rdfs:domain textelsem:Excavation .
+textelsem:excavationPerson rdfs:range textelsem:Person .
+
+textelsem:excavationBibliography rdf:type amt:Role .
+textelsem:excavationBibliography rdfs:label "is excavation with bibliography" .
+textelsem:excavationBibliography rdfs:domain textelsem:Excavation .
+textelsem:excavationBibliography rdfs:range textelsem:Bibliography .
+
+textelsem:surveyPerson rdf:type amt:Role .
+textelsem:surveyPerson rdfs:label "is survey with related person" .
+textelsem:surveyPerson rdfs:domain textelsem:Survey .
+textelsem:surveyPerson rdfs:range textelsem:Person .
+
+textelsem:surveyBibliography rdf:type amt:Role .
+textelsem:surveyBibliography rdfs:label "is survey with bibliography" .
+textelsem:surveyBibliography rdfs:domain textelsem:Survey .
+textelsem:surveyBibliography rdfs:range textelsem:Bibliography .
+
+textelsem:surveyCountry rdf:type amt:Role .
+textelsem:surveyCountry rdfs:label "is survey in country" .
+textelsem:surveyCountry rdfs:domain textelsem:Survey .
+textelsem:surveyCountry rdfs:range textelsem:Country .
+
+textelsem:surveyGeozone rdf:type amt:Role .
+textelsem:surveyGeozone rdfs:label "is survey in geozone" .
+textelsem:surveyGeozone rdfs:domain textelsem:Survey .
+textelsem:surveyGeozone rdfs:range textelsem:Geozone .
+
+textelsem:statementBibliography rdf:type amt:Role .
+textelsem:statementBibliography rdfs:label "is statement with bibliography" .
+textelsem:statementBibliography rdfs:domain textelsem:Statement .
+textelsem:statementBibliography rdfs:range textelsem:Bibliography .
 
 # axioms
 
 # RoleChainAxiom
 
 textelsem:Axiom01 rdf:type amt:RoleChainAxiom .
-textelsem:Axiom01 amt:antecedent1 textelsem:connectedWith .
-textelsem:Axiom01 amt:antecedent2 textelsem:connectedWith .
-textelsem:Axiom01 amt:consequent textelsem:connectedWith .
+textelsem:Axiom01 amt:antecedent1 textelsem:isPartOf .
+textelsem:Axiom01 amt:antecedent2 textelsem:isPartOf .
+textelsem:Axiom01 amt:consequent textelsem:isPartOf .
 textelsem:Axiom01 amt:logic amt:ProductLogic .
 
 textelsem:Axiom02 rdf:type amt:RoleChainAxiom .
-textelsem:Axiom02 amt:antecedent1 textelsem:subInterestOf .
-textelsem:Axiom02 amt:antecedent2 textelsem:subInterestOf .
-textelsem:Axiom02 amt:consequent textelsem:subInterestOf .
-textelsem:Axiom02 amt:logic amt:GoedelLogic .
+textelsem:Axiom02 amt:antecedent1 textelsem:hasDating .
+textelsem:Axiom02 amt:antecedent2 textelsem:isPartOf .
+textelsem:Axiom02 amt:consequent textelsem:hasDating .
+textelsem:Axiom02 amt:logic amt:ProductLogic .
 
 textelsem:Axiom03 rdf:type amt:RoleChainAxiom .
-textelsem:Axiom03 amt:antecedent1 textelsem:superInterestOf .
-textelsem:Axiom03 amt:antecedent2 textelsem:superInterestOf .
-textelsem:Axiom03 amt:consequent textelsem:superInterestOf .
-textelsem:Axiom03 amt:logic amt:GoedelLogic .
+textelsem:Axiom03 amt:antecedent1 textelsem:surveyFindspot .
+textelsem:Axiom03 amt:antecedent2 textelsem:findspotCountry .
+textelsem:Axiom03 amt:consequent textelsem:surveyCountry .
+textelsem:Axiom03 amt:logic amt:ProductLogic .
 
 textelsem:Axiom04 rdf:type amt:RoleChainAxiom .
-textelsem:Axiom04 amt:antecedent1 textelsem:interestedIn .
-textelsem:Axiom04 amt:antecedent2 textelsem:interestOf .
-textelsem:Axiom04 amt:consequent textelsem:connectedWith .
-textelsem:Axiom04 amt:logic amt:LukasiewiczLogic .
+textelsem:Axiom04 amt:antecedent1 textelsem:surveyFindspot .
+textelsem:Axiom04 amt:antecedent2 textelsem:findspotGeozone .
+textelsem:Axiom04 amt:consequent textelsem:surveyGeozone .
+textelsem:Axiom04 amt:logic amt:ProductLogic .
 
 textelsem:Axiom05 rdf:type amt:RoleChainAxiom .
-textelsem:Axiom05 amt:antecedent1 textelsem:interestedIn .
-textelsem:Axiom05 amt:antecedent2 textelsem:subInterestOf .
-textelsem:Axiom05 amt:consequent textelsem:interestedIn .
-textelsem:Axiom05 amt:logic amt:GoedelLogic .
+textelsem:Axiom05 amt:antecedent1 textelsem:hasStatement .
+textelsem:Axiom05 amt:antecedent2 textelsem:statementBibliography .
+textelsem:Axiom05 amt:consequent textelsem:findspotBibliography .
+textelsem:Axiom05 amt:logic textelsem:ProductLogic .
+
+textelsem:Axiom05a rdf:type amt:RoleChainAxiom .
+textelsem:Axiom05a amt:antecedent1 textelsem:hasExcavation .
+textelsem:Axiom05a amt:antecedent2 textelsem:excavationBibliography .
+textelsem:Axiom05a amt:consequent textelsem:findspotBibliography .
+textelsem:Axiom05a amt:logic textelsem:ProductLogic .
+
+textelsem:Axiom05b rdf:type amt:RoleChainAxiom .
+textelsem:Axiom05b amt:antecedent1 textelsem:hasSurvey .
+textelsem:Axiom05b amt:antecedent2 textelsem:surveyBibliography .
+textelsem:Axiom05b amt:consequent textelsem:findspotBibliography .
+textelsem:Axiom05b amt:logic textelsem:ProductLogic .
 
 # InverseAxiom
 
 textelsem:Axiom06 rdf:type amt:InverseAxiom .
-textelsem:Axiom06 amt:antecedent textelsem:interestOf .
-textelsem:Axiom06 amt:inverse textelsem:interestedIn .
+textelsem:Axiom06 amt:antecedent textelsem:hasLocation .
+textelsem:Axiom06 amt:inverse textelsem:isLocationOf .
 
 textelsem:Axiom07 rdf:type amt:InverseAxiom .
-textelsem:Axiom07 amt:antecedent textelsem:interestedIn .
-textelsem:Axiom07 amt:inverse textelsem:interestOf .
+textelsem:Axiom07 amt:antecedent textelsem:isLocationOf .
+textelsem:Axiom07 amt:inverse textelsem:hasLocation .
 
 textelsem:Axiom08 rdf:type amt:InverseAxiom .
-textelsem:Axiom08 amt:antecedent textelsem:subInterestOf .
-textelsem:Axiom08 amt:inverse textelsem:superInterestOf .
+textelsem:Axiom08 amt:antecedent textelsem:hasStatement .
+textelsem:Axiom08 amt:inverse textelsem:isStatementAbout .
 
 textelsem:Axiom09 rdf:type amt:InverseAxiom .
-textelsem:Axiom09 amt:antecedent textelsem:superInterestOf .
-textelsem:Axiom09 amt:inverse textelsem:subInterestOf .
+textelsem:Axiom09 amt:antecedent textelsem:isStatementAbout .
+textelsem:Axiom09 amt:inverse textelsem:hasStatement .
 
 textelsem:Axiom10 rdf:type amt:InverseAxiom .
-textelsem:Axiom10 amt:antecedent textelsem:connectedWith .
-textelsem:Axiom10 amt:inverse textelsem:connectedWith .
+textelsem:Axiom10 amt:antecedent textelsem:hasSurvey .
+textelsem:Axiom10 amt:inverse textelsem:surveyFindspot .
+
+textelsem:Axiom11 rdf:type amt:InverseAxiom .
+textelsem:Axiom11 amt:antecedent textelsem:surveyFindspot .
+textelsem:Axiom11 amt:inverse textelsem:hasSurvey .
 
 # SelfDisjointAxiom
 
-textelsem:Axiom11 rdf:type amt:SelfDisjointAxiom .
-textelsem:Axiom11 amt:role textelsem:subInterestOf .
-
-textelsem:Axiom12 rdf:type amt:SelfDisjointAxiom .
-textelsem:Axiom12 amt:role textelsem:superInterestOf .
+textelsem:Axiom13 rdf:type amt:SelfDisjointAxiom .
+textelsem:Axiom13 amt:role textelsem:isPartOf .
