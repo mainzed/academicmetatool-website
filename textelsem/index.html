@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>AMT | TexTelSem</title>
@@ -27,11 +27,11 @@
 		    flex-direction: column;
 			}
 			#footer {
-				height: 100px;
+				height: 250px;
 				color: black;
 			}
 			#graph {
-				height: calc(100% - 100px);
+				height: calc(100% - 250px);
 			}
 			.description {
 				margin-left: 25px;
@@ -61,13 +61,49 @@
 						if (!TEXTELSEM.edit) {
 							updated.nodes[i].chosen = false;
 						}
-						if (updated.nodes[i].concept.includes("Person")) {
+						if (updated.nodes[i].concept.includes("Dating")) {
 							updated.nodes[i].color = {background:'lightblue', border:'blue', highlight:{background:'white',border:'black'}};
+							updated.nodes[i].shape = "ellipse";
+						}
+						if (updated.nodes[i].concept.includes("Role")) {
+							updated.nodes[i].color = {background:'rgb(150,150,255)', border:'blue', highlight:{background:'white',border:'black'}};
+							updated.nodes[i].shape = "ellipse";
+						}
+						if (updated.nodes[i].concept.includes("Size")) {
+							updated.nodes[i].color = {background:'rgb(170,170,255)', border:'blue', highlight:{background:'white',border:'black'}};
+							updated.nodes[i].shape = "ellipse";
+						}
+						if (updated.nodes[i].concept.includes("Kind")) {
+							updated.nodes[i].color = {background:'rgb(130,130,255)', border:'blue', highlight:{background:'white',border:'black'}};
+							updated.nodes[i].shape = "ellipse";
+						}
+						if (updated.nodes[i].concept.includes("Country") || updated.nodes[i].concept.includes("Geozone")) {
+							updated.nodes[i].color = {background:'orange', border:'red', highlight:{background:'white',border:'black'}};
+							updated.nodes[i].shape = "ellipse";
+						}
+						if (updated.nodes[i].concept.includes("Location")) {
+							updated.nodes[i].color = {background:'orange', border:'red', highlight:{background:'white',border:'black'}};
 							updated.nodes[i].shape = "box";
 						}
-						if (updated.nodes[i].concept.includes("Interest")) {
+						if (updated.nodes[i].concept.includes("Excavation") || updated.nodes[i].concept.includes("Survey")) {
+							updated.nodes[i].color = {background:'rgb(200,100,230', border:'purple', highlight:{background:'white',border:'black'}};
+							updated.nodes[i].shape = "box";
+						}
+						if (updated.nodes[i].concept.includes("Findspot")) {
 							updated.nodes[i].color = {background:'pink', border:'red', highlight:{background:'white',border:'black'}};
 							updated.nodes[i].shape = "ellipse";
+						}
+						if (updated.nodes[i].concept.includes("Statement")) {
+							updated.nodes[i].color = {background:'lightgreen', border:'green', highlight:{background:'white',border:'black'}};
+							updated.nodes[i].shape = "box";
+						}
+						if (updated.nodes[i].concept.includes("Bibliography")) {
+							updated.nodes[i].color = {background:'yellow', border:'green', highlight:{background:'white',border:'black'}};
+							updated.nodes[i].shape = "box";
+						}
+						if (updated.nodes[i].concept.includes("Person")) {
+							updated.nodes[i].color = {background:'rgb(200,200,200)', border:'grey', highlight:{background:'white',border:'black'}};
+							updated.nodes[i].shape = "box";
 						}
 					}
 					/*
@@ -79,30 +115,48 @@
 						if (updated.edges[i].width < 0.1) {
 							updated.edges[i].hidden = !TEXTELSEM.edit;
 						}
-						if (updated.edges[i].role.includes("connectedWith")) {
+						if (updated.edges[i].role.includes("hasStatement")) {
+							updated.edges[i].color = {color:"green", highlight:"black"};
+							updated.edges[i].arrows = "to";
+						}
+						if (updated.edges[i].role.includes("isStatementAbout")) {
+							updated.edges[i].color = {color:"green", highlight:"black"};
+							updated.edges[i].arrows = "from";
+							updated.edges[i].hidden = !TEXTELSEM.edit;
+						}
+						if (updated.edges[i].role.includes("Bibliography")) {
+							updated.edges[i].color = {color:"yellow", highlight:"black"};
+							updated.edges[i].arrows = "to";
+						}
+						if (updated.edges[i].role.includes("isPartOf")) {
 							updated.edges[i].color = {color:"blue", highlight:"black"};
 							updated.edges[i].dashes = true;
-							if (updated.edges[i].from.localeCompare(updated.edges[i].to) >= 0) {
-								updated.edges[i].hidden = !TEXTELSEM.edit;
-							}
 						}
-						if (updated.edges[i].role.includes("interestedIn")) {
-							updated.edges[i].color = {color:"green", highlight:"black"};
+						if (updated.edges[i].role.includes("Country") || updated.edges[i].role.includes("Geozone") || updated.edges[i].role.includes("hasLocation")) {
+							updated.edges[i].color = {color:"orange", highlight:"black"};
 							updated.edges[i].arrows = "to";
 						}
-						if (updated.edges[i].role.includes("interestOf")) {
-							updated.edges[i].color = {color:"green", highlight:"black"};
+						if (updated.edges[i].role.includes("isLocationOf")) {
+							updated.edges[i].color = {color:"orange", highlight:"black"};
 							updated.edges[i].arrows = "from";
 							updated.edges[i].hidden = !TEXTELSEM.edit;
 						}
-						if (updated.edges[i].role.includes("superInterestOf")) {
-							updated.edges[i].color = {color:"red", highlight:"black"};
+						if (updated.edges[i].role.includes("Excavation") || updated.edges[i].role.includes("hasSurvey")) {
+							updated.edges[i].color = {color:"purple", highlight:"black"};
 							updated.edges[i].arrows = "to";
 						}
-						if (updated.edges[i].role.includes("subInterestOf")) {
-							updated.edges[i].color = {color:"red", highlight:"black"};
+						if (updated.edges[i].role.includes("surveyFindspot")) {
+							updated.edges[i].color = {color:"purple", highlight:"black"};
 							updated.edges[i].arrows = "from";
 							updated.edges[i].hidden = !TEXTELSEM.edit;
+						}
+						if (updated.edges[i].role.includes("Dating") || updated.edges[i].role.includes("Role") || updated.edges[i].role.includes("Size") || updated.edges[i].role.includes("Kind")) {
+							updated.edges[i].color = {color:"blue", highlight:"black"};
+							updated.edges[i].arrows = "to";
+						}
+						if (updated.edges[i].role.includes("Person") || updated.edges[i].role.includes("Author") || updated.edges[i].role.includes("Editor")) {
+							updated.edges[i].color = {color:"grey", highlight:"black"};
+							updated.edges[i].arrows = "to";
 						}
 					}
 					TEXTELSEM.graph.nodes.update(updated.nodes);
