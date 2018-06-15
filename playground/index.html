@@ -334,11 +334,11 @@
 				MAINZED.thisEdges = [];
 				MAINZED.amt = new AMT();
 				if (MAINZED.ontology==="mainzed") {
-					MAINZED.amt.setStore("http://higeomes.i3mainz.hs-mainz.de/openrdf-sesame/repositories/mainzed2");
+					MAINZED.amt.setStore("http://ls-dev.i3mainz.hs-mainz.de/rdf4j-server/repositories/amtmainzed");
 				} else if (MAINZED.ontology==="samian") {
 					MAINZED.amt.setStore("http://ls-dev.i3mainz.hs-mainz.de/rdf4j-server/repositories/samianamt");
 				} else {
-					MAINZED.amt.setStore("http://higeomes.i3mainz.hs-mainz.de/openrdf-sesame/repositories/mainzed2");
+					MAINZED.amt.setStore("http://ls-dev.i3mainz.hs-mainz.de/rdf4j-server/repositories/amtmainzed");
 				}
 				console.log(MAINZED);
 				MAINZED.amt.load(function() {

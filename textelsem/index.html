@@ -326,7 +326,7 @@
 				TEXTELSEM.thisNodes = [];
 				TEXTELSEM.thisEdges = [];
 				TEXTELSEM.amt = new AMT();
-				TEXTELSEM.amt.setStore("http://higeomes.i3mainz.hs-mainz.de/openrdf-sesame/repositories/amttextelsem");
+				TEXTELSEM.amt.setStore("http://ls-dev.i3mainz.hs-mainz.de/rdf4j-server/repositories/amttextelsem");
 				console.log(TEXTELSEM);
 				TEXTELSEM.amt.load(function() {
 					var concepts = TEXTELSEM.amt.getConcepts();
