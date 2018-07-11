@@ -324,7 +324,7 @@ time:DA006 amt:role1 time:pr .
 time:DA006 amt:role2 time:sd .
 
 # RoleChainAxioms
-# RoleChainAxioms
+
 time:RCA0001 rdf:type amt:RoleChainAxiom .
 time:RCA0001 amt:antecedent1 time:b .
 time:RCA0001 amt:antecedent2 time:b .
