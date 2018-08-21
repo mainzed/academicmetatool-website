@@ -1,0 +1,103 @@
+@prefix mainzed: <http://mainzed.org/> .
+@prefix amt: <http://academic-meta-tool.xyz/vocab#> .
+
+# concepts
+
+mainzed:Person rdf:type amt:Concept .
+mainzed:Person rdfs:label "Person" .
+mainzed:Person amt:placeholder "Nachname, Vorname" .
+
+mainzed:Interest rdf:type amt:Concept .
+mainzed:Interest rdfs:label "Interesse" .
+mainzed:Interest amt:placeholder "Interesse" .
+
+# roles
+
+mainzed:connectedWith rdf:type amt:Role .
+mainzed:connectedWith rdfs:label "is connected with" .
+mainzed:connectedWith rdfs:domain mainzed:Person .
+mainzed:connectedWith rdfs:range mainzed:Person .
+
+mainzed:interestedIn rdf:type amt:Role .
+mainzed:interestedIn rdfs:label "is interested in" .
+mainzed:interestedIn rdfs:domain mainzed:Person .
+mainzed:interestedIn rdfs:range mainzed:Interest .
+
+mainzed:interestOf rdf:type amt:Role .
+mainzed:interestOf rdfs:label "is an interest of" .
+mainzed:interestOf rdfs:domain mainzed:Interest .
+mainzed:interestOf rdfs:range mainzed:Person .
+
+mainzed:subInterestOf rdf:type amt:Role .
+mainzed:subInterestOf rdfs:label "is a subinterest of" .
+mainzed:subInterestOf rdfs:domain mainzed:Interest .
+mainzed:subInterestOf rdfs:range mainzed:Interest .
+
+mainzed:superInterestOf rdf:type amt:Role .
+mainzed:superInterestOf rdfs:label "is a superinterest of" .
+mainzed:superInterestOf rdfs:domain mainzed:Interest .
+mainzed:superInterestOf rdfs:range mainzed:Interest .
+
+# axioms
+
+# RoleChainAxiom
+
+mainzed:Axiom01 rdf:type amt:RoleChainAxiom .
+mainzed:Axiom01 amt:antecedent1 mainzed:connectedWith .
+mainzed:Axiom01 amt:antecedent2 mainzed:connectedWith .
+mainzed:Axiom01 amt:consequent mainzed:connectedWith .
+mainzed:Axiom01 amt:logic amt:ProductLogic .
+
+mainzed:Axiom02 rdf:type amt:RoleChainAxiom .
+mainzed:Axiom02 amt:antecedent1 mainzed:subInterestOf .
+mainzed:Axiom02 amt:antecedent2 mainzed:subInterestOf .
+mainzed:Axiom02 amt:consequent mainzed:subInterestOf .
+mainzed:Axiom02 amt:logic amt:GoedelLogic .
+
+mainzed:Axiom03 rdf:type amt:RoleChainAxiom .
+mainzed:Axiom03 amt:antecedent1 mainzed:superInterestOf .
+mainzed:Axiom03 amt:antecedent2 mainzed:superInterestOf .
+mainzed:Axiom03 amt:consequent mainzed:superInterestOf .
+mainzed:Axiom03 amt:logic amt:GoedelLogic .
+
+mainzed:Axiom04 rdf:type amt:RoleChainAxiom .
+mainzed:Axiom04 amt:antecedent1 mainzed:interestedIn .
+mainzed:Axiom04 amt:antecedent2 mainzed:interestOf .
+mainzed:Axiom04 amt:consequent mainzed:connectedWith .
+mainzed:Axiom04 amt:logic amt:LukasiewiczLogic .
+
+mainzed:Axiom05 rdf:type amt:RoleChainAxiom .
+mainzed:Axiom05 amt:antecedent1 mainzed:interestedIn .
+mainzed:Axiom05 amt:antecedent2 mainzed:subInterestOf .
+mainzed:Axiom05 amt:consequent mainzed:interestedIn .
+mainzed:Axiom05 amt:logic amt:GoedelLogic .
+
+# InverseAxiom
+
+mainzed:Axiom06 rdf:type amt:InverseAxiom .
+mainzed:Axiom06 amt:antecedent mainzed:interestOf .
+mainzed:Axiom06 amt:inverse mainzed:interestedIn .
+
+mainzed:Axiom07 rdf:type amt:InverseAxiom .
+mainzed:Axiom07 amt:antecedent mainzed:interestedIn .
+mainzed:Axiom07 amt:inverse mainzed:interestOf .
+
+mainzed:Axiom08 rdf:type amt:InverseAxiom .
+mainzed:Axiom08 amt:antecedent mainzed:subInterestOf .
+mainzed:Axiom08 amt:inverse mainzed:superInterestOf .
+
+mainzed:Axiom09 rdf:type amt:InverseAxiom .
+mainzed:Axiom09 amt:antecedent mainzed:superInterestOf .
+mainzed:Axiom09 amt:inverse mainzed:subInterestOf .
+
+mainzed:Axiom10 rdf:type amt:InverseAxiom .
+mainzed:Axiom10 amt:antecedent mainzed:connectedWith .
+mainzed:Axiom10 amt:inverse mainzed:connectedWith .
+
+# SelfDisjointAxiom
+
+mainzed:Axiom11 rdf:type amt:SelfDisjointAxiom .
+mainzed:Axiom11 amt:role mainzed:subInterestOf .
+
+mainzed:Axiom12 rdf:type amt:SelfDisjointAxiom .
+mainzed:Axiom12 amt:role mainzed:superInterestOf .
