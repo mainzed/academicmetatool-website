@@ -53,6 +53,12 @@ $("<link/>", {
     href: "css/vendor/3dhop.css"
 }).appendTo("head");
 
+$("<link/>", {
+    rel: "stylesheet",
+    type: "text/css",
+    href: "css/icomoon.css"
+}).appendTo("head");
+
 
 $("<link/>", {
     rel: "stylesheet",
